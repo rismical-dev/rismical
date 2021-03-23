@@ -1,0 +1,80 @@
+##
+###################################################################
+##                                                               ##
+##  Makefile for RIMIiCal Package                                ##
+##                                                               ##
+###################################################################
+##
+##  RISMICALDIR  RISMiCal Distribution Directory
+##  BINDIR       Hard Copies of RISMiCal Executables
+##  LINKDIR      Linked Copies of RISMiCal Executables
+##
+
+RISMICALDIR = ~/software/RISMiCal
+BINDIR = $(RISMICALDIR)/bin
+
+###################################################################
+#
+#   Machine dependent compile option
+#
+###################################################################
+
+
+# PGI Compiler
+#FC = pgf95
+#FCFLAGS = -fastsse -O4 -Mprefetch=distance:8,nta -Minline=size:50 -mp -Mfixed -mcmodel=medium 
+#LDFLAGS = -lacml -lacml_mv 
+
+# GNU Compiler
+#FC =  gfortran
+#FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form 
+#LDFLAGS = -lblas -llapack
+
+# Intel Compiler
+FC =  ifort
+#FCFLAGS = -O3 -shared-intel -mcmodel=medium -fixed
+FCFLAGS = -O3 -shared-intel -mcmodel=medium -openmp -fixed
+LDFLAGS =  -mkl 
+
+
+FCLD = $(FC)
+
+###################################################################
+
+SRCS = drism.f makewx.f mdiis1d.f output1d.f calxvk.f\
+       prop1dvv.f readguess1d.f readvvdata.f rismiofile.f cl_oz1d.f\
+       fbondvv.f mathlib.f misc.f potentialvv.f \
+       readinput.f rismicalvv.f printlogo.f \
+       rismical1d.f
+
+OBJS = $(SRCS:.f=.o)
+
+PROGS =rismicalvv.x \
+       rismical1d.x
+#	rismical3d.x
+#	rismicalmozvv.x
+#	rismicalmozuv.x
+#	rismicalxmoz.x
+
+.f.o:
+	${FC} ${FCFLAGS}  $*.f 
+
+%.x: %.o 
+	${FC} ${LDFLAGS} -o $@ $^ 
+
+all:	${PROGS}
+
+
+# all: $(PROGS)
+
+# $(PROGS) : $(OBJS)
+# 	$(FCLD) $(FCFLAGS) $(LDFLAGS) $(OBJS) -o $(PROGS) 
+
+# clean:
+# 	-rm -f $(OBJS)  $(PROGS)
+
+# .SUFFIXES: .f .o
+
+# .f.o:
+# 	$(FC) $(FCFLAGS) -c $< -o $@ 
+

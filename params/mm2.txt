@@ -1,0 +1,32 @@
+#Taken from MM2
+#radiustype R-MIN
+#radiussize RADIUS
+#Number_of_params 26
+#radius eps    atom  note        number weight bond
+1.5    196.648   H  NONPOLARHYDROGEN  1  1.008   1
+0.95   150.624   HO =-OH_ALCOHOL      1  1.008   1
+1.53   108.784   He  HELIUM           2  4.003   0
+1.98   142.256   B  >B<_TETRAHEDRAL   5  11.009  4
+1.94   184.096   C  BENZENE           6  12      3
+1.82   230.12    N  NSP3              7  14.003  4
+1.74   276.144   O  =O_CARBONYL       8  15.995  1
+1.65   326.352   F  FLUORIDE          9  18.998  1
+1.6    376.56    Ne  NEON            10  20.179  0
+2.2     62.76    Mg  MAGNESIUM       12  24.301  0
+2.25   585.76    Si  SILANE          14  27.977  4
+2.2    702.912   P  PHOSPHORUS(V)    15  30.994  4
+2.11   845.168   S  =-S-SULFIDE      16  31.972  2
+2.03  1004.16    Cl  CHLORIDE        17  34.969  1
+1.99  1121.312   Ar  ARGON           18  39.948  0
+2.2     83.68    Fe  IRON(III)       26  55.847  0
+2.2     83.68    Ni  NICKEL(III)     27  58.71   0
+2.2     83.68    Co  COBALT(III)     28  58.933  0
+2.4    836.8     Ge  GERMANIUM       32  73.922  2
+2.25  1154.784   Se  SELENIUM        34  79.917  2
+2.18  1338.88    Br  BROMIDE         35  78.918  1
+2.15  1497.872   Kr  KRYPTON         36  83.8    0
+2.55  1129.68    Sn  TIN             50 117.902  2
+2.4   1539.712   Te  TELLURIUM       52 129.907  2
+2.32  1774.016   I   IODIDE          53 126.9    1
+2.28  2071.08    Xe  XENON           54 131.3    0
+2.7   1422.56    Pb  LEAD(IV)        82 207.977  4

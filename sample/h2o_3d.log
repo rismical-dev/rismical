@@ -1,0 +1,142 @@
+ -----------------------------------------------------------
+   #####   #   ####   #    #      ####           #    
+   #    #  #  #    #  ##  ##  #  #    #          #    
+   #    #  #  #       # ## #     #         ##    #    
+   #####   #   ####   # ## #  #  #           #   #    
+   # #     #       #  #    #  #  #        ####   #    
+   #  #    #  #    #  #    #  #  #    #  #   #   #    
+   #    #  #   ####   #    #  #   ####    ### #  ##   
+                                                      
+                                                      
+  The Reference Interaction Site-Model integrated Calculator
+  Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
+ -----------------------------------------------------------
+
+ RISMiCal home dir:/Users/noriwo/software/RISMiCal/                                                                                                                                                                                                                                
+
+  -------------------------------------------------
+     3D-RISM run for solute-solvent system
+  -------------------------------------------------
+
+    ======= Computational Conditions =======
+    Closure Equation       : KH 
+    Maximum Iteration      :       300
+    Convergence Criterion  :  1.0000E-05
+    Use CHARGEUP Procedure : OFF
+    Guess of tau-bond      : F-BOND   
+      --------------------------------------
+      Number of 3D-Grid :          32
+          3D-Grid width :      1.0000  [A]
+      --------------------------------------
+ -----------------------------------------------
+             Solute parameters
+ -----------------------------------------------
+Number of solute site:   3
+ATOM sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---   
+O         3.10033   276.14400    -0.83400     0.00000     0.00000     0.00000
+HO        1.69271   150.62400     0.41700     0.00000     0.75670     0.58588
+HO        1.69271   150.62400     0.41700     0.00000    -0.75670     0.58588
+ -----------------------------------------------
+             Solvent parameters
+ -----------------------------------------------
+Number of solvnt site:   3
+ATOM SPC sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---    density[M] 
+O      1     3.15000   636.00000    -0.83400     0.00000     0.00000     0.00000    54.00000
+H      1     0.40000   192.50000     0.41700     0.00000     0.75670     0.58588    54.00000
+H      1     0.40000   192.50000     0.41700     0.00000    -0.75670     0.58588    54.00000
+Temperature :   298.00000[K]
+ Solvent xvv file:h2o_vv.hvk                                                                                                                                                                                                                                                      
+
+    Solvent Symmetry        : Applyed
+
+    ========== u-v 3drism ==========
+
+    temperature      : 298.00000[k]
+    charge up factor :   1.00000
+
+   itr      residual       #-sub min      dump
+         1      0.305569404602     1  T     0.30000
+         2      0.186965847458     2  T     0.30000
+         3      0.077507630982     3  T     0.30000
+         4      0.052885736359     4  T     0.30000
+         5      0.045160641422     5  T     0.30000
+         6      0.030754736769     6  T     0.30000
+         7      0.022977546934     7  T     0.30000
+         8      0.017635220973     8  T     0.30000
+         9      0.012205449397     9  T     0.30000
+        10      0.010373457813    10  T     0.30000
+        11      0.008205169224    10  T     0.30000
+        12      0.007207023355    10  T     0.30000
+        13      0.006587358538    10  T     0.30000
+        14      0.005984702868    10  T     0.30000
+        15      0.005761666499    10  T     0.30000
+        16      0.005497400686    10  T     0.30000
+        17      0.005211360779    10  T     0.30000
+        18      0.004684448383    10  T     0.30000
+        19      0.004357348404    10  T     0.30000
+        20      0.003505897610    10  T     0.30000
+        21      0.003012870201    10  T     0.30000
+        22      0.002586706608    10  T     0.30000
+        23      0.001883992083    10  T     0.30000
+        24      0.001706056578    10  T     0.30000
+        25      0.001294593771    10  T     0.30000
+        26      0.001068018081    10  T     0.30000
+        27      0.000694194986    10  T     0.30000
+        28      0.000493430429    10  T     0.30000
+        29      0.000366702583    10  T     0.30000
+        30      0.000239884671    10  T     0.30000
+        31      0.000194713659    10  T     0.30000
+        32      0.000151468944    10  T     0.30000
+        33      0.000079124387    10  T     0.30000
+        34      0.000066483228    10  T     0.30000
+        35      0.000031273035    10  T     0.30000
+        36      0.000023952151    10  T     0.30000
+        37      0.000020513272    10  T     0.30000
+        38      0.000018315196    10  T     0.30000
+        39      0.000015805692    10  T     0.30000
+        40      0.000008341371  ****  x    converged
+
+    rism cycle is converged
+
+    Total Solvent Charge:     -0.05755266
+
+    ======= Physical Property of U-V System =======
+
+    Solvation Free Energy         :  -24.936042    [kJ/mol]
+
+    Solvation Free Energy(GF)     :  -34.321388    [kJ/mol]
+
+    Solute-Solvent Binding Energy :  -101.50811    [kJ/mol]
+
+    UV Binding Energy Component LJ:   5.6958501    [kJ/mol]
+
+    UV Binding Energy Component ES:  -107.20396    [kJ/mol]
+
+    Solvation Free Energy(UC)     :  -5959.5171    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -8202.1146    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+
+    ======= Solvation Free Energy Component  =======
+       1:   115.30136    [kJ/mol]
+       2:  -70.118701    [kJ/mol]
+       3:  -70.118701    [kJ/mol]
+
+    ======= GF Solvation Free Energy Component =====
+       1:   111.57779    [kJ/mol]
+       2:  -72.949590    [kJ/mol]
+       3:  -72.949590    [kJ/mol]
+
+    ============= Partial Molar Volume =============
+    Partial Molar Volume       =   0.8293E-05 [L/mol]
+    Isothermal Compressibility =   0.5499     [/GPa]
+
+ -----------------------------------------------------------
+         RISMiCal computation is completed normally.        
+            --- Keep casting, tight lines. ---              
+ -----------------------------------------------------------
+  Users must cite the following papers for any publications,
+  which include the results obtained with RISMiCal code.    
+  References:                                               
+ N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
+ N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
+ N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ -----------------------------------------------------------
