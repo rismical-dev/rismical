@@ -8,11 +8,9 @@ c
       implicit real*8 (a-h,o-z)
       real*8 ,allocatable :: cr(:,:,:),tr(:,:,:)
      &                      ,hvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
-     &                      ,ures(:,:,:),urlj(:,:,:),trnew(:,:,:)
+     &                      ,ures(:,:,:),urlj(:,:,:)
      &                      ,wk1(:,:,:),wk2(:,:,:),ck(:,:,:)
      &                      ,zrk(:,:,:),wk2org(:,:,:),xvk(:,:,:)
-      real*8 ,allocatable :: trmdiis(:,:),rsmdiis(:,:)
-      real*8 ,allocatable :: rsdmat(:,:)
 c
       include "phys_const.i"
       include "solvent.i"
@@ -34,30 +32,16 @@ c
       allocate (hvk(ngrid,nv,nv),fr(ngrid,nv,nv),fk(ngrid,nv,nv))
       allocate (huvk(ngrid,nv,nv))
       allocate (xvk(ngrid,nv,nv))
-      allocate (ures(ngrid,nv,nv),urlj(ngrid,nv,nv),trnew(ngrid,nv,nv))
+      allocate (ures(ngrid,nv,nv),urlj(ngrid,nv,nv))
       allocate (wk1(ngrid,nv,nv),wk2(ngrid,nv,nv),ck(ngrid,nv,nv))
       allocate (wk2org(ngrid,nv,nv))
       allocate (zrk(ngrid,nv,nv))
-      allocate (trmdiis(ngrid*nv*nv,nsub),rsmdiis(ngrid*nv*nv,nsub))
-      allocate (rsdmat(nsub+1,nsub+1))
 c     
 c     --- Initialize
 c     
       call vclr(xvk,1,nv*nv*ngrid)
 c
       idrism=0
-c
-      do m=1,nsub
-         do ijk=1,nv*nv*ngrid
-            rsmdiis(ijk,m)=0.d0
-            trmdiis(ijk,m)=0.d0
-         enddo
-      enddo
-      do i=1,nsub+1
-         do j=1,nsub+1
-            rsdmat(i,j)=0.d0
-         enddo
-      enddo
 c
 c     --- Intramolecular correlation function of solvent
 c
@@ -88,13 +72,6 @@ c
          enddo
       elseif (iguess.eq.1) then
          call readguess1d(ngrid,nv,nv,tr)
-         do i=1,nv
-         do j=1,nv
-            do k=1,ngrid
-               trnew(k,i,j)=tr(k,i,j)
-            enddo
-         enddo
-         enddo
       else
          write(*,9990)
          ierr=4
@@ -134,38 +111,28 @@ c
 c     
 c     --- Setup mdiis 
 c     
-c$$$      ng=ngrid*nv*nv
-c$$$      call mdiis_new(ng,tr,residu,cconv,0)  
-      ndiistart=0
-      idiiscount=0
-      rmsmin=0.d0
-      irmsmin=1
+      ng=ngrid*nv*nv
+      call mdiis(ng,tr,residu,cconv,0)  
+
 c---------------------------------------------------------
 c     RISM Iteration Cycle
 c---------------------------------------------------------
       write(*,9991)
       do itr=1,itrmax
 c     
-c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT trnew(r)]
+c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT tr(r)]
 c     
          iuv=0
          call cl_oz1d(icl,iuv,idrism,ngrid,rdelta,nv,nv
-     &               ,chgratio,ck,trnew,hvk,fr,fk,wk2,wk2,zrk
+     &               ,chgratio,ck,hvk,fr,fk,wk2,wk2,zrk
      &               ,cr,tr,ures,urlj)
 c     
 c     --- Check Convergence and Make Guess For Next Loop
 c     
-c$$$         call mdiis_new(ng,tr,residu,cconv,1)  
-c$$$         if (residu.le.cconv) goto 8000
-         
-         call residucalc(ngrid,nv,nv,tr,trnew,residu)
+         call mdiis(ng,tr,residu,cconv,1)  
+
          if (residu.le.cconv) goto 8000
-         
-         call mdiis1d(itr,nsub,ngrid,nv,nv,
-     &                ndiistart,idiiscount,irmsmin,
-     &                tr,trnew,trmdiis,rsmdiis,rmsmin,rsdmat,
-     &                residu,dumpmax,dumpmin,dumpnume)
-c     
+     
       enddo
 c---------------------------------------------------------
 c     Not Converged
@@ -178,17 +145,10 @@ c---------------------------------------------------------
  8000 continue
 
       call  cl_1d(icl,ngrid,rdelta,nv,nv,chgratio
-     &     ,cr,trnew,ures,urlj)
+     &     ,cr,tr,ures,urlj)
 
-      write(*,9989) itr,residu,idiiscount,"X"
+      write(*,9989) itr,residu,0,"X"
       write(*,9993)
-      do i=1,nv
-         do j=1,nv
-            do k=1,ngrid
-               tr(k,i,j)=trnew(k,i,j)
-            enddo
-         enddo
-      enddo
 c
 c     --- Go to next charge up cycle
 c
@@ -222,15 +182,13 @@ c
 c---------------------------------------------------------
       deallocate (cr,tr)
       deallocate (hvk,fr,fk,huvk)
-      deallocate (ures,urlj,trnew)
+      deallocate (ures,urlj)
       deallocate (wk1,wk2,ck)
       deallocate (zrk)
-      deallocate (trmdiis,rsmdiis)
-      deallocate (rsdmat)
 c---------------------------------------------------------
       return
 c---------------------------------------------------------
- 9989 format (i6,f20.12,2x,i4,2x,a1,4x,"CONVERGED")
+ 9989 format (4x,i6,f20.12,2x,i4,2x,a1,4x,"CONVERGED")
  9990 format (/,4x,"Error, Wrong Parameter For IGUESS IN $RISMGUESS")
  9991 format (/,3x,"ITR",6x,"RESIDUAL",7x,"#-SUB",1x,"MIN",6x,"DUMP")
  9993 format (/,4x,"RISM CYCLE IS CONVERGED")

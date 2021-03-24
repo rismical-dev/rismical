@@ -2,7 +2,7 @@ c--------------------------------------------------------------
 c     Closure-OZ 
 c--------------------------------------------------------------
       subroutine cl_oz1d(icl,iuv,idrism,ngrid,rdelta,n1,n2
-     &     ,chgratio,ck,trnew,hvk,fr,fk,wk1,wk2,zrk
+     &     ,chgratio,ck,hvk,fr,fk,wk1,wk2,zrk
      &     ,cr,tr,ures,urlj)
 c     
 c     ir        ... file number of output (STDOUT)
@@ -27,7 +27,7 @@ c
 
       dimension ures(ngrid,n1,n2),urlj(ngrid,n1,n2)
       dimension cr(ngrid,n1,n2),ck(ngrid,n1,n2)
-      dimension tr(ngrid,n1,n2),trnew(ngrid,n1,n2)
+      dimension tr(ngrid,n1,n2)
       dimension hvk(ngrid,n2,n2)
       dimension fr(ngrid,n1,n2),fk(ngrid,n1,n2)
       dimension wk1(ngrid,n1,n1),wk2(ngrid,n2,n2)
@@ -233,8 +233,7 @@ c
 c     --- Add long range part to short range part 
 c     
             do k=1,ngrid
-               trnew(k,i,j)=ftfunc(k)+beta*fr(k,i,j)*chgratio
-c$$$               tr(k,i,j)=ftfunc(k)+beta*fr(k,i,j)*chgratio
+               tr(k,i,j)=ftfunc(k)+beta*fr(k,i,j)*chgratio
             enddo
             
          enddo

@@ -45,8 +45,8 @@ SRCS = calxvk.f  output3d.f  readguess3d.f  cl_oz1d.f  outputvv.f  readhvk.f \
        closure3d.f  oz3d.f  readinput.f  drism.f  potential3duv.f  readuvdata.f\
        fbond3duv.f  potentialuv.f  readvvdata.f  fbonduv.f  potentialvv.f\
        rismical.f  fbondvv.f  printlogo.f  rismical1d.f  makewx.f  prop1duv.f\
-       rismical3d.f  mathlib.f  prop1dvv.f  rismicalvv.f  mdiis1d.f  prop3duv.f \
-       rismiofile.f  mdiis3d.f  setup1dvx.f  misc.f  read3duvdata.f\
+       rismical3d.f  mathlib.f  prop1dvv.f  rismicalvv.f  mdiis.f  prop3duv.f \
+       rismiofile.f  setup1dvx.f  misc.f  read3duvdata.f\
        setuparraysize.f  output1d.f  readguess1d.f  uvbind3d.f
 
 OBJS = $(SRCS:.f=.o)

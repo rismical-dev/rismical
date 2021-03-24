@@ -127,7 +127,7 @@ c
 c
 c     --- Setup mdiis
 c     
-      call mdiis_new(ng3d*nvuq,tr,residu,cconv,0)  
+      call mdiis(ng3d*nvuq,tr,residu,cconv,0)  
 c---------------------------------------------------------
 c     RISM Iteration Cycle
 c---------------------------------------------------------
@@ -158,7 +158,7 @@ c
 c    
 c     --- check convergence and make guess for next loop
 c     
-         call mdiis_new(ng3d*nvuq,tr,residu,cconv,1)
+         call mdiis(ng3d*nvuq,tr,residu,cconv,1)
 c     
          if ((residu.le.cconv).and.(itr.ge.3)) goto 8000
 c     
@@ -174,7 +174,7 @@ c     converged
 c---------------------------------------------------------
  8000 continue
 c
-      write(*,9989) itr,residu,idiiscount,"x"
+      write(*,9989) itr,residu,0,"x"
       write(*,9993)
 c
 c     go to next charge up cycle
