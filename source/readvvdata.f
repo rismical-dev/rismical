@@ -25,19 +25,49 @@ c
 c
 c     --- Read $GRID1D 
 c
-      ngrid=1024
-      rdelta=0.05d0
+      if (grid.eq."USER") then
+         ngrid=4096
+         rdelta=0.05d0
 
-      ir=45
-      open (ir,file=inpfile)
-      rewind ir
-      read (ir,grid1d,end=900)
- 900  continue
-      close(ir)
+         ir=45
+         open (ir,file=inpfile)
+         rewind ir
+         read (ir,grid1d,end=900)
+ 900     continue
+         close(ir)
+
+      elseif (grid.eq."FINE") then
+         ngrid=8192
+         rdelta=0.025d0
+
+      elseif (grid.eq."LFINE") then
+
+         ngrid=16384
+         rdelta=0.025d0
+
+      elseif (grid.eq."STANDARD") then
+         ngrid=4096
+         rdelta=0.05d0
+
+      elseif (grid.eq."LSTANDARD") then
+         ngrid=8192
+         rdelta=0.05d0
+
+      elseif (grid.eq."TEST") then
+         ngrid=2048
+         rdelta=0.1d0
+
+      elseif (grid.eq."LTEST") then
+         ngrid=4096
+         rdelta=0.1d0
+
+      endif
+
 c
       write(*,*) "     --------------------------------------"
-      write(*,'(A25,i12)')   "Number of Grid :",ngrid
-      write(*,'(A25,f12.4,A5)') "   Grid witdth :",rdelta," [A]"
+      write(*,'(A19,A24)')   "Grid preset       :",grid
+      write(*,'(A19,i12)')   "Number of 1D-Grid :",ngrid
+      write(*,'(A19,f12.4,A5)') "Grid width       :",rdelta," [A]"
       write(*,*) "     --------------------------------------"
 c
       ift=45

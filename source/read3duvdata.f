@@ -28,19 +28,54 @@ c
 c
 c     --- Read $GRID3D 
 c
-      ngrid=1024
-      rdelta=0.05d0
+      if (grid.eq."USER") then
 
-      ir=45
-      open (ir,file=inpfile)
-      rewind ir
-      read (ir,grid3d,end=900)
- 900  continue
-      close(ir)
+         ngrid3d=128
+         rdelta3d=0.5d0
+
+         ir=45
+         open (ir,file=inpfile)
+         rewind ir
+         read (ir,grid3d,end=900)
+ 900     continue
+         close(ir)
+
+      elseif (grid.eq."FINE") then
+
+         ngrid3d=256
+         rdelta3d=0.25d0
+
+      elseif (grid.eq."LFINE") then
+
+         ngrid3d=512
+         rdelta3d=0.25d0
+
+      elseif (grid.eq."STANDARD") then
+
+         ngrid3d=128
+         rdelta3d=0.5d0
+
+      elseif (grid.eq."LSTANDARD") then
+
+         ngrid3d=256
+         rdelta3d=0.5d0
+
+      elseif (grid.eq."TEST") then
+
+         ngrid3d=64
+         rdelta3d=1.d0
+
+      elseif (grid.eq."LTEST") then
+
+         ngrid3d=128
+         rdelta3d=1.d0
+
+      endif
 c
       write(*,*) "     --------------------------------------"
-      write(*,'(A25,i12)')   "Number of 3D-Grid :",ngrid3d
-      write(*,'(A25,f12.4,A5)') "3D-Grid width :",rdelta3d," [A]"
+      write(*,'(A19,A24)')   "Grid preset       :",grid
+      write(*,'(A19,i12)')   "Number of 3D-Grid :",ngrid3d
+      write(*,'(A19,f12.4,A5)') "3D-Grid width    :",rdelta3d," [A]"
       write(*,*) "     --------------------------------------"
 c
 c     --------------------------------------------------------
@@ -53,7 +88,7 @@ c
 c     Set defaults
 c
       solute="udata"
-      ljparam="mm2.txt"
+      ljparam="mm2.prm"
       esptype="PC"
       ipot3d=0
 c

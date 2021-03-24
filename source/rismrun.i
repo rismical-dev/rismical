@@ -4,6 +4,7 @@ c     --------------------------------------------
 
       integer icl,iguess,ngrid,ngrid3d
       real*8 rdelta,rdelta3d,conv,rcore,alp1d,alp3d
+      character*24 grid
      
       integer nsub
       real*8 dumpmax,dumpmin,dumpnume
@@ -20,4 +21,6 @@ c
       common /rismmdiis_r/dumpmax,dumpmin,dumpnume
 c
       common /rismchgup/chgstep,chgratio,chgconv
+      common /rismgrid/grid
+  
 c

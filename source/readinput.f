@@ -27,7 +27,7 @@ c
 
       namelist /RISM/CLOSURE
      &              ,ITRMAX,CONV,CHARGEUP,IGUESS
-     &              ,ALP1D,ALP3D,iolist,guessfile
+     &              ,ALP1D,ALP3D,iolist,guessfile,grid
       namelist /MDIIS/nsub,dumpmax,dumpmin,dumpnume
       namelist /CHARGEUPOPT/chgstep,chgconv
 C
@@ -50,6 +50,7 @@ c---------------------------------------------------------------
       alp3d=1.0d0
       iolist=""
       guessfile=""
+      grid="standard"
 c---------------------------------------------------------------
 c     Read
 c---------------------------------------------------------------
@@ -112,6 +113,8 @@ c
          readerror=.true.
          goto 8000
       endif
+c
+      call upcasex(grid)
 c
 c     --- Read $MDIIS
 c

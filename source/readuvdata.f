@@ -27,7 +27,7 @@ c
 c     Set defaults
 c
       solute="udata"
-      ljparam="mm2.txt"
+      ljparam="mm2.prm"
 c
 c     Read namelist rismsolvent
 c
@@ -247,9 +247,20 @@ c
             sigp(i)=sigp(i)*1.781797d0
          enddo
       endif
+c
+      if (trim(rtype).eq."SIGMA".and.trim(rsize).eq."RADIUS") then
+         do i=1,nparam
+            sigp(i)=sigp(i)*2.d0
+         enddo
+      endif
+c
+      if (trim(rtype).eq."SIGMA".and.trim(rsize).eq."DIAMETER") then
+c        Nothing to do
+      endif
+c
       close(ift)
 c
-c     Asign parameter
+c     Assign parameter
 c
       do i=1,nu
          nameup=nsiteu(i)

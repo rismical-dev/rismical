@@ -67,3 +67,6 @@ clean:
 .f.o:
 	$(FC) $(FCFLAGS) -c $< -o $@ 
 
+copy:
+	cp $(PROGS)  $(BINDIR)/$(PROGS)
+

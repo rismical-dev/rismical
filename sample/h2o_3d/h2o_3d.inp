@@ -5,14 +5,12 @@ CONV=1.d-5,
 CHARGEUP="off",
 IGUESS=0,
 iolist="gutcq"
+grid="test"
  $END
  $chargeupopt chgstep=0.2 $end
  $MDIIS
 NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
  $END
- $grid3d
-ngrid3d=32 rdelta3d=1.0
- $end
  $rismsolution
 solute="h2o"
 solutexyz="h2o.xyz"
@@ -22,6 +20,9 @@ solvent="h2o_vv.hvk"
 esptype="PC"
  $end
  $vsym nvuniq=2,iuniqlabel(1)=1,2,-2 $end
+!!  $grid3d
+!! ngrid3d=32 rdelta3d=1.0
+!!  $end
 !!  $rismsolution
 !! solute="udata"
 !! solvent="h2o_vv.hvk"
