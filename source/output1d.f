@@ -33,34 +33,8 @@ c
       dimension ck(ngrid,n1,n2),fk(ngrid,n1,n2)
 
 c----------------------------------------------------------------
-c$$$c
-c$$$c     --- Output For File 
-c$$$c
-c$$$      char6=".rsmuv"
-c$$$
-c$$$      ift=45
-c$$$      open (ift,file=trim(basename)//char6)
-c$$$
-c$$$      write(ift,'(A2,1x,i10,f10.5)') "##",ngrid,rdelta
-c$$$
-c$$$      do i=1,n1
-c$$$         do j=1,n2
-c$$$
-c$$$            write(ift,9997) nsiteu(i),nsitev(j)
-c$$$
-c$$$            do k=1,ngrid
-c$$$
-c$$$               gr=tr(k,i,j)+cr(k,i,j)+1.d0
-c$$$
-c$$$               write(ift,'(3e16.8)') cr(k,i,j),tr(k,i,j),gr
-c$$$            enddo
-c$$$            write(ift,*)
-c$$$
-c$$$         enddo
-c$$$      enddo
-c$$$      close(ift)
 C
-C     --- Separate style
+C     --- Individual format
 C      
       allocate (gbuff(ngrid,n1,n2))
 c
@@ -69,6 +43,7 @@ c
       koutv = index(iolist,'v') + index(iolist,'V')
       koutc = index(iolist,'c') + index(iolist,'C')
       koutt = index(iolist,'t') + index(iolist,'T')
+      koutk = index(iolist,'k') + index(iolist,'K')
 c
 c     write gr
 c         
@@ -122,6 +97,24 @@ c
             enddo
          enddo
          char80="c(r) data"
+         call write1dfunc(scrjob,gbuff,rdelta
+     &           ,n1,n2,ngrid,char80)
+      endif
+c
+c     write ck
+c         
+      if (koutk.ne.0) then
+            
+         scrjob=trim(basename)//".cuvk"
+
+         do j=1,n2
+            do i=1,n1
+               do ig=1,ngrid
+                  gbuff(ig,i,j)=ck(ig,i,j)
+               enddo
+            enddo
+         enddo
+         char80="c(k) data"
          call write1dfunc(scrjob,gbuff,rdelta
      &           ,n1,n2,ngrid,char80)
       endif
