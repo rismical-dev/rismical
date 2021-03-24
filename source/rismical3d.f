@@ -6,10 +6,10 @@ c---------------------------------------------------------
 c
       implicit real*8 (a-h,o-z)
       real*8 ,allocatable :: tr(:,:),fr(:)
-     &                      ,xvv(:,:,:),wkvv(:,:,:)
-     &                      ,urlj(:,:),vres(:),wk2(:,:,:)
+     &                      ,xvv(:,:,:)
+     &                      ,urlj(:,:),vres(:)
       complex*16 ,allocatable :: cr(:,:),ck(:,:),fk(:)
-      integer ,allocatable :: listcore(:),listxvv(:,:,:),listrs(:)
+      integer ,allocatable :: listcore(:),listxvv(:,:,:)
 c
       include "phys_const.i"
       include "solute.i"
@@ -31,16 +31,14 @@ c
       call setuparraysize
 
       ng3d=ngrid3d**3
-      allocate (listrs(nsub))
       allocate (ck(ng3d,nvuq))
       allocate (cr(ng3d,nvuq))
       allocate (tr(ng3d,nvuq))
       allocate (vres(ng3d))
       allocate (urlj(ng3d,nvuq))
       allocate (xvv(nxvv,nv,nv))
-      allocate (wkvv(nxvv,nv,nv))
       allocate (listxvv(ngrid3d/2+1,ngrid3d/2+1,ngrid3d/2+1))
-      allocate (wk2(ngrid,nv,nv),listcore(ng3d))
+      allocate (listcore(ng3d))
       allocate (fr(ng3d),fk(ng3d))
 c
 c     --- Initialize
@@ -48,21 +46,10 @@ c
       call vclr_mp(cr,1,ng3d*2*nvuq)
       call vclr_mp(ck,1,ng3d*2*nvuq)
       call vclr_mp(tr,1,ng3d*nvuq)
-
-      do m=1,nsub
-         listrs(m)=0
-      enddo
-      listrs(1)=1
-
-c     
-c     --- Intramolecular correlation function
-c     
-      call makewxv(nv,ngrid,rdelta,wk2)
 c     
 c     --- Setup V-V Total Correlation Function 
 c     
-      call setup1dvx(ngrid,nv,nxvv,ngrid3d,listxvv
-     &              ,xvv,wkvv,wk2)
+      call setup1dvx(ngrid,nv,nxvv,ngrid3d,listxvv,xvv)
 c     
 c     --- Make 3D f-Bond
 c     
@@ -190,9 +177,13 @@ c
       call closure3d2(ng3d,nvuq,listcore
      &               ,cr,tr,vres,urlj)
 c
+c     calc property
+c
       call prop3duv(ng3d,nv,nvuq
      &             ,vres,urlj,listcore,cr,tr)
-
+c
+c     output 3D-DFs
+c
       call output3d(ng3d,nv,nvuq
      &             ,cr,tr,urlj,vres,fr,fk)
 c---------------------------------------------------------
@@ -203,10 +194,9 @@ c---------------------------------------------------------
       deallocate (xvv)
       deallocate (vres)
       deallocate (urlj)
-      deallocate (wk2,listcore)
+      deallocate (listcore)
       deallocate (listxvv)
       deallocate (fr,fk)
-      deallocate (listrs)
 c---------------------------------------------------------
       return
 c---------------------------------------------------------

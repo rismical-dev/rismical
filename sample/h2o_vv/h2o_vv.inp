@@ -4,7 +4,7 @@ ITRMAX=300,
 CONV=1.d-8,
 CHARGEUP="on",
 IGUESS=0,
-iolist="guht"
+iolist="guhtx"
 grid="standard"
  $END
  $chargeupopt chgstep=0.2 $end

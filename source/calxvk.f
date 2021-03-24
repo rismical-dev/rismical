@@ -28,8 +28,9 @@ c
 c     
          do i1=1,n2
             do i2=1,n2
-               xvk(k,i1,i2)=(wk2(k,i1,i2)+dens(nspc(i2))*hvk(k,i1,i2))
-     &                     *dens(nspc(i1))
+               xvk(k,i1,i2)=(wk2(k,i1,i2)+dens(nspc(i1))*hvk(k,i1,i2))
+c$$$               xvk(k,i1,i2)=(wk2(k,i1,i2)+dens(nspc(i2))*hvk(k,i1,i2))
+c$$$     &                     *dens(nspc(i1))
             enddo
          enddo
 c     

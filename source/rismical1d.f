@@ -7,11 +7,11 @@ c**************************************************************
 c
       implicit real*8 (a-h,o-z)
       real*8 ,allocatable :: cr(:,:,:),tr(:,:,:)
-     &                      ,hvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
+     &                      ,xvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
      &                      ,ures(:,:,:),urlj(:,:,:)
-     &                      ,wk1(:,:,:),wk2(:,:,:),ck(:,:,:)
+     &                      ,wk1(:,:,:),ck(:,:,:)
      &                      ,rbc(:,:,:),rbc2(:,:,:)
-     &                      ,zrk(:,:,:),wk2org(:,:,:)
+     &                      ,zrk(:,:,:)
 c
       include "phys_const.i"
       include "solute.i"
@@ -31,22 +31,20 @@ c
 c     --- allocate array
 c
       allocate (cr(ngrid,nu,nv),tr(ngrid,nu,nv))
-      allocate (hvk(ngrid,nv,nv),fr(ngrid,nu,nv),fk(ngrid,nu,nv))
+      allocate (xvk(ngrid,nv,nv),fr(ngrid,nu,nv),fk(ngrid,nu,nv))
       allocate (huvk(ngrid,nu,nv))
       allocate (ures(ngrid,nu,nv),urlj(ngrid,nu,nv))
-      allocate (wk1(ngrid,nu,nu),wk2(ngrid,nv,nv),ck(ngrid,nu,nv))
-      allocate (wk2org(ngrid,nv,nv))
+      allocate (wk1(ngrid,nu,nu),ck(ngrid,nu,nv))
       allocate (zrk(ngrid,nu,nv))
 c     
 c     --- Initialize
 c     
-      call vclr(hvk,1,nv*nv*ngrid)
+      call vclr(xvk,1,nv*nv*ngrid)
 c
       idrism=0
 c     
 c     --- Intramolecular correlation function
 c     
-      call makewxv(nv,ngrid,rdelta,wk2)
       call makewxu(nu,ngrid,rdelta,wk1)
 c     
 c     --- Make Potential and F-bond
@@ -57,7 +55,7 @@ c
 c
 c     --- Read solvent suseptibility
 c
-      call readhvk(ngrid,nv,hvk)
+      call readxvk(ngrid,nv,xvk)
 c
 c     --- Make initial guess for tr(r)
 c
@@ -123,9 +121,8 @@ c---------------------------------------------------------
 c     
 c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT trnew(r)]
 c     
-         iuv=1
-         call cl_oz1d(icl,iuv,idrism,ngrid,rdelta,nu,nv
-     &               ,chgratio,ck,hvk,fr,fk,wk1,wk2,zrk
+         call cl_oz1duv(icl,ngrid,rdelta,nu,nv
+     &               ,chgratio,ck,xvk,fr,fk,wk1,zrk
      &               ,cr,tr,ures,urlj)
 c     
 c     --- Check Convergence and Make Guess For Next Loop
@@ -168,9 +165,9 @@ c
 
 c---------------------------------------------------------
       deallocate (cr,tr)
-      deallocate (hvk,fr,fk,huvk)
+      deallocate (xvk,fr,fk,huvk)
       deallocate (ures,urlj)
-      deallocate (wk1,wk2,ck)
+      deallocate (wk1,ck)
       deallocate (zrk)
 c---------------------------------------------------------
       return

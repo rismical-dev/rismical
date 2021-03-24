@@ -10,7 +10,7 @@ c
      &                      ,hvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
      &                      ,ures(:,:,:),urlj(:,:,:)
      &                      ,wk1(:,:,:),wk2(:,:,:),ck(:,:,:)
-     &                      ,zrk(:,:,:),wk2org(:,:,:),xvk(:,:,:)
+     &                      ,zrk(:,:,:),xvk(:,:,:)
 c
       include "phys_const.i"
       include "solvent.i"
@@ -34,7 +34,6 @@ c
       allocate (xvk(ngrid,nv,nv))
       allocate (ures(ngrid,nv,nv),urlj(ngrid,nv,nv))
       allocate (wk1(ngrid,nv,nv),wk2(ngrid,nv,nv),ck(ngrid,nv,nv))
-      allocate (wk2org(ngrid,nv,nv))
       allocate (zrk(ngrid,nv,nv))
 c     
 c     --- Initialize
@@ -122,17 +121,16 @@ c---------------------------------------------------------
 c     
 c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT tr(r)]
 c     
-         iuv=0
-         call cl_oz1d(icl,iuv,idrism,ngrid,rdelta,nv,nv
+         call cl_oz1dvv(icl,idrism,ngrid,rdelta,nv,nv
      &               ,chgratio,ck,hvk,fr,fk,wk2,wk2,zrk
      &               ,cr,tr,ures,urlj)
 c     
 c     --- Check Convergence and Make Guess For Next Loop
 c     
          call mdiis(ng,tr,residu,cconv,1)  
-
+         
          if (residu.le.cconv) goto 8000
-     
+         
       enddo
 c---------------------------------------------------------
 c     Not Converged

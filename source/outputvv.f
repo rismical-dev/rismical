@@ -33,34 +33,8 @@ c
       dimension ck(ngrid,n2,n2),fk(ngrid,n2,n2)
 
 c----------------------------------------------------------------
-c$$$c
-c$$$c     --- Output For File 
-c$$$c
-c$$$      char6=".rsmvv"
-c$$$
-c$$$      ift=45
-c$$$      open (ift,file=trim(basename)//char6)
-c$$$
-c$$$      write(ift,'(A2,1x,i10,f10.5)') "##",ngrid,rdelta
-c$$$
-c$$$      do i=1,n2
-c$$$         do j=1,n2
-c$$$
-c$$$            write(ift,9997) nsitev(i),nsitev(j)
-c$$$
-c$$$            do k=1,ngrid
-c$$$
-c$$$               gr=tr(k,i,j)+cr(k,i,j)+1.d0
-c$$$
-c$$$               write(ift,'(4e16.8)') cr(k,i,j),tr(k,i,j),gr,hvk(k,i,j)
-c$$$            enddo
-c$$$            write(ift,*)
-c$$$
-c$$$         enddo
-c$$$      enddo
-c$$$      close(ift)
 C
-C     --- Separate style
+C     --- Individual format
 C      
       allocate (gbuff(ngrid,n2,n2))
 c
@@ -70,6 +44,7 @@ c
       koutv = index(iolist,'v') + index(iolist,'V')
       koutc = index(iolist,'c') + index(iolist,'C')
       koutt = index(iolist,'t') + index(iolist,'T')
+      koutx = index(iolist,'x') + index(iolist,'X')
 c
 c     write gr
 c         
@@ -153,6 +128,17 @@ c
 
          char80="hv(k) data with solvent parameters"
          call writexvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
+      endif
+c
+c
+c     write xvvk
+c         
+      if (koutx.ne.0) then
+
+         scrjob=trim(basename)//".xvk"
+
+         char80="xvv(k) data with solvent parameters"
+         call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
       endif
 c
       deallocate (gbuff)

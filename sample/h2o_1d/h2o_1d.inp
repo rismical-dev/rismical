@@ -12,7 +12,7 @@ NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
  $END
 !!  $rismsolution
 !! solute="udata"
-!! solvent="h2o_vv.hvk"
+!! solvent="h2o_vv.xvk"
 !!  $end
 !!  $UDATA
 !! 3    tip3p
@@ -25,5 +25,5 @@ solute="h2o"
 solutexyz="h2o.xyz"
 soluteesp="h2o.esp"
 solutelj="builtin"
-solvent="h2o_vv.hvk"
+solvent="h2o_vv.xvk"
  $end

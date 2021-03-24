@@ -16,7 +16,7 @@ solute="h2o"
 solutexyz="h2o.xyz"
 soluteesp="h2o.esp"
 solutelj="builtin"
-solvent="h2o_vv.hvk"
+solvent="h2o_vv.xvk"
 esptype="PC"
  $end
  $vsym nvuniq=2,iuniqlabel(1)=1,2,-2 $end

@@ -46,7 +46,7 @@ O      1     3.15000   636.00000    -0.83400     0.00000     0.00000     0.00000
 H      1     0.40000   192.50000     0.41700     0.00000     0.75670     0.58588    54.00000
 H      1     0.40000   192.50000     0.41700     0.00000    -0.75670     0.58588    54.00000
 Temperature :   298.00000[K]
- Solvent xvv file:h2o_vv.hvk                                                                                                                                                                                                                                                      
+ Solvent xvv file:h2o_vv.xvk                                                                                                                                                                                                                                                      
 
     Solvent Symmetry        : Applyed
 
@@ -56,67 +56,67 @@ Temperature :   298.00000[K]
     charge up factor :   1.00000
 
    itr      residual       #-sub min      dump
-         1      0.108011996477     1  T     0.30000
-         2      0.106598482903     2  T     0.30000
-         3      0.028015071274     3  T     0.30000
-         4      0.013969530870     4  T     0.30000
-         5      0.009562483882     5  T     0.30000
-         6      0.006761967850     6  T     0.30000
-         7      0.005094839499     7  T     0.30000
-         8      0.003183943377     8  T     0.30000
-         9      0.002698597122     9  T     0.30000
-        10      0.002318302565    10  T     0.30000
-        11      0.002122937658    10  T     0.30000
-        12      0.001953886776    10  T     0.30000
-        13      0.001804227992    10  T     0.30000
-        14      0.001453266224    10  T     0.30000
-        15      0.001076650427    10  T     0.30000
-        16      0.000780230172    10  T     0.30000
-        17      0.000555328228    10  T     0.30000
-        18      0.000349909999    10  T     0.30000
-        19      0.000249975580    10  T     0.30000
-        20      0.000145365282    10  T     0.30000
-        21      0.000098259730    10  T     0.30000
-        22      0.000071445122    10  T     0.30000
-        23      0.000041175615    10  T     0.30000
-        24      0.000030801369    10  T     0.30000
-        25      0.000020300799    10  T     0.30000
-        26      0.000014229230    10  T     0.30000
-        27      0.000010257748    10  T     0.30000
-        28      0.000007989262     0  x    converged
+         1      0.108011469051     1  T     0.30000
+         2      0.106598404957     2  T     0.30000
+         3      0.028015194369     3  T     0.30000
+         4      0.013969440440     4  T     0.30000
+         5      0.009562418274     5  T     0.30000
+         6      0.006761986280     6  T     0.30000
+         7      0.005094919392     7  T     0.30000
+         8      0.003183982548     8  T     0.30000
+         9      0.002698637413     9  T     0.30000
+        10      0.002318340309    10  T     0.30000
+        11      0.002122969962    10  T     0.30000
+        12      0.001953918788    10  T     0.30000
+        13      0.001804260332    10  T     0.30000
+        14      0.001453312940    10  T     0.30000
+        15      0.001076693408    10  T     0.30000
+        16      0.000780258324    10  T     0.30000
+        17      0.000555353008    10  T     0.30000
+        18      0.000349930748    10  T     0.30000
+        19      0.000249994042    10  T     0.30000
+        20      0.000145378153    10  T     0.30000
+        21      0.000098266730    10  T     0.30000
+        22      0.000071453091    10  T     0.30000
+        23      0.000041179600    10  T     0.30000
+        24      0.000030804513    10  T     0.30000
+        25      0.000020302501    10  T     0.30000
+        26      0.000014229986    10  T     0.30000
+        27      0.000010258697    10  T     0.30000
+        28      0.000007990507     0  x    converged
 
     rism cycle is converged
 
-    Total Solvent Charge:     -0.02913860
+    Total Solvent Charge:     -0.02895389
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -24.981056    [kJ/mol]
+    Solvation Free Energy         :  -24.979838    [kJ/mol]
 
-    Solvation Free Energy(GF)     :  -34.398260    [kJ/mol]
+    Solvation Free Energy(GF)     :  -34.397059    [kJ/mol]
 
-    Solute-Solvent Binding Energy :  -101.53879    [kJ/mol]
+    Solute-Solvent Binding Energy :  -101.53716    [kJ/mol]
 
-    UV Binding Energy Component LJ:   5.6662119    [kJ/mol]
+    UV Binding Energy Component LJ:   5.6660098    [kJ/mol]
 
-    UV Binding Energy Component ES:  -107.20500    [kJ/mol]
+    UV Binding Energy Component ES:  -107.20317    [kJ/mol]
 
-    Solvation Free Energy(UC)     :  -5970.2757    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -8220.4876    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     :  -5969.9845    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -8220.2005    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   115.29075    [kJ/mol]
-       2:  -70.135903    [kJ/mol]
-       3:  -70.135903    [kJ/mol]
+       1:   115.29299    [kJ/mol]
+       2:  -70.136415    [kJ/mol]
+       3:  -70.136415    [kJ/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   111.54903    [kJ/mol]
-       2:  -72.973647    [kJ/mol]
-       3:  -72.973647    [kJ/mol]
+       1:   111.55127    [kJ/mol]
+       2:  -72.974167    [kJ/mol]
+       3:  -72.974167    [kJ/mol]
 
     ============= Partial Molar Volume =============
-    Partial Molar Volume       =   0.8273E-05 [L/mol]
-    Isothermal Compressibility =   0.5499     [/GPa]
+    Partial Molar Volume       =   0.8274E-05 [L/mol]
+    Isothermal Compressibility =   0.5500     [/GPa]
 
  -----------------------------------------------------------
          RISMiCal computation is completed normally.        

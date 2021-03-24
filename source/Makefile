@@ -41,7 +41,7 @@ FCLD = $(FC)
 
 ###################################################################
 
-SRCS = calxvk.f  output3d.f  readguess3d.f  cl_oz1d.f  outputvv.f  readhvk.f \
+SRCS = calxvk.f  output3d.f  readguess3d.f  cl_oz1d.f  outputvv.f  readxvk.f \
        closure3d.f  oz3d.f  readinput.f  drism.f  potential3duv.f  readuvdata.f\
        fbond3duv.f  potentialuv.f  readvvdata.f  fbonduv.f  potentialvv.f\
        rismical.f  fbondvv.f  printlogo.f  rismical1d.f  makewx.f  prop1duv.f\
