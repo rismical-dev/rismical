@@ -64,11 +64,11 @@ c
       endif
 
 c
-      write(*,*) "     --------------------------------------"
-      write(*,'(A19,A24)')   "Grid preset       :",grid
-      write(*,'(A19,i12)')   "Number of 1D-Grid :",ngrid
-      write(*,'(A19,f12.4,A5)') "Grid width       :",rdelta," [A]"
-      write(*,*) "     --------------------------------------"
+      write(*,*) "   --------------------------------------"
+      write(*,'(4x,A19,A24)')   "Grid preset       :",grid
+      write(*,'(4x,A19,i12)')   "Number of 1D-Grid :",ngrid
+      write(*,'(4x,A19,f12.4,A5)') "Grid width       :",rdelta," [A]"
+      write(*,*) "   --------------------------------------"
 c
       ift=45
       open(ift,file=inpfile,status='old')
@@ -144,16 +144,17 @@ c
 c
       close(ift)
 c
-      write(*,*) "-----------------------------------------------"
-      write(*,*) "            Solvent parameters"
-      write(*,*) "-----------------------------------------------"
+      write(*,*) "   -----------------------------------------------"
+      write(*,*) "                Solvent parameters"
+      write(*,*) "   -----------------------------------------------"
       write(*,8000) numspc,nv
- 8000 format ("Solvent species:",i4,4x
+ 8000 format (4x,"Solvent species:",i4,4x
      &       ,"Total number of solvent site:",i4)
-      write(*,*) " Density[M]  : Solvent"
+      write(*,*) "     Density[M]  : Solvent"
       do i=1,numspc
-         write(*,'(f12.5,4x,A80)') dens(i),solvent(i)
+         write(*,'(4x,f12.5,4x,A80)') dens(i),solvent(i)
       enddo
+      write(*,9802) temp
 c
 c     Set inverse temperature
 c      
@@ -166,7 +167,6 @@ c
          write(*,9800) nsitev(i),nspc(i),sigljv(i),epsljv(i),qv(i)
      &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),dens(nspc(i))
       enddo
-      write(*,9802) temp
 c
 c     Convert densty [M] -> [/Ang^3]
 c
@@ -185,8 +185,9 @@ c
       write(*,*) "solvent=USER requires $VDATA."
       ierr=2
       call abrt(ierr)
- 9800 format (A4,1x,i3,7f12.5)
- 9801 format ("ATOM"," SPC"," sig[Angs]  "," eps[J/mol] "," charge[e]  "
+ 9800 format (4x,A4,1x,i3,7f12.5)
+ 9801 format (4x,"ATOM"," SPC"," sig[Angs]  "
+     &     ," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
- 9802 format ("Temperature :",f12.5," [K]")
+ 9802 format (4x,"Temperature :",f12.5," [K]")
       end

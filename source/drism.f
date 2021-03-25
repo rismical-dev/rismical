@@ -198,6 +198,12 @@ c
       read (ir,drism,end=1000)
  1000 continue
       close (ir)
+c
+      if (idrism.eq.1) then
+         write(*,9999) delec
+      endif
+ 9999 format (/,4x,"Dielectric consistent rism option activated."
+     &       ,/,4x,"Dielectric constant =",f10.4)
 c-------------------------------------------------------------
       return
       end

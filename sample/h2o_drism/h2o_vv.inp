@@ -1,0 +1,33 @@
+ $RISM
+CLOSURE="KH",
+ITRMAX=300,
+CONV=1.d-8,
+CHARGEUP="on",
+IGUESS=0,
+iolist="guhtx"
+grid="standard"
+ $END
+ $chargeupopt chgstep=0.2 $end
+ $rismsolvent
+numspc=1
+solvent(1)="tip3p"
+TEMP=298.d0,
+DENS(1)=54.d0
+ $end
+ $MDIIS
+NSUB=10,DUMPMAX=0.2d0,DUMPMIN=0.001d0
+ $END
+ $DRISM
+  idrism=1,delec=78.5d0
+ $END
+!!  $GRID1D
+!! NGRID=128,
+!! RDELTA=0.1d0,
+!!  $END
+!!  $VDATA
+!! 3    tip3p
+!! O    3.150d0   636.0d0  -0.8340d0   0.0000000  0.0000000  0.0000000
+!! H    0.400d0   192.5d0   0.4170d0   0.0000000  0.7566950  0.5858800
+!! H    0.400d0   192.5d0   0.4170d0   0.0000000 -0.7566950  0.5858800
+!!  $END
+

@@ -30,7 +30,7 @@ c
       call getenv('RISMICALHOME',homepath)
 c
       write(*,*)
-      write(*,*) "RISMiCal home dir:",homepath
+      write(*,*) "    RISMiCal home dir:",trim(homepath)
 c--------------------------------------------------------------
       return
       end
