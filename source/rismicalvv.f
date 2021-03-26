@@ -7,7 +7,7 @@ c**************************************************************
 c
       implicit real*8 (a-h,o-z)
       real*8 ,allocatable :: cr(:,:,:),tr(:,:,:)
-     &                      ,hvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
+     &                      ,hvk(:,:,:),fr(:,:,:),fk(:,:,:)
      &                      ,ures(:,:,:),urlj(:,:,:)
      &                      ,wk1(:,:,:),wk2(:,:,:),ck(:,:,:)
      &                      ,zrk(:,:,:),xvk(:,:,:)
@@ -30,7 +30,6 @@ c     --- allocate array
 c
       allocate (cr(ngrid,nv,nv),tr(ngrid,nv,nv))
       allocate (hvk(ngrid,nv,nv),fr(ngrid,nv,nv),fk(ngrid,nv,nv))
-      allocate (huvk(ngrid,nv,nv))
       allocate (xvk(ngrid,nv,nv))
       allocate (ures(ngrid,nv,nv),urlj(ngrid,nv,nv))
       allocate (wk1(ngrid,nv,nv),wk2(ngrid,nv,nv),ck(ngrid,nv,nv))
@@ -94,8 +93,8 @@ c     --- Make initial guess for tr(r) in charge up cycle
 c     
       prefac=frfac
       frfac=beta*chgratio
-      do i=1,nv
-         do j=1,nv
+      do j=1,nv
+         do i=1,nv
             do k=1,ngrid
                tr(k,i,j)=tr(k,i,j)-prefac*fr(k,i,j)
      &                            +frfac*fr(k,i,j)
@@ -179,7 +178,7 @@ c
 
 c---------------------------------------------------------
       deallocate (cr,tr)
-      deallocate (hvk,fr,fk,huvk)
+      deallocate (hvk,fr,fk)
       deallocate (ures,urlj)
       deallocate (wk1,wk2,ck)
       deallocate (zrk)

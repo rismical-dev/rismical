@@ -63,7 +63,7 @@ c
          enddo
          char80="guv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &        ,nvuq,ngrid3d,1,char80)
+     &        ,nvuq,ng3d,1,char80)
       endif
 c
 c     write ur
@@ -79,7 +79,7 @@ c
          enddo
          char80="uuv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &           ,nvuq,ngrid3d,1,char80)
+     &           ,nvuq,ng3d,1,char80)
       endif
 c         
 c     write vres
@@ -92,7 +92,7 @@ c
             gbuff(ig,1)=vres(ig)
          enddo
          char80="vres data (electrostatic field due to solute)"
-         call write3dfunc(scrjob,gbuff,rdelta3d,1,ngrid3d,1,char80)
+         call write3dfunc(scrjob,gbuff,rdelta3d,1,ng3d,1,char80)
       endif
 c
 c     write cr
@@ -102,7 +102,7 @@ c
          scrjob=trim(basename)//".cuv"
          
          char80="cuv data"
-         call write3dfunc(scrjob,cr,rdelta3d,nvuq,ngrid3d,2,char80)
+         call write3dfunc(scrjob,cr,rdelta3d,nvuq,ng3d,2,char80)
             
       endif
 c
@@ -113,7 +113,7 @@ c
          scrjob=trim(basename)//".tuv"
 
          char80="tuv data"
-         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ngrid3d,1,char80)
+         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ng3d,1,char80)
          
       endif
 c     
@@ -138,7 +138,7 @@ c
 
          scrjob=trim(basename)//".huvk"
          char80="huv(k) data"
-         call write3dfunc(scrjob,hk,rdelta3d,nvuq,ngrid3d,2,char80)
+         call write3dfunc(scrjob,hk,rdelta3d,nvuq,ng3d,2,char80)
             
          deallocate (hk)
 
@@ -150,12 +150,12 @@ c
          scrjob=trim(basename)//".fuv"
          
          char80="f(r) data"
-         call write3dfunc(scrjob,fr,rdelta3d,1,ngrid3d,1,char80)
+         call write3dfunc(scrjob,fr,rdelta3d,1,ng3d,1,char80)
          
          scrjob=trim(basename)//".fuvk"
 
          char80="f(k) data"
-         call write3dfunc(scrjob,fk,rdelta3d,1,ngrid3d,2,char80)
+         call write3dfunc(scrjob,fk,rdelta3d,1,ng3d,2,char80)
             
       endif
 c
@@ -188,104 +188,4 @@ c
 C      
 c----------------------------------------------------------------
       return
-      end
-c**************************************************************
-c----------------------------------------------------------------
-c     Write 3D function to file
-c----------------------------------------------------------------
-      subroutine write3dfunc(namef,func3d,rdelta3d,nvuq,ngrid3d,ncmp
-     &                      ,char80)
-c
-c     ncmp : 1... real function,  2...complex function
-c      
-      implicit real*8(a-h,o-z)
-      character*256 namef
-      character*2 char2
-      character*80 char80
-c
-      dimension func3d(ncmp,ngrid3d**3,nvuq)
-c
-c----------------------------------------------------------------
-      ift=45
-      nremark=0
-      open (ift,file=namef)
-      write(ift,9990) nvuq,ngrid3d,ncmp,rdelta3d
-      write(ift,9991) char80
-      write(ift,9992) nremark
-      do i=1,nremark
-         write (ift,9993) "remarks "
-      enddo
-      
-      do iv=1,nvuq
-         do ig=1,ngrid3d**3
-            write (ift,9995) (func3d(icmp,ig,iv),icmp=1,ncmp)
-         enddo
-      enddo
-      
-      close(ift)
-c----------------------------------------------------------------
-      return
- 9990 format("## 3D Function :",3i8,f16.8)
- 9991 format("##  ",a80)
- 9992 format("##  ",i4)
- 9993 format("##  ",a80)
- 9994 format(e16.8e3)
- 9995 format(e16.8e3,2x,e16.8e3)
-      end
-c**************************************************************
-c----------------------------------------------------------------
-c     Write 3D function to file with xyz coordinate
-c----------------------------------------------------------------
-      subroutine write3dfuncxyz(namef,func3d,rdelta3d,nvuq,ngrid3d,ncmp
-     &                      ,char80)
-c
-c     ncmp : 1... real function,  2...complex function
-c      
-      implicit real*8(a-h,o-z)
-      character*256 namef
-      character*2 char2
-      character*80 char80
-c
-      dimension func3d(ncmp,ngrid3d**3,nvuq)
-c
-c----------------------------------------------------------------
-      ift=45
-      nremark=2
-      open (ift,file=namef)
-      write(ift,9990) nvuq,ngrid3d,ncmp,rdelta3d
-      write(ift,9991) char80
-      write(ift,9992) nremark
-
-      write (ift,9993) "Number of points:",ngrid3d**3*nvuq
-      write (ift,9996) "   x[Ang]   ","   y[Ang]   "
-     &                ,"   z[Ang]   ","     q[e]       "
-      
-      k0=ngrid3d/2+1
-      do iv=1,nvuq
-         do kz=1,ngrid3d
-         do ky=1,ngrid3d
-         do kx=1,ngrid3d
-
-            rx=rdelta3d*dble(kx-k0)
-            ry=rdelta3d*dble(ky-k0)
-            rz=rdelta3d*dble(kz-k0)
-            k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
-
-            write (ift,9995) rx,ry,rz,(func3d(icmp,k,iv),icmp=1,ncmp)
-
-         enddo
-         enddo
-         enddo
-      enddo
-      
-      close(ift)
-c----------------------------------------------------------------
-      return
- 9990 format("## 3D Function :",3i8,f16.8)
- 9991 format("##  ",a80)
- 9992 format("##  REMARKS ",i4)
- 9993 format("##  ",a20,i15)
- 9994 format(e16.8e3)
- 9995 format(4x,3f12.4, 2x,e16.8e3,2x,e16.8e3)
- 9996 format("##  ",3A12,2x,2A16)
       end

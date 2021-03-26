@@ -40,7 +40,6 @@ C
 c
       koutg = index(iolist,'g') + index(iolist,'G')
       koutu = index(iolist,'u') + index(iolist,'U')
-      koutv = index(iolist,'v') + index(iolist,'V')
       koutc = index(iolist,'c') + index(iolist,'C')
       koutt = index(iolist,'t') + index(iolist,'T')
       koutk = index(iolist,'k') + index(iolist,'K')

@@ -10,7 +10,6 @@ c
      &                      ,xvk(:,:,:),fr(:,:,:),fk(:,:,:),huvk(:,:,:)
      &                      ,ures(:,:,:),urlj(:,:,:)
      &                      ,wk1(:,:,:),ck(:,:,:)
-     &                      ,rbc(:,:,:),rbc2(:,:,:)
      &                      ,zrk(:,:,:)
 c
       include "phys_const.i"

@@ -40,14 +40,8 @@ c
 c     
 c     --- Initialize
 c     
-      do j=1,n2
-         do i=1,n2
-            do k=1,ngrid
-               ures(k,i,j)=0.d0
-               urlj(k,i,j)=0.d0
-            enddo
-         enddo
-      enddo
+      call vclr_mp(urlj,1,ngrid*n2*n2)
+      call vclr_mp(ures,1,ngrid*n2*n2)
 c     
 c     --- Make Potential
 c     

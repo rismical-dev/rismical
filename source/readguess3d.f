@@ -38,24 +38,25 @@ c
 c
 c     Read guess t(r)
 c     
-      ift=45
-      open (ift,file=scrjob)
-      
-      read(ift,*) char1
-      read(ift,*) char1
-      read(ift,*) char1,ndum
-      do i=1,ndum
-         read(ift,*) char1
-      enddo
-
-      do j=1,n2uq
-         do k=1,ng3d
-            read(ift,*) trdum
-            tr(k,j)=trdum
-         enddo
-      enddo
-      
-      close(ift)
+      call read3dfunc(scrjob,tr,n2uq,ng3d,1)
+c$$$      ift=45
+c$$$      open (ift,file=scrjob)
+c$$$      
+c$$$      read(ift,*) char1
+c$$$      read(ift,*) char1
+c$$$      read(ift,*) char1,ndum
+c$$$      do i=1,ndum
+c$$$         read(ift,*) char1
+c$$$      enddo
+c$$$
+c$$$      do j=1,n2uq
+c$$$         do k=1,ng3d
+c$$$            read(ift,*) trdum
+c$$$            tr(k,j)=trdum
+c$$$         enddo
+c$$$      enddo
+c$$$      
+c$$$      close(ift)
 c----------------------------------------------------------------
       return
       end
