@@ -89,26 +89,26 @@ c----------------------------------------------------------------
 c     Write 1D function to file
 c----------------------------------------------------------------
       subroutine write1dfunc(namef,func1d,rdelta,n1,n2,ngrid
-     &                      ,char80)
+     &                      ,nremark,char80,char802)
 c
       implicit real*8(a-h,o-z)
       character*256 namef
       character*2 char2
-      character*80 char80
+      character*80 char80,char802
 c
       include "phys_const.i"
 
       dimension func1d(ngrid,n1,n2)
+      dimension char802(nremark)
 c
 c----------------------------------------------------------------
       ift=45
-      nremark=0
       open (ift,file=namef)
       write(ift,9990) n1,n2,ngrid,rdelta
       write(ift,9991) char80
       write(ift,9992) nremark
       do i=1,nremark
-         write (ift,9993) "remarks "
+         write (ift,9993) adjustl(char802(i))
       enddo
 
       do i2=1,n2
@@ -116,10 +116,10 @@ c----------------------------------------------------------------
          do ig=1,ngrid
             write (ift,9995) func1d(ig,i1,i2)
          enddo
+         write(ift,*)
+         write(ift,*)
       enddo
       enddo
-
-      close(ift)
 c----------------------------------------------------------------
       return
  9990 format("## 1D Function :",3i8,f16.8)
@@ -128,6 +128,7 @@ c----------------------------------------------------------------
  9993 format("##  ",a80)
  9994 format(e16.8e3)
  9995 format(e16.8e3,2x,e16.8e3)
+ 9996 format(e16.8e3,2x,16e16.8e3)
       end
 c**************************************************************
 c----------------------------------------------------------------

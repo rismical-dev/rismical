@@ -16,23 +16,21 @@ c     urlj          ... LJ potential [erg]
 c     hvk           ... k-space total correlation function
 c     
       implicit real*8 (a-h,o-z)
-      character*4 nsite1,nsite2
       character*6 char6
       character*256 scrjob
-      character*80 char80
+      character*80 char80,char802
       real*8 ,allocatable :: gbuff(:,:,:)
 
       include "phys_const.i"
       include "rismio.i"
       include "solvent.i"
 
-      dimension nsite2(n2)
       dimension cr(ngrid,n2,n2),tr(ngrid,n2,n2),fr(ngrid,n2,n2)
       dimension hvk(ngrid,n2,n2),ures(ngrid,n2,n2),urlj(ngrid,n2,n2)
       dimension xvk(ngrid,n2,n2)
       dimension ck(ngrid,n2,n2),fk(ngrid,n2,n2)
-
 c----------------------------------------------------------------
+      char802="REMARKS"
 C
 C     --- Individual format
 C      
@@ -60,7 +58,7 @@ c
          enddo
          char80="g(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &        ,n2,n2,ngrid,char80)
+     &        ,n2,n2,ngrid,1,char80,char802)
       endif
 c
 c     write ur
@@ -79,7 +77,7 @@ c
 
          char80="beta x u(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &        ,n2,n2,ngrid,char80)
+     &        ,n2,n2,ngrid,1,char80,char802)
 
       endif
 c
@@ -98,7 +96,7 @@ c
          enddo
          char80="c(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n2,n2,ngrid,char80)
+     &           ,n2,n2,ngrid,1,char80,char802)
       endif
 c
 c     write tr
@@ -116,7 +114,7 @@ c
          enddo
          char80="t(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n2,n2,ngrid,char80)
+     &           ,n2,n2,ngrid,1,char80,char802)
       endif
 c
 c     write hvk
