@@ -43,8 +43,8 @@ c
 c
 c     --- Initialize
 c     
-      call vclr_mp(cr,1,ng3d*2*nvuq)
-      call vclr_mp(ck,1,ng3d*2*nvuq)
+      call vclrz_mp(cr,1,ng3d*nvuq)
+      call vclrz_mp(ck,1,ng3d*nvuq)
       call vclr_mp(tr,1,ng3d*nvuq)
 c     
 c     --- Setup V-V Total Correlation Function 

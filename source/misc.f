@@ -185,4 +185,35 @@ c
       continue
       return
       end
+c---------------------------------------------------------------
+C*MODULE MTHLIB  *DECK VCLR for OpenMP
+c---------------------------------------------------------------
+      subroutine vclrz_mp(a,inca,n)
+c
+      implicit double precision(a-h,o-z)
+      complex*16 a
+c
+      dimension a(*)
+c
+      parameter (zero=0.0d+00)
+c
+c     ----- zero out vector -a-, using increment -inca- -----
+c
+      if (inca .ne. 1) go to 200
+!$omp parallel do
+      do l=1,n
+         a(l) = zero
+      enddo
+!$omp end parallel do
+      return
+c
+  200 continue
+      la=1-inca
+      do l=1,n
+         la=la+inca
+         a(la) = zero
+      enddo
+      continue
+      return
+      end
 

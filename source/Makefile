@@ -27,8 +27,8 @@ BINDIR = $(RISMICALDIR)/bin
 
 # GNU Compiler
 FC =  gfortran
-FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form 
-LDFLAGS = -lblas -llapack
+FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -std=legacy 
+#LDFLAGS = -lblas -llapack
 
 # Intel Compiler
 # FC =  ifort

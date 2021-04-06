@@ -90,583 +90,485 @@ c
 c---------------------------------------------------------
       return
       end
-C--------------------------------------------------------------------
-      SUBROUTINE four1(data,nn,isign)
-      INTEGER isign,nn
-      REAL*8 data(2*nn)
-      INTEGER i,istep,j,m,mmax,n
-      REAL*8 tempi,tempr
-      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp
-      n=2*nn
-      j=1
-      do 11 i=1,n,2
-        if(j.gt.i)then
-          tempr=data(j)
-          tempi=data(j+1)
-          data(j)=data(i)
-          data(j+1)=data(i+1)
-          data(i)=tempr
-          data(i+1)=tempi
-        endif
-        m=n/2
-1       if ((m.ge.2).and.(j.gt.m)) then
-          j=j-m
-          m=m/2
-        goto 1
-        endif
-        j=j+m
-11    continue
-      mmax=2
-2     if (n.gt.mmax) then
-        istep=2*mmax
-        theta=6.28318530717959d0/(isign*mmax)
-        wpr=-2.d0*dsin(0.5d0*theta)**2
-        wpi=dsin(theta)
-        wr=1.d0
-        wi=0.d0
-        do 13 m=1,mmax,2
-          do 12 i=m,n,istep
-            j=i+mmax
-            tempr=dble(wr)*data(j)-dble(wi)*data(j+1)
-            tempi=dble(wr)*data(j+1)+dble(wi)*data(j)
-c            tempr=sngl(wr)*data(j)-sngl(wi)*data(j+1)
-c            tempi=sngl(wr)*data(j+1)+sngl(wi)*data(j)
-            data(j)=data(i)-tempr
-            data(j+1)=data(i+1)-tempi
-            data(i)=data(i)+tempr
-            data(i+1)=data(i+1)+tempi
-12        continue
-          wtemp=wr
-          wr=wr*wpr-wi*wpi+wr
-          wi=wi*wpr+wtemp*wpi+wi
-13      continue
-        mmax=istep
-      goto 2
-      endif
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software.
-C--------------------------------------------------------------------
-      SUBROUTINE lubksbx(a,n,np,indx,b)
-      INTEGER n,np,indx(n)
-      REAL*8 a(np,np),b(n)
-      INTEGER i,ii,j,ll
-      REAL*8 sum
-      ii=0
-      do 12 i=1,n
-        ll=indx(i)
-        sum=b(ll)
-        b(ll)=b(i)
-        if (ii.ne.0)then
-          do 11 j=ii,i-1
-            sum=sum-a(i,j)*b(j)
-11        continue
-        else if (sum.ne.0.d0) then
-          ii=i
-        endif
-        b(i)=sum
-12    continue
-      do 14 i=n,1,-1
-        sum=b(i)
-        do 13 j=i+1,n
-          sum=sum-a(i,j)*b(j)
-13      continue
-        b(i)=sum/a(i,i)
-14    continue
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software.
-C--------------------------------------------------------------------
-      SUBROUTINE ludcmpx(a,n,np,indx,d)
-      INTEGER n,np,indx(n),NMAX
-      REAL*8 d,a(np,np),TINY
-      PARAMETER (NMAX=500,TINY=1.0d-20)
-      INTEGER i,imax,j,k
-      REAL*8 aamax,dum,sum,vv(NMAX)
-      d=1.d0
-      do 12 i=1,n
-        aamax=0.d0
-        do 11 j=1,n
-          if (abs(a(i,j)).gt.aamax) aamax=abs(a(i,j))
-11      continue
-        if (aamax.eq.0.d0) then
-           write(*,*) 'singular matrix in ludcmp'
-           call abrt
-        endif
-        vv(i)=1.d0/aamax
-12    continue
-      do 19 j=1,n
-        do 14 i=1,j-1
-          sum=a(i,j)
-          do 13 k=1,i-1
-            sum=sum-a(i,k)*a(k,j)
-13        continue
-          a(i,j)=sum
-14      continue
-        aamax=0.d0
-        do 16 i=j,n
-          sum=a(i,j)
-          do 15 k=1,j-1
-            sum=sum-a(i,k)*a(k,j)
-15        continue
-          a(i,j)=sum
-          dum=vv(i)*abs(sum)
-          if (dum.ge.aamax) then
-            imax=i
-            aamax=dum
-          endif
-16      continue
-        if (j.ne.imax)then
-          do 17 k=1,n
-            dum=a(imax,k)
-            a(imax,k)=a(j,k)
-            a(j,k)=dum
-17        continue
-          d=-d
-          vv(imax)=vv(j)
-        endif
-        indx(j)=imax
-        if(a(j,j).eq.0.d0)a(j,j)=TINY
-        if(j.ne.n)then
-          dum=1.d0/a(j,j)
-          do 18 i=j+1,n
-            a(i,j)=a(i,j)*dum
-18        continue
-        endif
-19    continue
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software.
-C--------------------------------------------------------------------
-      SUBROUTINE realft(data,n,isign)
-      INTEGER isign,n
-      REAL*8 data(n)
-CU    USES four1
-      INTEGER i,i1,i2,i3,i4,n2p3
-      REAL*8 c1,c2,h1i,h1r,h2i,h2r,wis,wrs
-      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp
-      theta=3.141592653589793d0/dble(n/2)
-      c1=0.5d0
-      if (isign.eq.1) then
-        c2=-0.5d0
-        call four1(data,n/2,+1)
-      else
-        c2=0.5d0
-        theta=-theta
-      endif
-      wpr=-2.0d0*dsin(0.5d0*theta)**2
-      wpi=dsin(theta)
-      wr=1.0d0+wpr
-      wi=wpi
-      n2p3=n+3
-      do 11 i=2,n/4
-        i1=2*i-1
-        i2=i1+1
-        i3=n2p3-i2
-        i4=i3+1
-        wrs=dble(wr)
-        wis=dble(wi)
-c        wrs=sngl(wr)
-c        wis=sngl(wi)
-        h1r=c1*(data(i1)+data(i3))
-        h1i=c1*(data(i2)-data(i4))
-        h2r=-c2*(data(i2)+data(i4))
-        h2i=c2*(data(i1)-data(i3))
-        data(i1)=h1r+wrs*h2r-wis*h2i
-        data(i2)=h1i+wrs*h2i+wis*h2r
-        data(i3)=h1r-wrs*h2r+wis*h2i
-        data(i4)=-h1i+wrs*h2i+wis*h2r
-        wtemp=wr
-        wr=wr*wpr-wi*wpi+wr
-        wi=wi*wpr+wtemp*wpi+wi
-11    continue
-      if (isign.eq.1) then
-        h1r=data(1)
-        data(1)=h1r+data(2)
-        data(2)=h1r-data(2)
-      else
-        h1r=data(1)
-        data(1)=c1*(h1r+data(2))
-        data(2)=c1*(h1r-data(2))
-        call four1(data,n/2,-1)
-      endif
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software.
-C--------------------------------------------------------------------
-      SUBROUTINE sinft(y,n)
-      INTEGER n
-      REAL*8 y(n)
-CU    USES realft
-      INTEGER j
-      REAL*8 sum,y1,y2
-      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp
-      theta=3.141592653589793d0/dble(n)
-      wr=1.0d0
-      wi=0.0d0
-      wpr=-2.0d0*dsin(0.5d0*theta)**2
-      wpi=dsin(theta)
-      y(1)=0.0d0
-      do 11 j=1,n/2
-        wtemp=wr
-        wr=wr*wpr-wi*wpi+wr
-        wi=wi*wpr+wtemp*wpi+wi
-        y1=wi*(y(j+1)+y(n-j+1))
-        y2=0.5d0*(y(j+1)-y(n-j+1))
-        y(j+1)=y1+y2
-        y(n-j+1)=y1-y2
-11    continue
-      call realft(y,n,+1)
-      sum=0.0d0
-      y(1)=0.5d0*y(1)
-      y(2)=0.0d0
-      do 12 j=1,n-1,2
-        sum=sum+y(j)
-        y(j)=y(j+1)
-        y(j+1)=sum
-12    continue
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software.
-C--------------------------------------------------------------------
-      SUBROUTINE polin2d(x1a,x2a,ya,m,n,x1,x2,y,dy)
-      INTEGER m,n,NMAX,MMAX
-      REAL*8 dy,x1,x2,y,x1a(m),x2a(n),ya(m,n)
-      PARAMETER (NMAX=20,MMAX=20)
-CU    USES polint
-      INTEGER j,k
-      REAL*8 ymtmp(MMAX),yntmp(NMAX)
-      do 12 j=1,m
-        do 11 k=1,n
-          yntmp(k)=ya(j,k)
-11      continue
-        call polintd(x2a,yntmp,n,x2,ymtmp(j),dy)
-12    continue
-      call polintd(x1a,ymtmp,m,x1,y,dy)
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3.
-C--------------------------------------------------------------------
-      SUBROUTINE polintd(xa,ya,n,x,y,dy)
-      INTEGER n
-c      INTEGER n,NMAX
-      REAL*8 dy,x,y,xa(n),ya(n)
-c      PARAMETER (NMAX=10)
-      INTEGER i,m,ns
-      REAL*8 den,dif,dift,ho,hp,w,c(N),d(N)
-c      REAL*8 den,dif,dift,ho,hp,w,c(NMAX),d(NMAX)
-      ns=1
-      dif=abs(x-xa(1))
-      do 11 i=1,n
-        dift=abs(x-xa(i))
-        if (dift.lt.dif) then
-          ns=i
-          dif=dift
-        endif
-        c(i)=ya(i)
-        d(i)=ya(i)
-11    continue
-      y=ya(ns)
-      ns=ns-1
-      do 13 m=1,n-1
-        do 12 i=1,n-m
-          ho=xa(i)-x
-          hp=xa(i+m)-x
-          w=c(i+1)-d(i)
-          den=ho-hp
-          if(den.eq.0.d0)then
-             write(*,*) 'failure in polint'
-             call abrt
-          endif
-          den=w/den
-          d(i)=hp*den
-          c(i)=ho*den
-12      continue
-        if (2*ns.lt.n-m)then
-          dy=c(ns+1)
-        else
-          dy=d(ns)
-          ns=ns-1
-        endif
-        y=y+dy
-13    continue
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3.
-C--------------------------------------------------------------------
-      SUBROUTINE TRAPZD(FUNC,N,DEL,RESULT)
-      INTEGER N
-      REAL*8 DEL,RESULT,FUNC(N),SUM
-      INTEGER J
+C-------------------------------------------------------------------- 
+      SUBROUTINE four1(data,nn,isign) 
+      INTEGER isign,nn 
+      REAL*8 data(2*nn) 
+      INTEGER i,istep,j,m,mmax,n 
+      REAL*8 tempi,tempr 
+      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp 
+      n=2*nn 
+      j=1 
+      do 11 i=1,n,2 
+        if(j.gt.i)then 
+          tempr=data(j) 
+          tempi=data(j+1) 
+          data(j)=data(i) 
+          data(j+1)=data(i+1) 
+          data(i)=tempr 
+          data(i+1)=tempi 
+        endif 
+        m=n/2 
+1       if ((m.ge.2).and.(j.gt.m)) then 
+          j=j-m 
+          m=m/2 
+        goto 1 
+        endif 
+        j=j+m 
+11    continue 
+      mmax=2 
+2     if (n.gt.mmax) then 
+        istep=2*mmax 
+        theta=6.28318530717959d0/(isign*mmax) 
+        wpr=-2.d0*dsin(0.5d0*theta)**2 
+        wpi=dsin(theta) 
+        wr=1.d0 
+        wi=0.d0 
+        do 13 m=1,mmax,2 
+          do 12 i=m,n,istep 
+            j=i+mmax 
+            tempr=dble(wr)*data(j)-dble(wi)*data(j+1) 
+            tempi=dble(wr)*data(j+1)+dble(wi)*data(j) 
+c            tempr=sngl(wr)*data(j)-sngl(wi)*data(j+1) 
+c            tempi=sngl(wr)*data(j+1)+sngl(wi)*data(j) 
+            data(j)=data(i)-tempr 
+            data(j+1)=data(i+1)-tempi 
+            data(i)=data(i)+tempr 
+            data(i+1)=data(i+1)+tempi 
+12        continue 
+          wtemp=wr 
+          wr=wr*wpr-wi*wpi+wr 
+          wi=wi*wpr+wtemp*wpi+wi 
+13      continue 
+        mmax=istep 
+      goto 2 
+      endif 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE lubksbx(a,n,np,indx,b) 
+      INTEGER n,np,indx(n) 
+      REAL*8 a(np,np),b(n) 
+      INTEGER i,ii,j,ll 
+      REAL*8 sum 
+      ii=0 
+      do 12 i=1,n 
+        ll=indx(i) 
+        sum=b(ll) 
+        b(ll)=b(i) 
+        if (ii.ne.0)then 
+          do 11 j=ii,i-1 
+            sum=sum-a(i,j)*b(j) 
+11        continue 
+        else if (sum.ne.0.d0) then 
+          ii=i 
+        endif 
+        b(i)=sum 
+12    continue 
+      do 14 i=n,1,-1 
+        sum=b(i) 
+        do 13 j=i+1,n 
+          sum=sum-a(i,j)*b(j) 
+13      continue 
+        b(i)=sum/a(i,i) 
+14    continue 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE ludcmpx(a,n,np,indx,d) 
+      INTEGER n,np,indx(n),NMAX 
+      REAL*8 d,a(np,np),TINY 
+      PARAMETER (NMAX=500,TINY=1.0d-20) 
+      INTEGER i,imax,j,k 
+      REAL*8 aamax,dum,sum,vv(NMAX) 
+      d=1.d0 
+      do 12 i=1,n 
+        aamax=0.d0 
+        do 11 j=1,n 
+          if (abs(a(i,j)).gt.aamax) aamax=abs(a(i,j)) 
+11      continue 
+        if (aamax.eq.0.d0) then 
+           write(*,*) 'singular matrix in ludcmp' 
+           ierr=194
+           call abrt(ierr)
+        endif 
+        vv(i)=1.d0/aamax 
+12    continue 
+      do 19 j=1,n 
+        do 14 i=1,j-1 
+          sum=a(i,j) 
+          do 13 k=1,i-1 
+            sum=sum-a(i,k)*a(k,j) 
+13        continue 
+          a(i,j)=sum 
+14      continue 
+        aamax=0.d0 
+        do 16 i=j,n 
+          sum=a(i,j) 
+          do 15 k=1,j-1 
+            sum=sum-a(i,k)*a(k,j) 
+15        continue 
+          a(i,j)=sum 
+          dum=vv(i)*abs(sum) 
+          if (dum.ge.aamax) then 
+            imax=i 
+            aamax=dum 
+          endif 
+16      continue 
+        if (j.ne.imax)then 
+          do 17 k=1,n 
+            dum=a(imax,k) 
+            a(imax,k)=a(j,k) 
+            a(j,k)=dum 
+17        continue 
+          d=-d 
+          vv(imax)=vv(j) 
+        endif 
+        indx(j)=imax 
+        if(a(j,j).eq.0.d0)a(j,j)=TINY 
+        if(j.ne.n)then 
+          dum=1.d0/a(j,j) 
+          do 18 i=j+1,n 
+            a(i,j)=a(i,j)*dum 
+18        continue 
+        endif 
+19    continue 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE realft(data,n,isign) 
+      INTEGER isign,n 
+      REAL*8 data(n) 
+CU    USES four1 
+      INTEGER i,i1,i2,i3,i4,n2p3 
+      REAL*8 c1,c2,h1i,h1r,h2i,h2r,wis,wrs 
+      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp 
+      theta=3.141592653589793d0/dble(n/2) 
+      c1=0.5d0 
+      if (isign.eq.1) then 
+        c2=-0.5d0 
+        call four1(data,n/2,+1) 
+      else 
+        c2=0.5d0 
+        theta=-theta 
+      endif 
+      wpr=-2.0d0*dsin(0.5d0*theta)**2 
+      wpi=dsin(theta) 
+      wr=1.0d0+wpr 
+      wi=wpi 
+      n2p3=n+3 
+      do 11 i=2,n/4 
+        i1=2*i-1 
+        i2=i1+1 
+        i3=n2p3-i2 
+        i4=i3+1 
+        wrs=dble(wr) 
+        wis=dble(wi) 
+c        wrs=sngl(wr) 
+c        wis=sngl(wi) 
+        h1r=c1*(data(i1)+data(i3)) 
+        h1i=c1*(data(i2)-data(i4)) 
+        h2r=-c2*(data(i2)+data(i4)) 
+        h2i=c2*(data(i1)-data(i3)) 
+        data(i1)=h1r+wrs*h2r-wis*h2i 
+        data(i2)=h1i+wrs*h2i+wis*h2r 
+        data(i3)=h1r-wrs*h2r+wis*h2i 
+        data(i4)=-h1i+wrs*h2i+wis*h2r 
+        wtemp=wr 
+        wr=wr*wpr-wi*wpi+wr 
+        wi=wi*wpr+wtemp*wpi+wi 
+11    continue 
+      if (isign.eq.1) then 
+        h1r=data(1) 
+        data(1)=h1r+data(2) 
+        data(2)=h1r-data(2) 
+      else 
+        h1r=data(1) 
+        data(1)=c1*(h1r+data(2)) 
+        data(2)=c1*(h1r-data(2)) 
+        call four1(data,n/2,-1) 
+      endif 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE sinft(y,n) 
+      INTEGER n 
+      REAL*8 y(n) 
+CU    USES realft 
+      INTEGER j 
+      REAL*8 sum,y1,y2 
+      DOUBLE PRECISION theta,wi,wpi,wpr,wr,wtemp 
+      theta=3.141592653589793d0/dble(n) 
+      wr=1.0d0 
+      wi=0.0d0 
+      wpr=-2.0d0*dsin(0.5d0*theta)**2 
+      wpi=dsin(theta) 
+      y(1)=0.0d0 
+      do 11 j=1,n/2 
+        wtemp=wr 
+        wr=wr*wpr-wi*wpi+wr 
+        wi=wi*wpr+wtemp*wpi+wi 
+        y1=wi*(y(j+1)+y(n-j+1)) 
+        y2=0.5d0*(y(j+1)-y(n-j+1)) 
+        y(j+1)=y1+y2 
+        y(n-j+1)=y1-y2 
+11    continue 
+      call realft(y,n,+1) 
+      sum=0.0d0 
+      y(1)=0.5d0*y(1) 
+      y(2)=0.0d0 
+      do 12 j=1,n-1,2 
+        sum=sum+y(j) 
+        y(j)=y(j+1) 
+        y(j+1)=sum 
+12    continue 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE polin2d(x1a,x2a,ya,m,n,x1,x2,y,dy) 
+      INTEGER m,n,NMAX,MMAX 
+      REAL*8 dy,x1,x2,y,x1a(m),x2a(n),ya(m,n) 
+      PARAMETER (NMAX=20,MMAX=20) 
+CU    USES polint 
+      INTEGER j,k 
+      REAL*8 ymtmp(MMAX),yntmp(NMAX) 
+      do 12 j=1,m 
+        do 11 k=1,n 
+          yntmp(k)=ya(j,k) 
+11      continue 
+        call polintd(x2a,yntmp,n,x2,ymtmp(j),dy) 
+12    continue 
+      call polintd(x1a,ymtmp,m,x1,y,dy) 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE polintd(xa,ya,n,x,y,dy) 
+      INTEGER n 
+c      INTEGER n,NMAX 
+      REAL*8 dy,x,y,xa(n),ya(n) 
+c      PARAMETER (NMAX=10) 
+      INTEGER i,m,ns 
+      REAL*8 den,dif,dift,ho,hp,w,c(N),d(N) 
+c      REAL*8 den,dif,dift,ho,hp,w,c(NMAX),d(NMAX) 
+      ns=1 
+      dif=abs(x-xa(1)) 
+      do 11 i=1,n 
+        dift=abs(x-xa(i)) 
+        if (dift.lt.dif) then 
+          ns=i 
+          dif=dift 
+        endif 
+        c(i)=ya(i) 
+        d(i)=ya(i) 
+11    continue 
+      y=ya(ns) 
+      ns=ns-1 
+      do 13 m=1,n-1 
+        do 12 i=1,n-m 
+          ho=xa(i)-x 
+          hp=xa(i+m)-x 
+          w=c(i+1)-d(i) 
+          den=ho-hp 
+          if(den.eq.0.d0)then 
+             write(*,*) 'failure in polint' 
+             ierr=381
+             call abrt (ierr)
+          endif 
+          den=w/den 
+          d(i)=hp*den 
+          c(i)=ho*den 
+12      continue 
+        if (2*ns.lt.n-m)then 
+          dy=c(ns+1) 
+        else 
+          dy=d(ns) 
+          ns=ns-1 
+        endif 
+        y=y+dy 
+13    continue 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3. 
+C-------------------------------------------------------------------- 
+      SUBROUTINE TRAPZD(FUNC,N,DEL,RESULT) 
+      INTEGER N 
+      REAL*8 DEL,RESULT,FUNC(N),SUM 
+      INTEGER J 
+ 
+      SUM=0.D0 
+      DO 11 J=2,N-1 
+         SUM=SUM+FUNC(J) 
+ 11   CONTINUE 
+      RESULT=DEL*(SUM+(FUNC(1)+FUNC(N))*0.5D0) 
+      RETURN 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3. 
+C     MODIFIED By NY 
+C-------------------------------------------------------------------- 
+      REAL*8 FUNCTION plgndr(l,m,x) 
+      INTEGER l,m 
+      REAL*8 x 
+      INTEGER i,ll 
+      REAL*8 fact,pll,pmm,pmmp1,somx2 
+      if(m.lt.0.or.m.gt.l.or.abs(x).gt.1.d0) then 
+         write (*,*) 'bad arguments in plgndr' 
+         ierr=421
+         call abrt (ierr)
+      endif 
+      pmm=1.d0 
+      if(m.gt.0) then 
+        somx2=sqrt((1.d0-x)*(1.d0+x)) 
+        fact=1.d0 
+        do 11 i=1,m 
+          pmm=-pmm*fact*somx2 
+          fact=fact+2.d0 
+11      continue 
+      endif 
+      if(l.eq.m) then 
+        plgndr=pmm 
+      else 
+        pmmp1=x*dble(2*m+1)*pmm 
+        if(l.eq.m+1) then 
+          plgndr=pmmp1 
+        else 
+          do 12 ll=m+2,l 
+            pll=(x*dble(2*ll-1)*pmmp1-dble(ll+m-1)*pmm)/dble(ll-m) 
+            pmm=pmmp1 
+            pmmp1=pll 
+12        continue 
+          plgndr=pll 
+        endif 
+      endif 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3. 
+C-------------------------------------------------------------------- 
+      FUNCTION bessj(n,x) 
+      INTEGER n,IACC 
+      REAL*8 bessj,x,BIGNO,BIGNI 
+      PARAMETER (IACC=40,BIGNO=1.e10,BIGNI=1.e-10) 
+CU    USES bessj0,bessj1 
+      INTEGER j,jsum,m 
+      REAL*8 ax,bj,bjm,bjp,sum,tox,bessj0,bessj1 
+      if(n.lt.2) then 
+c     Mod by Norio 
+         if (n.eq.0) then 
+            bessj=bessj0(x) 
+         else 
+            bessj=bessj1(x) 
+         endif 
+         return 
+c 
+      endif 
+      ax=abs(x) 
+      if(ax.eq.0.d0)then 
+        bessj=0.d0 
+      else if(ax.gt.float(n))then 
+        tox=2.d0/ax 
+        bjm=bessj0(ax) 
+        bj=bessj1(ax) 
+        do 11 j=1,n-1 
+          bjp=j*tox*bj-bjm 
+          bjm=bj 
+          bj=bjp 
+11      continue 
+        bessj=bj 
+      else 
+        tox=2.d0/ax 
+        m=2*((n+int(sqrt(float(IACC*n))))/2) 
+        bessj=0.d0 
+        jsum=0 
+        sum=0.d0 
+        bjp=0.d0 
+        bj=1.d0 
+        do 12 j=m,1,-1 
+          bjm=j*tox*bj-bjp 
+          bjp=bj 
+          bj=bjm 
+          if(abs(bj).gt.BIGNO)then 
+            bj=bj*BIGNI 
+            bjp=bjp*BIGNI 
+            bessj=bessj*BIGNI 
+            sum=sum*BIGNI 
+          endif 
+          if(jsum.ne.0)sum=sum+bj 
+          jsum=1-jsum 
+          if(j.eq.n)bessj=bjp 
+12      continue 
+        sum=2.*sum-bj 
+        bessj=bessj/sum 
+      endif 
+      if(x.lt.0.d0.and.mod(n,2).eq.1)bessj=-bessj 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9. 
+C-------------------------------------------------------------------- 
+      FUNCTION bessj0(x) 
+      REAL*8 bessj0,x 
+      REAL*8 ax,xx,z 
+      DOUBLE PRECISION p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6, 
+     *s1,s2,s3,s4,s5,s6,y 
+      SAVE p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,s1,s2,s3,s4, 
+     *s5,s6 
+      DATA p1,p2,p3,p4,p5/1.d0,-.1098628627d-2,.2734510407d-4, 
+     *-.2073370639d-5,.2093887211d-6/, q1,q2,q3,q4,q5/-.1562499995d-1, 
+     *.1430488765d-3,-.6911147651d-5,.7621095161d-6,-.934945152d-7/ 
+      DATA r1,r2,r3,r4,r5,r6/57568490574.d0,-13362590354.d0, 
+     *651619640.7d0,-11214424.18d0,77392.33017d0,-184.9052456d0/,s1,s2, 
+     *s3,s4,s5,s6/57568490411.d0,1029532985.d0,9494680.718d0, 
+     *59272.64853d0,267.8532712d0,1.d0/ 
+      if(abs(x).lt.8.d0)then 
+        y=x**2 
+        bessj0=(r1+y*(r2+y*(r3+y*(r4+y*(r5+y*r6)))))/(s1+y*(s2+y*(s3+y* 
+     *(s4+y*(s5+y*s6))))) 
+      else 
+        ax=abs(x) 
+        z=8.d0/ax 
+        y=z**2 
+        xx=ax-.785398164d0 
+        bessj0=dsqrt(.636619772/ax)*(dcos(xx)*(p1+y*(p2+y*(p3+y*(p4+y* 
+     *p5))))-z*dsin(xx)*(q1+y*(q2+y*(q3+y*(q4+y*q5))))) 
+      endif 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9. 
+C-------------------------------------------------------------------- 
+      FUNCTION bessj1(x) 
+      REAL*8 bessj1,x 
+      REAL*8 ax,xx,z 
+      DOUBLE PRECISION p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6, 
+     *s1,s2,s3,s4,s5,s6,y 
+      SAVE p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,s1,s2,s3,s4, 
+     *s5,s6 
+      DATA r1,r2,r3,r4,r5,r6/72362614232.d0,-7895059235.d0, 
+     *242396853.1d0,-2972611.439d0,15704.48260d0,-30.16036606d0/,s1,s2, 
+     *s3,s4,s5,s6/144725228442.d0,2300535178.d0,18583304.74d0, 
+     *99447.43394d0,376.9991397d0,1.d0/ 
+      DATA p1,p2,p3,p4,p5/1.d0,.183105d-2,-.3516396496d-4, 
+     *.2457520174d-5,-.240337019d-6/, q1,q2,q3,q4,q5/.04687499995d0, 
+     *-.2002690873d-3,.8449199096d-5,-.88228987d-6,.105787412d-6/ 
+      if(abs(x).lt.8.d0)then 
+        y=x**2 
+        bessj1=x*(r1+y*(r2+y*(r3+y*(r4+y*(r5+y*r6)))))/(s1+y*(s2+y*(s3+ 
+     *y*(s4+y*(s5+y*s6))))) 
+      else 
+        ax=abs(x) 
+        z=8.d0/ax 
+        y=z**2 
+        xx=ax-2.356194491d0 
+        bessj1=dsqrt(.636619772d0/ax)*(dcos(xx)*(p1+y*(p2+y*(p3+y*(p4+y* 
+     *p5))))-z*dsin(xx)*(q1+y*(q2+y*(q3+y*(q4+y*q5)))))*sign(1.d0,x) 
+      endif 
+      return 
+      END 
+C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9. 
 
-      SUM=0.D0
-      DO 11 J=2,N-1
-         SUM=SUM+FUNC(J)
- 11   CONTINUE
-      RESULT=DEL*(SUM+(FUNC(1)+FUNC(N))*0.5D0)
-      RETURN
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3.
-C     MODIFIED By NY
-C--------------------------------------------------------------------
-      REAL*8 FUNCTION plgndr(l,m,x)
-      INTEGER l,m
-      REAL*8 x
-      INTEGER i,ll
-      REAL*8 fact,pll,pmm,pmmp1,somx2
-      if(m.lt.0.or.m.gt.l.or.abs(x).gt.1.d0) then
-         write (*,*) 'bad arguments in plgndr'
-         call abrt
-      endif
-      pmm=1.d0
-      if(m.gt.0) then
-        somx2=sqrt((1.d0-x)*(1.d0+x))
-        fact=1.d0
-        do 11 i=1,m
-          pmm=-pmm*fact*somx2
-          fact=fact+2.d0
-11      continue
-      endif
-      if(l.eq.m) then
-        plgndr=pmm
-      else
-        pmmp1=x*dble(2*m+1)*pmm
-        if(l.eq.m+1) then
-          plgndr=pmmp1
-        else
-          do 12 ll=m+2,l
-            pll=(x*dble(2*ll-1)*pmmp1-dble(ll+m-1)*pmm)/dble(ll-m)
-            pmm=pmmp1
-            pmmp1=pll
-12        continue
-          plgndr=pll
-        endif
-      endif
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software v%1jw#<0(9p#3.
-C--------------------------------------------------------------------
-      FUNCTION bessj(n,x)
-      INTEGER n,IACC
-      REAL*8 bessj,x,BIGNO,BIGNI
-      PARAMETER (IACC=40,BIGNO=1.e10,BIGNI=1.e-10)
-CU    USES bessj0,bessj1
-      INTEGER j,jsum,m
-      REAL*8 ax,bj,bjm,bjp,sum,tox,bessj0,bessj1
-      if(n.lt.2) then
-c     Mod by Norio
-         if (n.eq.0) then
-            bessj=bessj0(x)
-         else
-            bessj=bessj1(x)
-         endif
-         return
-c
-      endif
-      ax=abs(x)
-      if(ax.eq.0.d0)then
-        bessj=0.d0
-      else if(ax.gt.float(n))then
-        tox=2.d0/ax
-        bjm=bessj0(ax)
-        bj=bessj1(ax)
-        do 11 j=1,n-1
-          bjp=j*tox*bj-bjm
-          bjm=bj
-          bj=bjp
-11      continue
-        bessj=bj
-      else
-        tox=2.d0/ax
-        m=2*((n+int(sqrt(float(IACC*n))))/2)
-        bessj=0.d0
-        jsum=0
-        sum=0.d0
-        bjp=0.d0
-        bj=1.d0
-        do 12 j=m,1,-1
-          bjm=j*tox*bj-bjp
-          bjp=bj
-          bj=bjm
-          if(abs(bj).gt.BIGNO)then
-            bj=bj*BIGNI
-            bjp=bjp*BIGNI
-            bessj=bessj*BIGNI
-            sum=sum*BIGNI
-          endif
-          if(jsum.ne.0)sum=sum+bj
-          jsum=1-jsum
-          if(j.eq.n)bessj=bjp
-12      continue
-        sum=2.*sum-bj
-        bessj=bessj/sum
-      endif
-      if(x.lt.0.d0.and.mod(n,2).eq.1)bessj=-bessj
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9.
-C--------------------------------------------------------------------
-      FUNCTION bessj0(x)
-      REAL*8 bessj0,x
-      REAL*8 ax,xx,z
-      DOUBLE PRECISION p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,
-     *s1,s2,s3,s4,s5,s6,y
-      SAVE p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,s1,s2,s3,s4,
-     *s5,s6
-      DATA p1,p2,p3,p4,p5/1.d0,-.1098628627d-2,.2734510407d-4,
-     *-.2073370639d-5,.2093887211d-6/, q1,q2,q3,q4,q5/-.1562499995d-1,
-     *.1430488765d-3,-.6911147651d-5,.7621095161d-6,-.934945152d-7/
-      DATA r1,r2,r3,r4,r5,r6/57568490574.d0,-13362590354.d0,
-     *651619640.7d0,-11214424.18d0,77392.33017d0,-184.9052456d0/,s1,s2,
-     *s3,s4,s5,s6/57568490411.d0,1029532985.d0,9494680.718d0,
-     *59272.64853d0,267.8532712d0,1.d0/
-      if(abs(x).lt.8.d0)then
-        y=x**2
-        bessj0=(r1+y*(r2+y*(r3+y*(r4+y*(r5+y*r6)))))/(s1+y*(s2+y*(s3+y*
-     *(s4+y*(s5+y*s6)))))
-      else
-        ax=abs(x)
-        z=8.d0/ax
-        y=z**2
-        xx=ax-.785398164d0
-        bessj0=dsqrt(.636619772/ax)*(dcos(xx)*(p1+y*(p2+y*(p3+y*(p4+y*
-     *p5))))-z*dsin(xx)*(q1+y*(q2+y*(q3+y*(q4+y*q5)))))
-      endif
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9.
-C--------------------------------------------------------------------
-      FUNCTION bessj1(x)
-      REAL*8 bessj1,x
-      REAL*8 ax,xx,z
-      DOUBLE PRECISION p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,
-     *s1,s2,s3,s4,s5,s6,y
-      SAVE p1,p2,p3,p4,p5,q1,q2,q3,q4,q5,r1,r2,r3,r4,r5,r6,s1,s2,s3,s4,
-     *s5,s6
-      DATA r1,r2,r3,r4,r5,r6/72362614232.d0,-7895059235.d0,
-     *242396853.1d0,-2972611.439d0,15704.48260d0,-30.16036606d0/,s1,s2,
-     *s3,s4,s5,s6/144725228442.d0,2300535178.d0,18583304.74d0,
-     *99447.43394d0,376.9991397d0,1.d0/
-      DATA p1,p2,p3,p4,p5/1.d0,.183105d-2,-.3516396496d-4,
-     *.2457520174d-5,-.240337019d-6/, q1,q2,q3,q4,q5/.04687499995d0,
-     *-.2002690873d-3,.8449199096d-5,-.88228987d-6,.105787412d-6/
-      if(abs(x).lt.8.d0)then
-        y=x**2
-        bessj1=x*(r1+y*(r2+y*(r3+y*(r4+y*(r5+y*r6)))))/(s1+y*(s2+y*(s3+
-     *y*(s4+y*(s5+y*s6)))))
-      else
-        ax=abs(x)
-        z=8.d0/ax
-        y=z**2
-        xx=ax-2.356194491d0
-        bessj1=dsqrt(.636619772d0/ax)*(dcos(xx)*(p1+y*(p2+y*(p3+y*(p4+y*
-     *p5))))-z*dsin(xx)*(q1+y*(q2+y*(q3+y*(q4+y*q5)))))*sign(1.d0,x)
-      endif
-      return
-      END
-C  (C) Copr. 1986-92 Numerical Recipes Software ?421.1.9.
-C--------------------------------------------------------------------
-C#NUMPAC#FFT3DB PARALLEL VERSION  REVISED ON 1987-08-07
-      SUBROUTINE FFT3DB(A,KA,LA,M,INV,B,ILL)                            
-      COMPLEX*16 A(KA,LA,1),B(1)                                        
-      INTEGER M(3)                                                      
-      COMPLEX*16, ALLOCATABLE::C(:,:,:)
-C     
-      IF(M(1).LE.1.OR.M(2).LE.1.OR.M(3).LE.1)GO TO 60                   
-      NROW=2**M(1)                                                      
-      NCOL=2**M(2)                                                      
-      NLAY=2**M(3)                                                      
-      IF(NROW.GT.KA.OR.NCOL.GT.LA) GO TO 60                             
-      ALLOCATE (C(NLAY,KA,LA))
-C
-C     ---- FFT FOR X AXIS ----
-C
-      DO 15 K=1,NLAY
-C
-C
-      DO 10 J=1,NCOL                                                    
- 10   CALL FFTB(A(1,J,K),M(1),INV,ILL)                       
- 15   CONTINUE
-C
-C     ---- FFT FOR Y AXIS ----
-C
-      DO 35 K=1,NLAY
-C
-
-      DO 30 I=1,NROW                             
-      DO 20 J=1,NCOL                             
- 20   B(J)=A(I,J,K)                              
-      CALL FFTB(B,M(2),INV,ILL)                  
-      DO 30 J=1,NCOL                             
- 30      A(I,J,K)=B(J)                              
- 35   CONTINUE                                  
-C
-      DO J=1,NCOL
-         DO I=1,NROW
-            DO K=1,NLAY
-               C(K,I,J)=A(I,J,K)
-            ENDDO
-         ENDDO
-      ENDDO
-C
-C     ---- FFT FOR Z AXIS ----
-C
-      DO 55 J=1,NCOL                             
-      DO 50 I=1,NROW                             
-      DO 40 K=1,NLAY                             
- 40   B(K)=C(K,I,J)
-      CALL FFTB(B,M(3),INV,ILL)
-      DO 50 K=1,NLAY                             
- 50   C(K,I,J)=B(K)
- 55   CONTINUE
-C
-      DO J=1,NCOL
-         DO I=1,NROW
-            DO K=1,NLAY
-               A(I,J,K)=C(K,I,J)
-            ENDDO
-         ENDDO
-      ENDDO
-C
-      ILL=0                                      
-C
-      DEALLOCATE (C)
-      RETURN                                     
-C     
- 60   ILL=30000                                  
-      RETURN                                     
-      END                                        
-C#NUMPAC#FFT3DB ORIGINAL VERSION REVISED ON 1987-08-07
-      SUBROUTINE FFT3DB_ORG(A,KA,LA,M,INV,B,ILL)                        
-      COMPLEX*16 A(KA,LA,1),B(1)                                        
-      INTEGER M(3)                                                      
-      IF(M(1).LE.1.OR.M(2).LE.1.OR.M(3).LE.1)GO TO 60                   
-      NROW=2**M(1)                                                      
-      NCOL=2**M(2)                                                      
-      NLAY=2**M(3)                                                      
-      IF(NROW.GT.KA.OR.NCOL.GT.LA) GO TO 60                             
-      DO 10 K=1,NLAY                                                    
-      DO 10 J=1,NCOL                                                    
-   10 CALL FFTB(A(1,J,K),M(1),INV,ILL)                                  
-      DO 30 K=1,NLAY                                                    
-      DO 30 I=1,NROW                                                    
-      DO 20 J=1,NCOL                                                    
-   20 B(J)=A(I,J,K)                                                     
-      CALL FFTB(B,M(2),INV,ILL)                                         
-      DO 30 J=1,NCOL                                                    
-   30 A(I,J,K)=B(J)                                                     
-      DO 50 J=1,NCOL                                                    
-      DO 50 I=1,NROW                                                    
-      DO 40 K=1,NLAY                                                    
-   40 B(K)=A(I,J,K)                                                     
-      CALL FFTB(B,M(3),INV,ILL)                                         
-      DO 50 K=1,NLAY                                                    
-   50 A(I,J,K)=B(K)                                                     
-      ILL=0                                                             
-      RETURN                                                            
-   60 ILL=30000                                                         
-      RETURN                                                            
-      END                                                               
 C#NUMPAC#HERD31              REVISED ON 1984-11-30                      
 C      SUBROUTINE HERM31(I,X,Y,M,N,XI,YI,YD,ND,ILL)                     
       SUBROUTINE HERD31(I,X,Y,M,N,XI,YI,YD,ND,ILL)                      
@@ -705,7 +607,8 @@ C      SUBROUTINE DERIV1(X,Y,F,  N,M,L,MD)
       II=IM*M+1                                                         
       IE=IM*L+1                                                         
       IP=II+M                                                           
- 1000 F(IE)=(Y(IP)-Y(II))/(X(I+1)-X(I))                                 
+      F(IE)=(Y(IP)-Y(II))/(X(I+1)-X(I))                                 
+ 1000 CONTINUE
       RETURN                                                            
  1010 CONTINUE                                                          
       H1=X(2)-X(1)                                                      
@@ -797,7 +700,15 @@ C      ILL         OUTPUT)
       X1=XI(1)                                          
       X2=XI(2)                                          
       H=X2-X1                                           
-      IF(H) 1000 , 1060 , 1010                          
+c$$$      IF(H) 1000 , 1060 , 1010                          
+      IF(H.lt.0) then 
+         goto 1000
+      elseif (H.eq.0) then 
+         goto 1060 
+      elseif (H.lt.0) then
+         goto 1010                          
+      endif
+
  1000 X1=XI(2)                                          
       X2=XI(1)                                          
       H=-H                                              
@@ -827,209 +738,6 @@ C      ILL         OUTPUT)
  1050 Y(K)=(YI(1)*P+YI(2)*Q+(Y1I(1)*R+Y1I(2)*S)*H)/(H**(K-1)) 
       RETURN                                                            
  1060 ILL=30000                                                         
-      RETURN                                                            
-      END                                                               
-C#NUMPAC#FFTB                REVISED ON 1984-11-30                      
-      SUBROUTINE FFTB(A,M,INV,ILL)                                      
-      IMPLICIT REAL*8 (A-H,O-Z)                                         
-      DIMENSION A(1),DCC(32),DSS(32)                                    
-      DATA DCC( 1)/ 0.707106781186547531D+00/                           
-      DATA DCC( 2)/ 0.923879532511286752D+00/                           
-      DATA DCC( 3)/ 0.980785280403230444D+00/                           
-      DATA DCC( 4)/ 0.995184726672196887D+00/                           
-      DATA DCC( 5)/ 0.998795456205172391D+00/                           
-      DATA DCC( 6)/ 0.999698818696204222D+00/                           
-      DATA DCC( 7)/ 0.999924701839144545D+00/                           
-      DATA DCC( 8)/ 0.999981175282601137D+00/                           
-      DATA DCC( 9)/ 0.999995293809576177D+00/                           
-      DATA DCC(10)/ 0.999998823451701907D+00/                           
-      DATA DCC(11)/ 0.999999705862882213D+00/                           
-      DATA DCC(12)/ 0.999999926465717850D+00/                           
-      DATA DCC(13)/ 0.999999981616429293D+00/                           
-      DATA DCC(14)/ 0.999999995404107320D+00/                           
-      DATA DCC(15)/ 0.999999998851026833D+00/                           
-      DATA DCC(16)/ 0.999999999712756701D+00/                           
-      DATA DCC(17)/ 0.999999999928189179D+00/                           
-      DATA DCC(18)/ 0.999999999982047291D+00/                           
-      DATA DCC(19)/ 0.999999999995511826D+00/                           
-      DATA DCC(20)/ 0.999999999998877953D+00/                           
-      DATA DCC(21)/ 0.999999999999719488D+00/                           
-      DATA DCC(22)/ 0.999999999999929876D+00/                           
-      DATA DCC(23)/ 0.999999999999982472D+00/                           
-      DATA DCC(24)/ 0.999999999999995615D+00/                           
-      DATA DCC(25)/ 0.999999999999998904D+00/                           
-      DATA DCC(26)/ 0.999999999999999722D+00/                           
-      DATA DCC(27)/ 0.999999999999999931D+00/                           
-      DATA DCC(28)/ 0.999999999999999986D+00/                           
-      DATA DCC(29)/ 0.100000000000000000D+01/                           
-      DATA DCC(30)/ 0.100000000000000000D+01/                           
-      DATA DCC(31)/ 0.100000000000000000D+01/                           
-      DATA DCC(32)/ 0.100000000000000000D+01/                           
-      DATA DSS( 1)/ 0.707106781186547531D+00/                           
-      DATA DSS( 2)/ 0.382683432365089768D+00/                           
-      DATA DSS( 3)/ 0.195090322016128262D+00/                           
-      DATA DSS( 4)/ 0.980171403295606036D-01/                           
-      DATA DSS( 5)/ 0.490676743274180141D-01/                           
-      DATA DSS( 6)/ 0.245412285229122881D-01/                           
-      DATA DSS( 7)/ 0.122715382857199263D-01/                           
-      DATA DSS( 8)/ 0.613588464915447527D-02/                           
-      DATA DSS( 9)/ 0.306795676296597625D-02/                           
-      DATA DSS(10)/ 0.153398018628476561D-02/                           
-      DATA DSS(11)/ 0.766990318742704540D-03/                           
-      DATA DSS(12)/ 0.383495187571395563D-03/                           
-      DATA DSS(13)/ 0.191747597310703308D-03/                           
-      DATA DSS(14)/ 0.958737990959773447D-04/                           
-      DATA DSS(15)/ 0.479368996030668847D-04/                           
-      DATA DSS(16)/ 0.239684498084182193D-04/                           
-      DATA DSS(17)/ 0.119842249050697064D-04/                           
-      DATA DSS(18)/ 0.599211245264242774D-05/                           
-      DATA DSS(19)/ 0.299605622633466084D-05/                           
-      DATA DSS(20)/ 0.149802811316901114D-05/                           
-      DATA DSS(21)/ 0.749014056584715715D-06/                           
-      DATA DSS(22)/ 0.374507028292384129D-06/                           
-      DATA DSS(23)/ 0.187253514146195347D-06/                           
-      DATA DSS(24)/ 0.936267570730980836D-07/                           
-      DATA DSS(25)/ 0.468133785365490931D-07/                           
-      DATA DSS(26)/ 0.234066892682745532D-07/                           
-      DATA DSS(27)/ 0.117033446341372770D-07/                           
-      DATA DSS(28)/ 0.585167231706863850D-08/                           
-      DATA DSS(29)/ 0.292583615853431935D-08/                           
-      DATA DSS(30)/ 0.146291807926715968D-08/                           
-      DATA DSS(31)/ 0.731459039633579864D-09/                           
-      DATA DSS(32)/ 0.365729519816789906D-09/                           
-      IF(M.LT.2) GO TO 70                                               
-      NN=2**(M+1)                                                       
-      L=NN                                                              
-      G=INV+INV-1                                                       
-      DO 40 I=2,M,2                                                     
-      L4=L/4                                                            
-      DO 10 K0=2,NN,L                                                   
-      K1=K0+L4                                                          
-      K2=K1+L4                                                          
-      K3=K2+L4                                                          
-      T1=A(K0-1)+A(K2-1)                                                
-      U1=A(K0-1)-A(K2-1)                                                
-      T2=A(K0)+A(K2)                                                    
-      U2=A(K0)-A(K2)                                                    
-      V1=A(K1-1)+A(K3-1)                                                
-      W2=(A(K1-1)-A(K3-1))*G                                            
-      V2=A(K1)+A(K3)                                                    
-      W1=(A(K3)-A(K1))*G                                                
-      A(K0-1)=T1+V1                                                     
-      A(K0)=T2+V2                                                       
-      A(K1-1)=T1-V1                                                     
-      A(K1)=T2-V2                                                       
-      A(K2-1)=U1+W1                                                     
-      A(K2)=U2+W2                                                       
-      A(K3-1)=U1-W1                                                     
-   10 A(K3)=U2-W2                                                       
-      IF(L4.LT.4) GO TO 40                                              
-      DC=DCC(M-I)                                                       
-      DS=DSS(M-I)*G                                                     
-      CC=DC                                                             
-      SS=DS                                                             
-      PP=SS+SS                                                          
-      CO=1.D0                                                           
-      SO=0.D0                                                           
-      DO 30 J=4,L4,2                                                    
-      C1=CC                                                             
-      S1=SS                                                             
-      P=S1+S1                                                           
-      C2=(C1-S1)*(C1+S1)                                                
-      S2=C1*P                                                           
-      C3=C1-P*S2                                                        
-      S3=P*C2+S1                                                        
-      DO 20 K0=J,NN,L                                                   
-      K1=K0+L4                                                          
-      K2=K1+L4                                                          
-      K3=K2+L4                                                          
-      T1=A(K0-1)+A(K2-1)                                                
-      U1=A(K0-1)-A(K2-1)                                                
-      T2=A(K0)+A(K2)                                                    
-      U2=A(K0)-A(K2)                                                    
-      V1=A(K1-1)+A(K3-1)                                                
-      W2=(A(K1-1)-A(K3-1))*G                                            
-      V2=A(K1)+A(K3)                                                    
-      W1=(A(K3)-A(K1))*G                                                
-      A(K0-1)=T1+V1                                                     
-      A(K0)=T2+V2                                                       
-      A(K1-1)=(T1-V1)*C2-(T2-V2)*S2                                     
-      A(K1)=(T1-V1)*S2+(T2-V2)*C2                                       
-      A(K2-1)=(U1+W1)*C1-(U2+W2)*S1                                     
-      A(K2)=(U1+W1)*S1+(U2+W2)*C1                                       
-      A(K3-1)=(U1-W1)*C3-(U2-W2)*S3                                     
-   20 A(K3)=(U1-W1)*S3+(U2-W2)*C3                                       
-      CN=CO-PP*SS                                                       
-      SN=PP*CC+SO                                                       
-      CO=CC                                                             
-      CC=CN                                                             
-      SO=SS                                                             
-   30 SS=SN                                                             
-   40 L=L4                                                              
-      IF(L.EQ.2) GO TO 60                                               
-      DO 50 K0=2,NN,4                                                   
-      T1=A(K0-1)                                                        
-      T2=A(K0)                                                          
-      A(K0-1)=T1+A(K0+1)                                                
-      A(K0)=T2+A(K0+2)                                                  
-      A(K0+1)=T1-A(K0+1)                                                
-   50 A(K0+2)=T2-A(K0+2)                                                
-   60 CALL BITRVB(A,M,ILL)                                              
-      RETURN                                                            
-   70 ILL=30000                                                         
-      RETURN                                                            
-      END                                                               
-C#NUMPAC#BITRVB              REVISED ON 1984-11-30                      
-      SUBROUTINE BITRVB(A,L,ICON)                                       
-      COMPLEX*16 A,W                                                    
-      DIMENSION A(1),ITEST(20),INC(20)                                  
-      IF(L.LE.0.OR.L.GT.23) GO TO 8000                                  
-      NN=0                                                              
-      NR=0                                                              
-      I=L-1                                                             
-      M=2**I                                                            
-      K=2                                                               
-      IF(I-2) 60,30,10                                                  
-   10 I=I-1                                                             
-      ITEST(I-1)=M-K                                                    
-      K=K+K                                                             
-      INC(I-1)=K-ITEST(I-1)                                             
-      IF(I-3) 30,10,10                                                  
-   20 NR=INC(I)+NR                                                      
-   30 MR=M+NR                                                           
-      IF(NR-NN) 50,50,40                                                
-   40 W=A(NN+1)                                                         
-      A(NN+1)=A(NR+1)                                                   
-      A(NR+1)=W                                                         
-      MN=M+NN                                                           
-      W=A(MN+2)                                                         
-      A(MN+2)=A(MR+2)                                                   
-      A(MR+2)=W                                                         
-   50 NN=NN+2                                                           
-      W=A(NN)                                                           
-      A(NN)=A(MR+1)                                                     
-      A(MR+1)=W                                                         
-      NR=K+NR                                                           
-   60 MR=M+NR                                                           
-      IF(NR-NN) 80,80,70                                                
-   70 W=A(NN+1)                                                         
-      A(NN+1)=A(NR+1)                                                   
-      A(NR+1)=W                                                         
-      MN=M+NN                                                           
-      W=A(MN+2)                                                         
-      A(MN+2)=A(MR+2)                                                   
-      A(MR+2)=W                                                         
-   80 NN=NN+2                                                           
-      W=A(NN)                                                           
-      A(NN)=A(MR+1)                                                     
-      A(MR+1)=W                                                         
-      I=1                                                               
-      IF(NN-M) 100,110,110                                              
-   90 I=I+1                                                             
-  100 IF(NR-ITEST(I)) 20,90,90                                          
-  110 ICON=0                                                            
-      RETURN                                                            
- 8000 ICON=30000                                                        
       RETURN                                                            
       END                                                               
 C#NUMPAC#MINVD               REVISED ON 1984-11-30                      
@@ -4154,526 +3862,6 @@ C#NUMPAC#LEQLUD              REVISED ON 1988-06-06
   170 IND=30000                                                         
       RETURN                                                            
       END                                                               
-C#NUMPAC#MULMMW              REVISED ON 1987-08-03                      
-C*    *** MULMMW *******************************************************
-C     *                                                                *
-C     *   MULMMW......NUMPAC S810-VERSION.                             *
-C     *                                                                *
-C     *   AUTHOR....I.NINOMIYA (CHUBU UNIVERSITY)  1987.07             *
-C     *   CODER.....I.NINOMIYA (CHUBU UNIVERSITY)  1987.07             *
-C     *                                                                *
-C     *   'MULMMW' COMPUTES THE PRODUCT C=A*B OF MATRICES A AND B      *
-C     *                                                                *
-C     *   USAGE                                                        *
-C     *        CALL MULMMW(A,B,C,KA,KB,KC,L,M,N,ILL)                   *
-C     *          A   ....GIVEN MULTIPLICAND MATRIX OF SIZE L X M.      *
-C     *          B   ....GIVEN MULTIPLIER MATRIX OF SIZE M X N.        *
-C     *          C   ....RESULTANT PRODUCT MATRIX OF SIZE L X N        *
-C     *          KA  ....GIVEN ADJUSTABLE DIMENSION OF A.              *
-C     *          KB  ....GIVEN ADJUSTABLE DIMENSION OF B.              *
-C     *          KC  ....GIVEN ADJUSTABLE DIMENSION OF C.              *
-C     *          L   ....GIVEN NUMBER OF ROWS OF A AND C.              *
-C     *          M   ....GIVEN NUMBER OF COLUMNS(ROWS) OF A(B).        *
-C     *          N   ....GIVEN NUMBER OF COLUMNS OF B AND C.           *
-C     *          ILL ....RESULTANT ERROR CODE.                         *
-C     *             0          ....NORMAL TERMINATION.                 *
-C     *             30000      ....PARAMETER ERROR.                    *
-C     *                                                                *
-C     *   SLAVE SUBROUTINE                                             *
-C     *        NONE.                                                   *
-C     *                                                                *
-C     ******************************************************************
-C                                                                       
-C     ******************************************************************
-C                                                                       
-      SUBROUTINE MULMMW(A,B,C,KA,KB,KC,L,M,N,ILL)                       
-C                                                                       
-C     ******************************************************************
-C     ----------------------------------------------------------------- 
-C     DECLARATION                                                       
-C     ----------------------------------------------------------------- 
-      IMPLICIT REAL*8 (A-H,O-Z)                                         
-      DIMENSION A(KA,M),B(KB,N),C(KC,N)                                 
-C     ----------------------------------------------------------------- 
-C     PARAMETER ERROR CHECK                                             
-C     ----------------------------------------------------------------- 
-      IF(L.LT.1.OR.L.GT.KA.OR.L.GT.KC) GO TO 70                         
-      IF(M.LT.1.OR.M.GT.KB) GO TO 70                                    
-      IF(N.LT.1) GO TO 70                                               
-C     ----------------------------------------------------------------- 
-C     OUTER PRODUCT SCHEME (LOOP UNROLLING OF MULTIPLICITY 8)           
-C     ----------------------------------------------------------------- 
-      MM=M/8*8                                                          
-      DO 60 J=1,N                                                       
-      DO 10 I=1,L                                                       
-   10 C(I,J)=0.D0                                                       
-      DO 30 K=1,MM,8                                                    
-      DO 20 I=1,L                                                       
-   20 C(I,J)=C(I,J)+A(I,K)*B(K,J)+A(I,K+1)*B(K+1,J)+A(I,K+2)*B(K+2,J)   
-     *+A(I,K+3)*B(K+3,J)+A(I,K+4)*B(K+4,J)+A(I,K+5)*B(K+5,J)            
-     *+A(I,K+6)*B(K+6,J)+A(I,K+7)*B(K+7,J)                              
-   30 CONTINUE                                                          
-      DO 50 K=MM+1,M                                                    
-      DO 40 I=1,L                                                       
-   40 C(I,J)=C(I,J)+A(I,K)*B(K,J)                                       
-   50 CONTINUE                                                          
-   60 CONTINUE                                                          
-C     ----------------------------------------------------------------- 
-C     NORMAL EXIT                                                       
-C     ----------------------------------------------------------------- 
-      ILL=0                                                             
-      RETURN                                                            
-C     ----------------------------------------------------------------- 
-C     ERROR EXIT                                                        
-C     ----------------------------------------------------------------- 
-   70 ILL=30000                                                         
-      RETURN                                                            
-      END                                                               
-C*
-C********* CFS1A  ** SCFS1A*1 ******************************
-C*                                                         *
-C*       CURVE FITTING BY SPLINES WITH FIXED KNOTS         *
-C*                                                         *
-C*         THE KNOTS MUST PREVIOUSLY BE GIVEN              *
-C*                                                         *
-C*    DIMENSION XR(KOSU),FR(KOSU),SIGMAR(KOSU),XI(N+1)     *
-C*             ,CJ(N+K-1),DRESP(N+K-1),STATI(3)            *
-C*             ,IHIST(2,25),PERCT(10),PERLIM(10)           *
-C*             ,WORKC((N+K-1)*(K+1)+K)                     *
-C*             ,IWORKC(KOSU+N+K-1)                         *
-C*                                                         *
-C*             (N=100 , K=10 , KOSU=2001)                  *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE CFS1A(XR,FR,SIGMAR,XI,CJ,DRESP,STATI,IHIST
-     1          ,PERCT,WORKC,IWORKC,N,K,KOSU,IWR,ICON)
-      DIMENSION XR(2001),FR(2001),SIGMAR(2001)
-     1         ,XI(101),CJ(109),DRESP(109),STATI(3)
-     2         ,IHIST(2,25),PERCT(10),WORKC(1209)
-     3         ,IWORKC(2109)
-      DATA HISINT,KOHIS / 0.2 , 25 /
-C--------- PARAMETER CHECK ---------------------------------
-      ICON=0
-      IF(K.LT.1) ICON=-1
-      IF(N.LT.1) ICON=-2
-      IF(ICON.LT.0) RETURN
-      XLEF=XI(1)
-      XRIG=XI(1)
-      NP1=N+1
-      DO 1100 IP1=1,NP1
-      IF(XI(IP1).LT.XLEF) XLEF=XI(IP1)
-      IF(XI(IP1).GT.XRIG) XRIG=XI(IP1)
- 1100 CONTINUE
-      IF(XR(1   ).LT.XLEF) ICON=-3
-      IF(XR(KOSU).GT.XRIG) ICON=-4
-      IF(ICON.LT.0) RETURN
-      KOSU1=KOSU-1
-      DO 1110 K1=1,KOSU1
-      IF(XR(K1).GT.XR(K1+1)) ICON=-5
- 1110 CONTINUE
-      IF(ICON.LT.0) RETURN
-C--------- END OF PARAMETER CHECK --------------------------
-      NA=N
-      KA=K
-      NAKM1=NA+KA-1
-      IW1=1
-      IW2=IW1+NAKM1*KA
-      IW3=IW2+NAKM1
-C     IW4=IW3+KA
-      IIW1=1
-      IIW2=IIW1+KOSU
-C     IIW3=IIW2+NA+KA-1
-      CALL REOK1(XI,XR,IWORKC(IIW1),NA,KOSU)
-      CALL SPCA1(XR,FR,SIGMAR,XI,CJ,DRESP,NA,KA,KOSU,IWR
-     1    ,IWORKC(IIW1),IWORKC(IIW2),WORKC(IW1),WORKC(IW2)
-     2    ,WORKC(IW3),NAKM1)
-      CALL SPOB1(XR,FR,SIGMAR,XI,CJ,STATI,IHIST,XINS
-     1    ,HISINT,KOHIS,PERCT,NA,KA,KOSU,IWR,IWORKC(IIW1)
-     2    ,WORKC(IW2),WORKC(IW3))
-      RETURN
-      END
-C*
-C********* SPCA1  ** SSPCA1*1 ******************************
-C*                                                         *
-C*            CURVE FITTING BY SPLINES                     *
-C*                                                         *
-C*       CALCULATION OF MULTIPLIERS OF B-SPLINES           *
-C*                                                         *
-C*    DIMENSION PMAT(N+K-1,K),UVEC(N+K-1),XI(N+1)          *
-C*             ,XR(KOSU),FR(KOSU),SIGMAR(KOSU),IXR(KOSU)   *
-C*             ,BN(K),CJ(N+K-1),DRESP(N+K-1)               *
-C*             ,INDEP(N+K-1)                               *
-C*                                                         *
-C*             (N=100 , K=10 , KOSU=2001 )                 *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE SPCA1(XR,FR,SIGMAR,XI,CJ,DRESP,N,K,KOSU,IWR
-     1          ,IXR,INDEP,PMAT,UVEC,BN,NK1D)
-      DIMENSION PMAT(NK1D,10),UVEC(NK1D),XI(101),XR(2001)
-     1         ,FR(2001),SIGMAR(2001),IXR(2001),BN(10)
-     2         ,CJ(NK1D),DRESP(NK1D),INDEP(NK1D)
-      DATA ZEROP / 1.0E-20 /
-      NM1=N-1
-      NKM1=N+K-1
-      DO 1110 IAPK=1,NKM1
-      DO 1100 IB1=1,K
-      PMAT(IAPK,IB1)=0.0
- 1100 CONTINUE
-      UVEC(IAPK)=0.0
- 1110 CONTINUE
-      DO 1150 K1=1,KOSU
-      IN=IXR(K1)
-      IF(IN.LT.0) GO TO 1140
-      IF(IN.GT.NM1) GO TO 1140
-      K1S=1
-      IF(IWR.NE.0) K1S=K1
-      WR1=(1.0/SIGMAR(K1S))**2
-      FR1=FR(K1)
-      CALL BAS0B(XR(K1),IN,N,K,XI,BN)
-      IAKL=IN+1
-      IAKU=IN+K
-      DO 1130 IAPK=IAKL,IAKU
-      IAO=IAPK-IN
-      WB1=WR1*BN(IAO)
-      DO 1120 IBPK=IAKL,IAPK
-      IB1=IBPK-IAPK+K
-      IBO=IBPK-IN
-      PMAT(IAPK,IB1)=PMAT(IAPK,IB1)+WB1*BN(IBO)
- 1120 CONTINUE
-      UVEC(IAPK)=UVEC(IAPK)+WB1*FR1
- 1130 CONTINUE
- 1140 CONTINUE
- 1150 CONTINUE
-      AMAX=0.0
-      DO 1160 IAPK=1,NKM1
-      IF(PMAT(IAPK,K).GT.AMAX) AMAX=PMAT(IAPK,K)
-      IF(PMAT(IAPK,K).EQ.0.0) PMAT(IAPK,K)=1.0
- 1160 CONTINUE
-      PZERO=AMAX*ZEROP
-      DO 1170 IAPK=1,NKM1
-      DRESP(IAPK)=UVEC(IAPK)
- 1170 CONTINUE
-      CALL CDB2A(PMAT,UVEC,PZERO,INDEP,NKM1,K,0,ICON,NK1D)
-      DO 1180 IAPK=1,NKM1
-      CJ(IAPK)=UVEC(IAPK)
-      DRESP(IAPK)=DRESP(IAPK)*CJ(IAPK)
- 1180 CONTINUE
-      RETURN
-      END
-C*
-C********* SPOB1  ** SSPOB1*1 ******************************
-C*                                                         *
-C*             CURVE FITTING BY SPLINES                    *
-C*                                                         *
-C*     CALCULATION OF STATISTICS , HISTGRAMS  AND          *
-C*      PREPARATION FOR THE NEW KNOTS INSERTION            *
-C*                                                         *
-C*    DIMENSION STATI(3),IHIST(2,KOHIS),XI(N+1),CJ(N+K-1)  *
-C*             ,XR(KOSU),FR(KOSU),SIGMAR(KOSU),IXR(KOSU)   *
-C*             ,SIGW(N),BN(K),PERCT(10)                    *
-C*                                                         *
-C*             (N=100 , K=10 , KOSU=2001 , KOHIS=26)       *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE SPOB1(XR,FR,SIGMAR,XI,CJ,STATI,IHIST,XINS
-     1          ,HISINT,KOHIS,PERCT,N,K,KOSU,IWR,IXR,SIGW
-     2          ,BN)
-      DIMENSION STATI(3),IHIST(2,26),XI(101),CJ(109)
-     1         ,XR(2001),FR(2001),SIGMAR(2001),IXR(2001)
-     2         ,SIGW(100),BN(10),PERCT(10),IPERC(10)
-      NM1=N-1
-      RESID=0.0
-      DO 1100 IP1=1,N
-      SIGW(IP1)=0.0
- 1100 CONTINUE
-      DO 1110 IC1=1,KOHIS
-      IHIST(1,IC1)=0
-      IHIST(2,IC1)=0
- 1110 CONTINUE
-      DO 1120 IC1=1,10
-      IPERC(IC1)=0
- 1120 CONTINUE
-      DO 1170 K1=1,KOSU
-      IN=IXR(K1)
-      IF(IN.LT.0) GO TO 1160
-      IF(IN.GT.NM1) GO TO 1160
-      CALL BAS0B(XR(K1),IN,N,K,XI,BN)
-      SUM1=0.0
-      DO 1130 IA=1,K
-      IA1=IN+IA
-      SUM1=SUM1+CJ(IA1)*BN(IA)
- 1130 CONTINUE
-      FAPP=SUM1
-      K1S=1
-      IF(IWR.NE.0) K1S=K1
-      EPSI=(FR(K1)-FAPP)/SIGMAR(K1S)
-      ERVAR=EPSI**2
-      RESID=RESID+ERVAR
-      IP1=IN+1
-      SIGW(IP1)=SIGW(IP1)+ERVAR
-      IF(EPSI.GT.0.0) GO TO 1140
-      INTD=IFIX(-EPSI/HISINT)+1
-      IF(INTD.GT.KOHIS) INTD=KOHIS
-      IHIST(1,INTD)=IHIST(1,INTD)+1
-      GO TO 1150
- 1140 INTD=IFIX( EPSI/HISINT)+1
-      IF(INTD.GT.KOHIS) INTD=KOHIS
-      IHIST(2,INTD)=IHIST(2,INTD)+1
- 1150 INTC=IFIX(ABS(EPSI))+1
-      IF(INTC.GT.10) INTC=10
-      IPERC(INTC)=IPERC(INTC)+1
- 1160 CONTINUE
- 1170 CONTINUE
-      STATI(1)=RESID
-      STATI(2)=RESID/FLOAT(KOSU-(N+K-1))
-      STATI(3)=FLOAT(KOSU)*ALOG(RESID)+FLOAT(2*(N+K-1))
-      AMAX=0.0
-      DO 1190 IP1=1,N
-      IF(AMAX.GT.SIGW(IP1)) GO TO 1180
-      AMAX=SIGW(IP1)
-      IMAX=IP1
- 1180 CONTINUE
- 1190 CONTINUE
-      XINS=(XI(IMAX)+XI(IMAX+1))*0.5
-      DO 1200 IC1=2,10
-      IPERC(IC1)=IPERC(IC1)+IPERC(IC1-1)
- 1200 CONTINUE
-      DO 1210 IC1=1,10
-      PERCT(IC1)=FLOAT(IPERC(IC1))/FLOAT(KOSU)
- 1210 CONTINUE
-      RETURN
-      END
-C*
-C********* BAS0B  ** SBAS0B*1 ******************************
-C*                                                         *
-C*      COMPUTATION OF THE BASIS FUNCTION OF SPLINES       *
-C*    (1) SIMPLE KNOTS BUT MULTIPLICITY-K ON BOTH ENDS     *
-C*                                                         *
-C*    @@@@@           N(J)(XP) ONLY              @@@@@     *
-C*                                                         *
-C*    DIMENSION XI(N+1),BN(K)                              *
-C*                                                         *
-C*    N.........THE NUMBER OF THE KNOTS OF B-SPLINES       *
-C*    K.........ORDER OF THE B-SPLINES                     *
-C*    XI........KNOTS OF B-SPLINES                         *
-C*                                                         *
-C*       MUST SATISFIES  XI(I+1)<=XP<XI(I+2)               *
-C*                                                         *
-C*    BN(1,2,...,K) CONTAINES N(I-K+1,I-K+2,...,I)         *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE BAS0B(XP,I,N,K,XI,BN)
-      DIMENSION XI(101),BN(10)
-      BN(K)=1.0/(XI(I+2)-XI(I+1))
-      DO 1120 IS=2,K
-      JRS=K-IS+1
-      DO 1110 JR=JRS,K
-      IR  =I-K+JR
-      IRPS=IR+IS
-      IF(IR  .LT.0) IR  =0
-      IF(IRPS.GT.N) IRPS=N
-      TR  =XI(IR  +1)
-      TRPS=XI(IRPS+1)
-      AN1=0.0
-      IF(JR.NE.JRS) AN1=BN(JR)
-      AN2=0.0
-      IF(JR.NE.K) AN2=BN(JR+1)
-      BN(JR)=(XP-TR)*AN1+(TRPS-XP)*AN2
-      IF(IS.NE.K) BN(JR)=BN(JR)/(TRPS-TR)
- 1100 CONTINUE
- 1110 CONTINUE
- 1120 CONTINUE
-      RETURN
-      END
-C*
-C********* REOK1  ** SREOK1*1 ******************************
-C*                                                         *
-C*           CURVE FITTING BY SPLINES                      *
-C*                                                         *
-C*       REORDER THE KNOTS AND SEARCH INTERVAL             *
-C*                                                         *
-C*    DIMENSION XI(N+1),XR(KOSU),IXR(KOSU)                 *
-C*                                                         *
-C*              (N=100 , KOSU=2001)                        *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE REOK1(XI,XR,IXR,N,KOSU)
-      DIMENSION XI(101),XR(2001),IXR(2001)
-      DATA ZERO / 1.0E-05 /
-      NM1=N-1
-      NP1=N+1
-      EPSX=(XI(NP1)-XI(1))*ZERO
-C *** REORDER THE KNOTS
-      ICOUN=0
-      I1=0
- 1100 ISK=0
-      I1=I1+1
-      DO 1120 I2D=I1,N
-      I2=N+I1-I2D
-      IF(XI(I2).LE.XI(I2+1)) GO TO 1110
-      ISK=ISK+1
-      WK1=XI(I2)
-      XI(I2)=XI(I2+1)
-      XI(I2+1)=WK1
- 1110 CONTINUE
- 1120 CONTINUE
-      IF(ISK.EQ.0) GO TO 1140
-      ICOUN=ICOUN+1
-      IF(ICOUN.LE.NM1) GO TO 1100
-      DO 1130 IP1=1,N
-      IF(XI(IP1+1)-XI(IP1).LT.EPSX) XI(IP1+1)=XI(IP1)
- 1130 CONTINUE
-C *** SEARCH INTERVAL
- 1140 DO 1240 K1=1,KOSU
-      XP=XR(K1)
-      IN=IXR(K1)
-      IF(IN.LT.  0) GO TO 1150
-      IF(IN.GT.NM1) GO TO 1150
-      IF(XP.LT.XI(IN+1)) GO TO 1150
-      IF(XP.GE.XI(IN+2)) GO TO 1150
-      GO TO 1200
- 1150 IF(XP.LT.XI(  1)) GO TO 1210
-      IF(XP.GT.XI(NP1)) GO TO 1220
-      IL=  1
-      IU=NP1
- 1160 IF((IU-IL).LE.1) GO TO 1180
-      IM=(IL+IU)/2
-      IF(XP.GE.XI(IM)) GO TO 1170
-      IU=IM
-      GO TO 1160
- 1170 IL=IM
-      GO TO 1160
- 1180 IF(XI(IL+1)-XI(IL).GT.EPSX) GO TO 1190
-      IL=IL+1
-      GO TO 1180
- 1190 IN=IL-1
- 1200 IXR(K1)=IN
-      GO TO 1230
- 1210 IXR(K1)= -1
-      GO TO 1230
- 1220 IXR(K1)=NP1
- 1230 CONTINUE
- 1240 CONTINUE
-      RETURN
-      END
-C*
-C********* CDB2A  ** SCDB2A*1 ******************************
-C*                                                         *
-C*      SOLUTION OF SIMULTANEOUS LINEAR EQUATION           *
-C*    CHOLESKI DECOMPOSITION  (BAND MATRIX - LOWER)        *
-C*    (SET THE VALUE 'ZERO' TO DEPENDENT VARIABLES)        *
-C*                                                         *
-C*    KIND=0...SIMULTANEOUS LINEAR EQUATION                *
-C*    KIND=1...CHOLESKI DECOMPOSITION                      *
-C*    KIND=2...FOWARD AND BACKWARD SUBSTITUTION            *
-C*                                                         *
-C*********        **          ******************************
-      SUBROUTINE CDB2A(A,B,PZERO,INDEP,N,K,KIND,ICON,ND)
-      DIMENSION A(ND,10),B(ND),INDEP(ND)
-      DOUBLE PRECISION SUM1,THR
-      ICON=0
-      THR=PZERO
-      IF(N.GE.2) GO TO 1110
-      IF(N.LE.0) GO TO 1340
-      IF(KIND.EQ.1) GO TO 1100
-      B(1)=B(1)/A(1,K)
-      GO TO 1340
- 1100 INDEP(1)=1
-      GO TO 1340
- 1110 IF(KIND.EQ.2) GO TO 1260
-      DO 1120 IP=1,N
-      INDEP(IP)=1
- 1120 CONTINUE
-C     CHOLESKI DECOMPOSITION
-      DO 1250 IP=1,N
-      SUM1=A(IP,K)
-      IF(IP.EQ.1) GO TO 1140
-      ICL=1
-      IF(IP.LT.K) ICL=K-IP+1
-      ICU=K-1
-      DO 1130 IC=ICL,ICU
-      SUM1=SUM1-DBLE(A(IP,IC))**2
- 1130 CONTINUE
- 1140 IF(SUM1.GT.THR) GO TO 1190
-      INDEP(IP)=0
-      A(IP,K)=1.0
-      ICL=IP-K+1
-      IF(ICL.LT.1) ICL=1
-      ICU=IP-1
-      IF(ICU.LT.1) GO TO 1160
-      DO 1150 IC=ICL,ICU
-      ICS=IC-IP+K
-      A(IP,ICS)=0.0
- 1150 CONTINUE
- 1160 IRU=IP+K-1
-      IF(IRU.GT.N) IRU=N
-      IRL=IP+1
-      IF(IRL.GT.N) GO TO 1180
-      DO 1170 IR=IRL,IRU
-      ICS=IP-IR+K
-      A(IR,ICS)=0.0
- 1170 CONTINUE
- 1180 ICON=-IP
-      GO TO 1240
- 1190 A(IP,K)=DSQRT(SUM1)
-      IRL=IP+1
-      IF(IRL.GT.N) GO TO 1240
-      IRU=IP+K-1
-      IF(IRU.GT.N) IRU=N
-      DO 1230 IR=IRL,IRU
-      IP1=IP+K-IR
-      SUM1=A(IR,IP1)
-      ICU=IP-1
-      IF(ICU.LT.1) GO TO 1220
-      ICL=IP-K+1
-      IF(ICL.LT.1) ICL=1
-      DO 1210 IC=ICL,ICU
-      IC1=IC+K-IP
-      IC2=IC+K-IR
-      IF(IC2.LT.1) GO TO 1200
-      SUM1=SUM1-DBLE(A(IP,IC1))*DBLE(A(IR,IC2))
- 1200 CONTINUE
- 1210 CONTINUE
- 1220 A(IR,IP1)=SUM1/DBLE(A(IP,K))
- 1230 CONTINUE
- 1240 CONTINUE
- 1250 CONTINUE
-C     FOWARD AND BACKWARD SUBSTITUTION
- 1260 IF(KIND.EQ.1) GO TO 1340
-      DO 1270 IP=1,N
-      IF(INDEP(IP).EQ.0) B(IP)=0.0
- 1270 CONTINUE
-      NP1=N+1
-C     FOWARD SUBSTITUTION
-      DO 1300 IP=1,N
-      SUM1=B(IP)
-      ICU=IP-1
-      IF(ICU.LT.1) GO TO 1290
-      ICL=IP-K+1
-      IF(ICL.LT.1) ICL=1
-      DO 1280 IC=ICL,ICU
-      IC1=IC+K-IP
-      SUM1=SUM1-DBLE(A(IP,IC1))*DBLE(B(IC))
- 1280 CONTINUE
- 1290 B(IP)=SUM1/DBLE(A(IP,K))
- 1300 CONTINUE
-C     BACKWARD SUBSTITUTION
-      DO 1330 IPD=1,N
-      IP=NP1-IPD
-      SUM1=B(IP)
-      ICL=IP+1
-      IF(ICL.GT.N) GO TO 1320
-      ICU=IP+K-1
-      IF(ICU.GT.N) ICU=N
-      DO 1310 IC=ICL,ICU
-      IC1=IP+K-IC
-      IP1=IC
-      SUM1=SUM1-DBLE(A(IP1,IC1))*DBLE(B(IC))
- 1310 CONTINUE
- 1320 B(IP)=SUM1/DBLE(A(IP,K))
- 1330 CONTINUE
- 1340 RETURN
-      END
 C
 C     FFTE: A FAST FOURIER TRANSFORM PACKAGE
 C
@@ -6169,6 +5357,7 @@ c---------------------------------------------------------
       implicit real*8(a-h,o-z)
       dimension rk(0:ngrid),hwv(0:ngrid)
       dimension yd(0:ngrid)
+      dimension y(1)
       n = int(rk3/dk1)+1
       if (n.ge.ngrid+1) n=ngrid
       if (rk3.ge.(dk1*dble(ngrid))) then 
@@ -6193,7 +5382,7 @@ c     http://netnumpac.fuis.fukui-u.ac.jp/cgi-bin/numpac/htoh?083.html
 c
       call herd31(n,rk3,y,m,ngrid+1,rk(0),hwv(0),yd(0),ngrid+1,ill)
 c-----+numpac>
-      hrho=y
+      hrho=y(0)
       return
       end
 c---------------------------------------------------------

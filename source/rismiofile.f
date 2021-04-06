@@ -194,16 +194,13 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Read 3D function from file
 c----------------------------------------------------------------
-      subroutine read3dfunc(namef,func3d,nvuq,ng3d,ncmp)
+      subroutine read3dfunc(namef,func3d,nvuq,ng3d)
 c
-c     ncmp : 1... real function,  2...complex function
-c      
       implicit real*8(a-h,o-z)
       character*256 namef
       character*2 char2
 c
-      dimension func3d(ncmp,ng3d,nvuq)
-      dimension dum(ncmp)
+      dimension func3d(ng3d,nvuq)
 c
 c----------------------------------------------------------------
       ift=45
@@ -216,7 +213,7 @@ c     read header
 c
 c     check consistency
       if (nvuq.ne.nvuqx .or. ng3d.ne.ng3dx
-     &     .or. ncmp.ne.ncmpx ) then
+     &     .or. ncmpx.ne.1 ) then
          write(*,*) "Error."
          write(*,*) "Reading 3d function inconsistency."
          ierr=568
@@ -231,10 +228,7 @@ c
 c     read function
       do j=1,nvuq
          do k=1,ng3d
-            read(ift,*) (dum(i),i=1,ncmp)
-            do i=1,ncmp
-               func3d(i,k,j)=dum(i)
-            enddo
+            read(ift,*)  func3d(k,j)
          enddo
       enddo
       
@@ -246,23 +240,21 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Write 3D function to file
 c----------------------------------------------------------------
-      subroutine write3dfunc(namef,func3d,rdelta3d,nvuq,ng3d,ncmp
+      subroutine write3dfunc(namef,func3d,rdelta3d,nvuq,ng3d
      &                      ,char80)
 c
-c     ncmp : 1... real function,  2...complex function
-c      
       implicit real*8(a-h,o-z)
       character*256 namef
       character*2 char2
       character*80 char80
 c
-      dimension func3d(ncmp,ng3d,nvuq)
+      dimension func3d(ng3d,nvuq)
 c
 c----------------------------------------------------------------
       ift=45
       nremark=0
       open (ift,file=namef)
-      write(ift,9990) nvuq,ng3d,ncmp,rdelta3d
+      write(ift,9990) nvuq,ng3d,1,rdelta3d
       write(ift,9991) char80
       write(ift,9992) nremark
       do i=1,nremark
@@ -271,7 +263,49 @@ c----------------------------------------------------------------
       
       do iv=1,nvuq
          do ig=1,ng3d
-            write (ift,9995) (func3d(icmp,ig,iv),icmp=1,ncmp)
+            write (ift,9995) func3d(ig,iv)
+         enddo
+      enddo
+      
+      close(ift)
+c----------------------------------------------------------------
+      return
+ 9990 format("## 3D Function :",3i8,f16.8)
+ 9991 format("##  ",a80)
+ 9992 format("##  ",i4)
+ 9993 format("##  ",a80)
+ 9994 format(e16.8e3)
+ 9995 format(e16.8e3,2x,e16.8e3)
+      end
+c**************************************************************
+c----------------------------------------------------------------
+c     Write 3D function to file (complex)
+c----------------------------------------------------------------
+      subroutine write3dfuncz(namef,func3d,rdelta3d,nvuq,ng3d
+     &                      ,char80)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+      character*80 char80
+      complex*16 func3d
+c
+      dimension func3d(ng3d,nvuq)
+c
+c----------------------------------------------------------------
+      ift=45
+      nremark=0
+      open (ift,file=namef)
+      write(ift,9990) nvuq,ng3d,2,rdelta3d
+      write(ift,9991) char80
+      write(ift,9992) nremark
+      do i=1,nremark
+         write (ift,9993) "remarks "
+      enddo
+      
+      do iv=1,nvuq
+         do ig=1,ng3d
+            write (ift,9995) func3d(ig,iv)
          enddo
       enddo
       
@@ -289,23 +323,21 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Write 3D function to file with xyz coordinate
 c----------------------------------------------------------------
-      subroutine write3dfuncxyz(namef,func3d,rdelta3d,nvuq,ngrid3d,ncmp
+      subroutine write3dfuncxyz(namef,func3d,rdelta3d,nvuq,ngrid3d
      &                      ,char80)
 c
-c     ncmp : 1... real function,  2...complex function
-c      
       implicit real*8(a-h,o-z)
       character*256 namef
       character*2 char2
       character*80 char80
 c
-      dimension func3d(ncmp,ngrid3d**3,nvuq)
+      dimension func3d(ngrid3d**3,nvuq)
 c
 c----------------------------------------------------------------
       ift=45
       nremark=2
       open (ift,file=namef)
-      write(ift,9990) nvuq,ngrid3d,ncmp,rdelta3d
+      write(ift,9990) nvuq,ngrid3d,1,rdelta3d
       write(ift,9991) char80
       write(ift,9992) nremark
 
@@ -324,7 +356,7 @@ c----------------------------------------------------------------
             rz=rdelta3d*dble(kz-k0)
             k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
 
-            write (ift,9995) rx,ry,rz,(func3d(icmp,k,iv),icmp=1,ncmp)
+            write (ift,9995) rx,ry,rz,func3d(k,iv)
 
          enddo
          enddo

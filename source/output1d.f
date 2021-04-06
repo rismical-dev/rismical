@@ -20,7 +20,7 @@ c
       implicit real*8 (a-h,o-z)
       character*6 char6
       character*256 scrjob
-      character*80 char80
+      character*80 char80,char802
       real*8 ,allocatable :: gbuff(:,:,:)
 
       include "phys_const.i"
@@ -33,6 +33,7 @@ c
       dimension ck(ngrid,n1,n2),fk(ngrid,n1,n2)
 
 c----------------------------------------------------------------
+      char802="REMARKS"
 C
 C     --- Individual format
 C      
@@ -57,9 +58,10 @@ c
                enddo
             enddo
          enddo
+
          char80="g(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n1,n2,ngrid,char80)
+     &           ,n1,n2,ngrid,1,char80,char802)
       endif
 c
 c     write ur
@@ -78,7 +80,7 @@ c
 
          char80="beta x u(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n1,n2,ngrid,char80)
+     &           ,n1,n2,ngrid,1,char80,char802)
 
       endif
 c
@@ -97,7 +99,7 @@ c
          enddo
          char80="c(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n1,n2,ngrid,char80)
+     &           ,n1,n2,ngrid,1,char80,char802)
       endif
 c
 c     write ck
@@ -115,7 +117,7 @@ c
          enddo
          char80="c(k) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n1,n2,ngrid,char80)
+     &           ,n1,n2,ngrid,1,char80,char802)
       endif
 c
 c
@@ -134,11 +136,10 @@ c
          enddo
          char80="t(r) data"
          call write1dfunc(scrjob,gbuff,rdelta
-     &           ,n1,n2,ngrid,char80)
+     &           ,n1,n2,ngrid,1,char80,char802)
       endif
 c
       deallocate (gbuff)
-
 c----------------------------------------------------------------
       return
  9997 format ("##<",4x,a4,">-<",a4,">")

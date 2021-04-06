@@ -63,7 +63,7 @@ c
          enddo
          char80="guv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &        ,nvuq,ng3d,1,char80)
+     &        ,nvuq,ng3d,char80)
       endif
 c
 c     write ur
@@ -79,7 +79,7 @@ c
          enddo
          char80="uuv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &           ,nvuq,ng3d,1,char80)
+     &           ,nvuq,ng3d,char80)
       endif
 c         
 c     write vres
@@ -92,7 +92,7 @@ c
             gbuff(ig,1)=vres(ig)
          enddo
          char80="vres data (electrostatic field due to solute)"
-         call write3dfunc(scrjob,gbuff,rdelta3d,1,ng3d,1,char80)
+         call write3dfunc(scrjob,gbuff,rdelta3d,1,ng3d,char80)
       endif
 c
 c     write cr
@@ -102,7 +102,7 @@ c
          scrjob=trim(basename)//".cuv"
          
          char80="cuv data"
-         call write3dfunc(scrjob,cr,rdelta3d,nvuq,ng3d,2,char80)
+         call write3dfuncz(scrjob,cr,rdelta3d,nvuq,ng3d,char80)
             
       endif
 c
@@ -113,7 +113,7 @@ c
          scrjob=trim(basename)//".tuv"
 
          char80="tuv data"
-         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ng3d,1,char80)
+         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ng3d,char80)
          
       endif
 c     
@@ -138,7 +138,7 @@ c
 
          scrjob=trim(basename)//".huvk"
          char80="huv(k) data"
-         call write3dfunc(scrjob,hk,rdelta3d,nvuq,ng3d,2,char80)
+         call write3dfuncz(scrjob,hk,rdelta3d,nvuq,ng3d,char80)
             
          deallocate (hk)
 
@@ -150,12 +150,12 @@ c
          scrjob=trim(basename)//".fuv"
          
          char80="f(r) data"
-         call write3dfunc(scrjob,fr,rdelta3d,1,ng3d,1,char80)
+         call write3dfunc(scrjob,fr,rdelta3d,1,ng3d,char80)
          
          scrjob=trim(basename)//".fuvk"
 
          char80="f(k) data"
-         call write3dfunc(scrjob,fk,rdelta3d,1,ng3d,2,char80)
+         call write3dfuncz(scrjob,fk,rdelta3d,1,ng3d,char80)
             
       endif
 c
@@ -180,7 +180,7 @@ c
 
          char80="charge distribution of solvent data"
          call write3dfuncxyz(scrjob,gbuff,rdelta3d
-     &                      ,1,ngrid3d,1,char80)
+     &                      ,1,ngrid3d,char80)
       endif
 c
 c
