@@ -12,7 +12,7 @@ grid="user"
 numspc=1
 solvent(1)="user"
 TEMP=298.d0,
-DENS(1)=54.d0
+DENS(1)=55.5d0
  $end
  $MDIIS
 NSUB=10,DUMPMAX=0.2d0,DUMPMIN=0.001d0

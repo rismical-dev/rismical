@@ -1,9 +1,0 @@
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c rismiofile.f -o rismiofile.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c setup1dvx.f -o setup1dvx.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c misc.f -o misc.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c read3duvdata.f -o read3duvdata.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c setuparraysize.f -o setuparraysize.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c output1d.f -o output1d.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c readguess1d.f -o readguess1d.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -c uvbind3d.f -o uvbind3d.o 
-gfortran -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -lblas -llapack calxvk.o output3d.o readguess3d.o cl_oz1d.o outputvv.o readxvk.o closure3d.o oz3d.o readinput.o drism.o potential3duv.o readuvdata.o fbond3duv.o potentialuv.o readvvdata.o fbonduv.o potentialvv.o rismical.o fbondvv.o printlogo.o rismical1d.o makewx.o prop1duv.o rismical3d.o mathlib.o prop1dvv.o rismicalvv.o mdiis.o prop3duv.o rismiofile.o setup1dvx.o misc.o read3duvdata.o setuparraysize.o output1d.o readguess1d.o uvbind3d.o -o rismical.x  

@@ -374,3 +374,100 @@ c----------------------------------------------------------------
  9995 format(4x,3f12.4, 2x,e16.8e3,2x,e16.8e3)
  9996 format("##  ",3A12,2x,2A16)
       end
+c**************************************************************
+c----------------------------------------------------------------
+c     Read electrostatic potential map
+c----------------------------------------------------------------
+      subroutine readespmap(namef,vres,qu,rdelta3d,ngrid3d,maxslu)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+      character*4 char4
+      character*15 char15
+c
+      dimension vres(ngrid3d**3)
+      dimension qu(maxslu)
+c
+c----------------------------------------------------------------
+      ift=45
+      open (ift,file=namef,status='old',err=999)
+c
+c     Read point charges
+c
+      read(ift,*,err=999) char2
+      read(ift,*) nu
+      do i=1,nu
+         read(ift,*) qu(i)
+      enddo
+c
+c     Read Grid
+c
+      read(ift,*,err=999) char2,char4,ng3d,rd3d
+c
+      if (ng3d.ne.ngrid3d.or.rd3d.ne.rdelta3d) then
+         write(*,*) "Error. ESP map grid inconsistent."
+         write(*,*) ng3d,ngrid3d
+         write(*,*) rd3d,rdelta3d
+         ierr=410
+         call abrt(ierr)
+      endif
+c
+c     Skip remark lines
+c
+      read(ift,*) char2
+      read(ift,*) char2,char4,iremark
+      do i=1,iremark
+         read(ift,*) char2
+      enddo
+c
+c     Read ESP map
+c
+      k0=ngrid3d/2+1
+      do iv=1,ngrid3d**3
+
+         read (ift,*) rx,ry,rz,val
+
+         kx=nint(rx/rdelta3d)+k0
+         ky=nint(ry/rdelta3d)+k0
+         kz=nint(rz/rdelta3d)+k0
+         k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
+         vres(k)=val
+ 
+      enddo
+c      
+      close(ift)
+c----------------------------------------------------------------
+      return
+ 999  continue
+      write(*,*) "Error during read esp file:",trim(namef)
+      ierr=4728
+      call abrt(ierr)
+      end
+c**************************************************************
+c----------------------------------------------------------------
+c     Read electrostatic potential map
+c----------------------------------------------------------------
+      subroutine readresp(namef,qu,maxslu)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+c
+       dimension qu(maxslu)
+c----------------------------------------------------------------
+      ift=45
+      open (ift,file=namef,status='old')
+c
+c     Read point charges
+c
+      read(ift,*) char2
+      read(ift,*) nu
+      do i=1,nu
+         read(ift,*) qu(i)
+      enddo
+c      
+      close(ift)
+c----------------------------------------------------------------
+      return
+      end

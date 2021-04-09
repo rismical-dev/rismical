@@ -4,7 +4,7 @@ ITRMAX=300,
 CONV=1.d-5,
 CHARGEUP="off",
 IGUESS=0,
-iolist="gq"
+iolist="gqu"
 grid="user"
  $END
  $chargeupopt chgstep=0.2 $end

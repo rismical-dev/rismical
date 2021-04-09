@@ -9,8 +9,8 @@ c     n2=nv         ... number of site of solvent
 c     ck            ... k-space direct correlation function 
 c     cr            ... direct correlation function 
 c     tr            ... tau bond =hr-cr
-c     vres          ... electro static field [erg/e]
-c     urlj          ... LJ potential energy [erg]
+c     vres          ... electro static field [J/mol/e]
+c     urlj          ... LJ potential energy [J/mol]
 c     
       implicit real*8 (a-h,o-z)
       complex*16 cr,fk

@@ -157,14 +157,7 @@ c
 c
 c     Read EPS file to get point charge
 c
-         ift2=46
-         open(ift2,file=soluteesp,status='old')
-         read(ift2,*) n
-         if (n.ne.nu) goto 9998
-         do i=1,nu
-            read (ift2,*) qu(i)
-         enddo
-         close(ift2)
+         call readresp(soluteesp,qu,maxslu)
 c
 c     Get LJ parameter 
 c
@@ -189,15 +182,15 @@ c
 
          else
 
-         ift2=46
-         open(ift2,file=solutelj,status='old')
-         read(ift2,*) n
-         if (n.ne.nu) goto 9998
-         do i=1,nu
-            read (ift2,*) siglju(iu),epslju(iu)
-         enddo
-         close(ift2)
-
+            ift2=46
+            open(ift2,file=solutelj,status='old')
+            read(ift2,*) n
+            if (n.ne.nu) goto 9998
+            do i=1,nu
+               read (ift2,*) siglju(i),epslju(i)
+            enddo
+            close(ift2)
+            
          endif
 
       endif
@@ -255,7 +248,7 @@ c
      &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
       enddo
       write(*,9804) temp
-      write(*,*) "Solvent xvv file:",solventxvv
+      write(*,*) "Solvent xvv file:",trim(solventxvv)
 c--------------------------------------------------------------
       return
  9998 write(*,*) "Error. Solute data missmatch"

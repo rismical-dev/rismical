@@ -5,8 +5,8 @@ c----------------------------------------------------------------
 c     
 c     ng3d=ngrid3d**3 ... number of grid of 3D-RDF
 c     n2uq=nvuq       ... number of symmetry uniq site of solvent
-c     vres            ... electro static potential [erg/e]
-c     urlj            ... LJ potential energy  [erg]
+c     vres            ... electro static potential
+c     urlj            ... LJ potential energy 
 c     
       implicit real*8 (a-h,o-z)
 c
@@ -18,11 +18,11 @@ c
 c
       real*8 ,allocatable :: epsig6(:,:)
       real*8 ,allocatable :: epsig12(:,:)
-      
+c      
       dimension vres(ng3d)
       dimension urlj(ng3d,n2uq)
       dimension listcore(ng3d)
-c
+c     
       allocate (epsig6(nu,nv),epsig12(nu,nv))
 c-----------------------------------------------------------------
 c
@@ -131,8 +131,7 @@ C
             rz=rdelta3d*dble(kz-k0)-xyzu(3,i)
             rr=dsqrt(rx**2+ry**2+rz**2)
 C     
-            vres(k)=vres(k)
-     &           +qu(i)/rr*fel  
+            vres(k)=vres(k) + qu(i)/rr*fel  
 C
  6100       continue
 C
@@ -146,16 +145,8 @@ c     Read from external file
 c
       elseif (ipot3d.eq.1) then
 
-         ift=45
-         open (ift,file=espfile,status='old')
-         read(ift,*) n
-         do i=1,n
-            read(ift,*) dum
-         enddo
-         read(ift,*) (vres(k),k=1,ng3d)
+         call readespmap(espfile,vres,qu,rdelta3d,ngrid3d,maxslu)
 
-         close(ift)
-C
       else
 
          write(*,*) "Error. Invalid potential option."
