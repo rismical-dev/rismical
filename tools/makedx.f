@@ -2,112 +2,101 @@ c
 c
 c     Make .dx file from UVDATA
 c
-c     Usage: % makedx.x [ngrid3d] [rdelta3d] [nvuq] [nplt] [format] < [INPUT] > [OUTPUT]
-c     Example: % makedx.x 128 0.5 2 1 < UVDATA > gr_O.txt
-c
 c
       program main
 
       implicit real*8 (a-h,o-z)
       character*1 char1
+      character*2 char2,char2a
+      character*3 char3,charv
+      character*4 char4,char4a,char4b
       character*8 char8,fmat
-      real*8, allocatable :: gr(:,:,:)
+      character*80 char80
+      real*8, allocatable :: gr(:,:,:,:)
 c
-cc      read (*,*) ngrid3d,rdelta3d,nvuq,nplt
-      call getarg(1,char8)
+      call getarg(1,char80)
 c
       if (char8.eq."-h") then
-         write(*,*) "Usage: % makedx.x ",
-     . "[ngrid3d] [rdelta3d] [nvuq] [nplt] [format]",
-     . " < [INPUT] > [OUTPUT]"
-         write(*,*) "Example: % makedx.x 128 0.5 2 1",
-     . "< UVDATA > gr_O.txt"
+         write(*,*) "Usage: % makedx.x [guv file]"
          stop
       endif
 c
-      read (char8,*) ngrid3d
-      call getarg(2,char8)
-      read (char8,*) rdelta3d
-      call getarg(3,char8)
-      read (char8,*) nvuq
-      call getarg(4,char8)
-      read (char8,*) nplt
-      call getarg(5,char8)
-      read (char8,*) fmat
+      ift=45
+      open (ift, file=char80)
 c
-      allocate (gr(ngrid3d,ngrid3d,ngrid3d))
+c     Read Header
 c
-      if (fmat.eq."DETAIL") then
-      do j=1,nplt
-         
-         read(*,*) char1
-         read(*,*) char1
+      read (ift,*) char2,char2a,char8,char1,nv,ng3d,idum,rdelta3d
+      read (ift,*) char2
+      read (ift,*) char2,nremark
+      do i=1,nremark
+         read (ift,*) char2
+      enddo
+c
+      ngrid3d=int(dble(ng3d)**(1.d0/3.d0))
+c
+      write(*,*) "ngrid3d:",ngrid3d
+      write(*,*) "nv:",nv
+      write(*,*) "rdelta3d:",rdelta3d
+c
+c     Read g(r)
+c
+      allocate (gr(ngrid3d,ngrid3d,ngrid3d,nv))
+c
+      do j=1,nv
          do kz=1,ngrid3d
          do ky=1,ngrid3d
          do kx=1,ngrid3d
-            k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
-            read(*,*) rx,ry,rz,dum1,dum2,g,dum3,dum4
-            if (j.eq.nplt) gr(kx,ky,kz)=g
+            read(ift,*) g
+            gr(kx,ky,kz,j)=g
          enddo
-         read(*,*)
          enddo
-         read(*,*)
          enddo
-         
-      enddo
-      elseif (fmat.eq."SIMPLE") then
-      read(*,*) char1
-      do j=1,nplt
-         
-         read(*,*) char1
-         do kz=1,ngrid3d
-         do ky=1,ngrid3d
-         do kx=1,ngrid3d
-            k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
-            read(*,*) dum1,g
-            if (j.eq.nplt) gr(kx,ky,kz)=g
-         enddo
-         read(*,*)
-         enddo
-         read(*,*)
-         enddo
-         
       enddo
 c
-      elseif (fmat.eq."UNFORMAT") then
-         write(*,*) "UNFORMAT is not available. Please use SIMPLE."
-         stop
-      endif
+      close(ift)
 c
-      write(*,8000)
-      write(*,8001) ngrid3d,ngrid3d,ngrid3d
+c     Output in dx format
+c
+      do j=1,nv
+ 
+      write(charv,"(I3.3)") j
+
+      jft=46
+      open (jft,file=trim(char80)//"."//charv//".dx")
+      write(jft,8000)
+      write(jft,8001) ngrid3d,ngrid3d,ngrid3d
 
       xmin=rdelta3d*dble(-ngrid3d/2)
 
       xmax=rdelta3d*dble(ngrid3d/2-1)
 c
-      write(*,8002) xmin,xmin,xmin
-      write(*,8003) rdelta3d
-      write(*,8004) rdelta3d
-      write(*,8005) rdelta3d
-      write(*,8006) ngrid3d,ngrid3d,ngrid3d
-      write(*,8007) ngrid3d**3
+      write(jft,8002) xmin,xmin,xmin
+      write(jft,8003) rdelta3d
+      write(jft,8004) rdelta3d
+      write(jft,8005) rdelta3d
+      write(jft,8006) ngrid3d,ngrid3d,ngrid3d
+      write(jft,8007) ng3d
 c
       do ix=1,ngrid3d
       do iy=1,ngrid3d
       do iz=1,ngrid3d
 
-         write(*,8008) gr(ix,iy,iz)
+         write(jft,8008) gr(ix,iy,iz,j)
          
       enddo
       enddo
       enddo
 
-      write(*,8009)
-      write(*,8010)
-      write(*,8011)
-      write(*,8012)
-      write(*,8013)
+      write(jft,8009)
+      write(jft,8010)
+      write(jft,8011)
+      write(jft,8012)
+      write(jft,8013)
+c
+      close (jft)
+c
+      enddo                     ! of j
 c
       deallocate (gr)
 c
