@@ -33,7 +33,7 @@ c
          read (ift,*) char2
       enddo
 c
-      ngrid3d=int(dble(ng3d)**(1.d0/3.d0))
+      ngrid3d=nint(dble(ng3d)**(1.d0/3.d0))
 c
       write(*,*) "ngrid3d:",ngrid3d
       write(*,*) "nv:",nv
