@@ -1,5 +1,5 @@
 c
-c     convert parm7 and pdb to 3drism input
+c     convert parm7 and pdb or crd to 3drism input
 c
       program main
 
@@ -33,6 +33,22 @@ c
 
       call getarg(1,parmfile)
       call getarg(2,pdbfile)
+c
+c     check coordinate format
+      p=scan(pdbfile,".",back=.true.)
+      char8=pdbfile(p+1:p+9)
+      if (trim(adjustl(char8)).eq."rst7".or.
+     &     trim(adjustl(char8)).eq."rst".or.
+     &     trim(adjustl(char8)).eq."crd".or.
+     &     trim(adjustl(char8)).eq."inpcrd") then
+         ifiletype=1
+      elseif (trim(adjustl(char8)).eq."pdb".or.
+     &     trim(adjustl(char8)).eq."PDB") then
+         ifiletype=0
+      else
+         write(0,*) "Unexpected coordinate file type."
+         stop
+      endif
 c
 c     Read parmfile and make LJ and charge parameters
 c
@@ -165,33 +181,56 @@ c
 
       enddo
 c
-c     Read pdb format
+c     Read coordinate
 c
       allocate (atomnamepdb(numatoms))
       allocate (xyz(3,numatoms))
+
 c
-      open(3,file=pdbfile)
+c     case: pdb format
+c
+      if (ifiletype.eq.0) then
+c
+         open(3,file=pdbfile)
 c     
-      maxiu=0
- 1000 continue
-      read(3,"(A78)",end=2000),char78
-      if (char78(1:4).eq."ATOM".or.char78(1:6).eq."HETATM") then
-         read(char78(7:11),*) iu
-         maxiu=max(iu,maxiu)
-         atomnamepdb(iu)=char78(13:16)
-         read(char78(31:38),*) xyz(1,iu)
-         read(char78(39:46),*) xyz(2,iu)
-         read(char78(47:54),*) xyz(3,iu)
-         if (trim(adjustl(atomnamepdb(iu)))
-     &        .ne.trim(adjustl(atomname(iu)))) then
-            write(0,*) "Error. ATOM name inconsistency."
-            write(0,*) iu,atomnamepdb(iu),atomname(iu)
-            stop
+         maxiu=0
+ 1000    continue
+         read(3,"(A78)",end=2000),char78
+         if (char78(1:4).eq."ATOM".or.char78(1:6).eq."HETATM") then
+            read(char78(7:11),*) iu
+            maxiu=max(iu,maxiu)
+            atomnamepdb(iu)=char78(13:16)
+            read(char78(31:38),*) xyz(1,iu)
+            read(char78(39:46),*) xyz(2,iu)
+            read(char78(47:54),*) xyz(3,iu)
+            if (trim(adjustl(atomnamepdb(iu)))
+     &           .ne.trim(adjustl(atomname(iu)))) then
+               write(0,*) "Error. ATOM name inconsistency."
+               write(0,*) iu,atomnamepdb(iu),atomname(iu)
+               stop
+            endif
          endif
+         goto 1000
+ 2000    continue
+         close(3)
+c
+c     case: amber restart format
+c
+      elseif (ifiletype.eq.1) then
+         open(3,file=pdbfile)
+
+         read(3,*) char4a
+         read(3,*) maxiu
+
+         do iu=1,maxiu,2
+            jmax=min(maxiu,iu+1)
+            read(3,'(6f12.7)') ((xyz(i,j),i=1,3),j=iu,jmax)
+         enddo
+
+         close(3)
       endif
-      goto 1000
- 2000 continue
-      close(3)
+c
+c     chack consistency of number of atoms in parm and coordinate files
 c
       if (maxiu.ne.numatoms) then
          write(0,*) "Error. parm7 and pdb inconsistency."
@@ -203,7 +242,7 @@ c     write rism inp
 c
       write(*,'(i8)') numatoms
       do iu=1,numatoms
-         write(*,'(6f10.4)') charge(iu),sigma(iu),epsilon(iu)
+         write(*,'(3f10.4,3f12.7)') charge(iu),sigma(iu),epsilon(iu)
      &        ,(xyz(i,iu),i=1,3)
       enddo
 c
