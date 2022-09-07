@@ -1,6 +1,11 @@
 c
 c     convert parm7 and pdb or crd to 3drism input
 c
+c     Usage: amb2rismcal [parm7] [pdb|crd]
+c
+c     Note: crd file should be ASCII format
+c          (corresponding amber option is ntxo=1)
+c
       program main
 
       implicit real*8(a-h,o-z)
