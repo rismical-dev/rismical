@@ -1,10 +1,13 @@
 c
 c     convert parm7 and pdb or crd to 3drism input
 c
-c     Usage: amb2rismcal [parm7] [pdb|crd]
+c     Usage: amb2rismcal [parm7] [pdb|crd] ([format])
 c
 c     Note: crd file should be ASCII format
 c          (corresponding amber option is ntxo=1)
+c
+c     format=0  Kovarism/Marurism (default)
+c     format=1  Norism
 c
       program main
 
@@ -31,13 +34,23 @@ c
 c     Get arguments
 c
       nargc=iarg()
-      if (nargc.ne.2) then
+      if (nargc.lt.2) then
          write(0,*) "Error. Insufficient arguments."
          stop
       endif
 
       call getarg(1,parmfile)
       call getarg(2,pdbfile)
+
+      iformat=0
+      if (nargc.ge.3) then
+         call getarg(3,char5)
+         read(char5,*) iformat
+         if (iformat.ne.0.and.iformat.ne.1) then
+            write(0,*) "Error. Illegal format request."
+         endif
+      endif
+
 c
 c     check coordinate format
       p=scan(pdbfile,".",back=.true.)
@@ -246,10 +259,20 @@ c
 c     write rism inp
 c
       write(*,'(i8)') numatoms
-      do iu=1,numatoms
-         write(*,'(3f10.4,3f12.7)') charge(iu),sigma(iu),epsilon(iu)
-     &        ,(xyz(i,iu),i=1,3)
-      enddo
+      if (iformat.eq.0) then
+c     Kovarism/Marurism
+         do iu=1,numatoms
+            write(*,'(3f10.4,3f12.7)') charge(iu),sigma(iu),epsilon(iu)
+     &           ,(xyz(i,iu),i=1,3)
+         enddo
+      else
+c     Norism
+         do iu=1,numatoms
+            write(*,'(a4,3f10.4,3f12.7)') atomname(iu)
+     &           ,sigma(iu),epsilon(iu),charge(iu)
+     &           ,(xyz(i,iu),i=1,3)
+         enddo
+      endif
 c
 c-------------------------------------------------------------
       stop
