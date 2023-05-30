@@ -21,7 +21,7 @@ NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
 !!  $end
  $vsym nvuniq=2,iuniqlabel(1)=1,2,-2 $end
  $grid3d
-ngrid3d=32 rdelta3d=1.0
+ngrid3d=64 rdelta3d=0.5
  $end
  $rismsolution
 solute="udata"
