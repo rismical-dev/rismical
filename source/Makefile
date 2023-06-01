@@ -12,6 +12,7 @@
 
 RISMICALDIR = ~/software/RISMiCal
 BINDIR = $(RISMICALDIR)/bin
+OBJDIR = $(RISMICALDIR)/object
 
 ###################################################################
 #
@@ -29,7 +30,7 @@ BINDIR = $(RISMICALDIR)/bin
 FC =  gfortran
 FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -Wno-argument-mismatch -std=legacy 
 # FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -std=legacy 
-#LDFLAGS = -lblas -llapack
+LDFLAGS = -lblas -llapack
 
 # Intel Compiler
 #FC =  ifort
@@ -51,6 +52,7 @@ SRCS = calxvk.f  output3d.f  readguess3d.f  cl_oz1d.f  outputvv.f  readxvk.f \
        setuparraysize.f  output1d.f  readguess1d.f  uvbind3d.f
 
 OBJS = $(SRCS:.f=.o)
+#OBJS = $(OBJDIR)/$(SRCS:.f=.o)
 
 PROGS =rismical.x 
 
