@@ -11,8 +11,8 @@
   The Reference Interaction Site-Model integrated Calculator
   Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
  -----------------------------------------------------------
- 
-     RISMiCal home dir:/Users/noriwo/software/RISMiCal/
+
+     RISMiCal home dir:/home/noriwo/software/RISMiCal
 
   -------------------------------------------------
      3D-RISM run for solute-solvent system
@@ -26,8 +26,8 @@
     Guess of tau-bond      : F-BOND   
       --------------------------------------
 Grid preset       :USER                    
-Number of 3D-Grid :          32
- 3D-Grid width    :      1.0000  [A]
+Number of 3D-Grid :          64
+ 3D-Grid width    :      0.5000  [A]
       --------------------------------------
  -----------------------------------------------
              Solute parameters
@@ -56,67 +56,65 @@ Temperature :   298.00000[K]
     charge up factor :   1.00000
 
    itr      residual       #-sub min      dump
-         1      0.309301746104     1  T     0.30000
-         2      0.308284174031     2  T     0.30000
-         3      0.081556627982     3  T     0.30000
-         4      0.042191877346     4  T     0.30000
-         5      0.027963411254     5  T     0.30000
-         6      0.019255557751     6  T     0.30000
-         7      0.013128166400     7  T     0.30000
-         8      0.008179101730     8  T     0.30000
-         9      0.006649577547     9  T     0.30000
-        10      0.005539145149    10  T     0.30000
-        11      0.004890319987    10  T     0.30000
-        12      0.004506934548    10  T     0.30000
-        13      0.004170326091    10  T     0.30000
-        14      0.003613091341    10  T     0.30000
-        15      0.002823075549    10  T     0.30000
-        16      0.002214461686    10  T     0.30000
-        17      0.001606823312    10  T     0.30000
-        18      0.001149309651    10  T     0.30000
-        19      0.000748740237    10  T     0.30000
-        20      0.000479312012    10  T     0.30000
-        21      0.000257837045    10  T     0.30000
-        22      0.000180250399    10  T     0.30000
-        23      0.000111103811    10  T     0.30000
-        24      0.000052374861    10  T     0.30000
-        25      0.000025350802    10  T     0.30000
-        26      0.000011996047    10  T     0.30000
-        27      0.000004779026     0  x    converged
+         1      0.311904765743     1  T     0.30000
+         2      0.308047038658     2  T     0.30000
+         3      0.083084949846     3  T     0.30000
+         4      0.042753589288     4  T     0.30000
+         5      0.028718748187     5  T     0.30000
+         6      0.019773133718     6  T     0.30000
+         7      0.013581603993     7  T     0.30000
+         8      0.009070723170     8  T     0.30000
+         9      0.007429965380     9  T     0.30000
+        10      0.005489005523    10  T     0.30000
+        11      0.004396273735    10  T     0.30000
+        12      0.003524981464    10  T     0.30000
+        13      0.003131969897    10  T     0.30000
+        14      0.002603680379    10  T     0.30000
+        15      0.002217896540    10  T     0.30000
+        16      0.001972099377    10  T     0.30000
+        17      0.001427612183    10  T     0.30000
+        18      0.000894120402    10  T     0.30000
+        19      0.000419244038    10  T     0.30000
+        20      0.000253741271    10  T     0.30000
+        21      0.000104405882    10  T     0.30000
+        22      0.000052781809    10  T     0.30000
+        23      0.000039262058    10  T     0.30000
+        24      0.000016338972    10  T     0.30000
+        25      0.000008154978     0  x    converged
 
     rism cycle is converged
 
-    Total Solvent Charge:     -0.05815790
+    Total Solvent Charge:     -0.00091521
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -20.100868    [kJ/mol]
+    Solvation Free Energy         :  -18.713195    [kJ/mol]
 
-    Solvation Free Energy(GF)     :  -29.179246    [kJ/mol]
+    Solvation Free Energy(GF)     :  -26.832207    [kJ/mol]
 
-    Solute-Solvent Binding Energy :  -90.814996    [kJ/mol]
+    Solute-Solvent Binding Energy :  -86.316423    [kJ/mol]
 
-    UV Binding Energy Component LJ:   9.7567378    [kJ/mol]
+    UV Binding Energy Component LJ:   9.5706434    [kJ/mol]
 
-    UV Binding Energy Component ES:  -100.57173    [kJ/mol]
+    UV Binding Energy Component ES:  -95.887066    [kJ/mol]
 
-    Solvation Free Energy(UC)     :  -4803.8827    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -6973.1132    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     :  -4472.2210    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -6412.1574    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   104.76130    [kJ/mol]
-       2:  -62.431086    [kJ/mol]
-       3:  -62.431086    [kJ/mol]
+       1:   80.905562    [kJ/mol]
+       2:  -49.809379    [kJ/mol]
+       3:  -49.809379    [kJ/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   100.99589    [kJ/mol]
-       2:  -65.087568    [kJ/mol]
-       3:  -65.087568    [kJ/mol]
+       1:   77.611330    [kJ/mol]
+       2:  -52.221769    [kJ/mol]
+       3:  -52.221769    [kJ/mol]
 
     ============= Partial Molar Volume =============
-    Partial Molar Volume       =   0.8179E-05 [L/mol]
+    Partial Molar Volume       =   0.8180E-05 [L/mol]
     Isothermal Compressibility =   0.5500     [/GPa]
- 
+
  -----------------------------------------------------------
          RISMiCal computation is completed normally.        
             --- Keep casting, tight lines. ---              
@@ -124,9 +122,7 @@ Temperature :   298.00000[K]
   Users must cite the following papers for any publications,
   which include the results obtained with RISMiCal code.    
   References:                                               
- N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020)
-  012062 (DOI:10.1088/1757-899X/773/1/012062)  
- N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 
- (DOI:10.1021/acs.jcim.7b00389)  
+ N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
+ N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
  -----------------------------------------------------------
