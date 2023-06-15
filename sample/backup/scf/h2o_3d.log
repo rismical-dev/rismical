@@ -1,0 +1,132 @@
+ -----------------------------------------------------------
+   #####   #   ####   #    #      ####           #    
+   #    #  #  #    #  ##  ##  #  #    #          #    
+   #    #  #  #       # ## #     #         ##    #    
+   #####   #   ####   # ## #  #  #           #   #    
+   # #     #       #  #    #  #  #        ####   #    
+   #  #    #  #    #  #    #  #  #    #  #   #   #    
+   #    #  #   ####   #    #  #   ####    ### #  ##   
+                                                      
+                                                      
+  The Reference Interaction Site-Model integrated Calculator
+  Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
+ -----------------------------------------------------------
+ 
+     RISMiCal home dir:/Users/noriwo/software/RISMiCal/
+
+  -------------------------------------------------
+     3D-RISM run for solute-solvent system
+  -------------------------------------------------
+
+    ======= Computational Conditions =======
+    Closure Equation       : KH 
+    Maximum Iteration      :       300
+    Convergence Criterion  :  1.0000E-05
+    Use CHARGEUP Procedure : OFF
+    Guess of tau-bond      : F-BOND   
+      --------------------------------------
+Grid preset       :USER                    
+Number of 3D-Grid :          32
+ 3D-Grid width    :      1.0000  [A]
+      --------------------------------------
+ -----------------------------------------------
+             Solute parameters
+ -----------------------------------------------
+Number of solute site:   3
+ATOM sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---   
+O         3.15000   636.00000    -0.61150     0.00000     0.00000     0.00000
+HO        0.40000   192.50000     0.30580     0.00000     0.75670     0.58588
+HO        0.40000   192.50000     0.30580     0.00000    -0.75670     0.58588
+ -----------------------------------------------
+             Solvent parameters
+ -----------------------------------------------
+Number of solvnt site:   3
+ATOM SPC sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---    density[M] 
+O      1     3.15000   636.00000    -0.83400     0.00000     0.00000     0.00000    55.50000
+H      1     0.40000   192.50000     0.41700     0.00000     0.75670     0.58588    55.50000
+H      1     0.40000   192.50000     0.41700     0.00000    -0.75670     0.58588    55.50000
+Temperature :   298.00000[K]
+ Solvent xvv file:h2o_vv.xvk
+
+    Solvent Symmetry        : Applyed
+
+    ========== u-v 3drism ==========
+
+    temperature      : 298.00000[k]
+    charge up factor :   1.00000
+
+   itr      residual       #-sub min      dump
+         1      0.228178611963     1  T     0.30000
+         2      0.227135926939     2  T     0.30000
+         3      0.059322167414     3  T     0.30000
+         4      0.033067872380     4  T     0.30000
+         5      0.021587242988     5  T     0.30000
+         6      0.013843306864     6  T     0.30000
+         7      0.009168765262     7  T     0.30000
+         8      0.006593857264     8  T     0.30000
+         9      0.005293462849     9  T     0.30000
+        10      0.004405519448    10  T     0.30000
+        11      0.003954717218    10  T     0.30000
+        12      0.003596306296    10  T     0.30000
+        13      0.003321501437    10  T     0.30000
+        14      0.002781399867    10  T     0.30000
+        15      0.001930618258    10  T     0.30000
+        16      0.001371159750    10  T     0.30000
+        17      0.000980735453    10  T     0.30000
+        18      0.000730447874    10  T     0.30000
+        19      0.000442216743    10  T     0.30000
+        20      0.000256728510    10  T     0.30000
+        21      0.000138864775    10  T     0.30000
+        22      0.000085863664    10  T     0.30000
+        23      0.000059608743    10  T     0.30000
+        24      0.000033099509    10  T     0.30000
+        25      0.000017501386    10  T     0.30000
+        26      0.000011913275    10  T     0.30000
+        27      0.000007859729     0  x    converged
+
+    rism cycle is converged
+
+    Total Solvent Charge:     -0.04425787
+
+    ======= Physical Property of U-V System =======
+
+    Solvation Free Energy         :   3.9903407    [kJ/mol]
+
+    Solvation Free Energy(GF)     :  -4.6183447    [kJ/mol]
+
+    Solute-Solvent Binding Energy :  -46.343990    [kJ/mol]
+
+    UV Binding Energy Component LJ:   2.1452340    [kJ/mol]
+
+    UV Binding Energy Component ES:  -48.489224    [kJ/mol]
+
+    Solvation Free Energy(UC)     :   954.05432    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -1102.9169    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+
+    ======= Solvation Free Energy Component  =======
+       1:   74.918228    [kJ/mol]
+       2:  -35.463944    [kJ/mol]
+       3:  -35.463944    [kJ/mol]
+
+    ======= GF Solvation Free Energy Component =====
+       1:   71.144988    [kJ/mol]
+       2:  -37.881666    [kJ/mol]
+       3:  -37.881666    [kJ/mol]
+
+    ============= Partial Molar Volume =============
+    Partial Molar Volume       =   0.8042E-05 [L/mol]
+    Isothermal Compressibility =   0.4815     [/GPa]
+ 
+ -----------------------------------------------------------
+         RISMiCal computation is completed normally.        
+            --- Keep casting, tight lines. ---              
+ -----------------------------------------------------------
+  Users must cite the following papers for any publications,
+  which include the results obtained with RISMiCal code.    
+  References:                                               
+ N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020)
+  012062 (DOI:10.1088/1757-899X/773/1/012062)  
+ N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 
+ (DOI:10.1021/acs.jcim.7b00389)  
+ N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ -----------------------------------------------------------

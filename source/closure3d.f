@@ -8,7 +8,7 @@ c
 c     icl       ... closure type 0...hnc, 1...msa, 2...kh 3..hnc+rbc
 c     ngrid3d   ... number of grid of 3d-rdf
 c     rdelta3d  ... grid width of r-space [angstrom]
-c     nvuq      ... number of symmetry uniq site of solvent
+c     n2uq      ... number of symmetry uniq site of solvent
 c     ck        ... (in)  toku ni nashi (nanndemo ok)
 c               ... (out) k-space direct correlation function
 c     tr        ... (in)  tau bond =h-c

@@ -100,15 +100,24 @@ c
          if (char6b.ne.char6a) goto 7000
 c
          iv=0
+         nvuq=0
+         nvuq0=nvuq
          do j=1,numspc
             read(ift,*) n,solvent(j)
             do i=1,n
                iv=iv+1
-               read(ift,*) nsitev(iv)
+               read(ift,*) nsitev(iv),isym
      &              ,sigljv(iv),epsljv(iv),qv(iv)
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
                nspc(iv)=j
+               if (isym.gt.0) then
+                  nvuq=nvuq+1
+                  iuniq(iv)=nvuq0+isym
+               else
+                  iuniq(iv)=-nvuq0+isym
+               endif
             enddo
+            nvuq0=nvuq
          enddo
          nv=iv
 c
@@ -116,6 +125,8 @@ c     Read preset solvent parameter
 c      
       else
          iv=0
+         nvuq=0
+         nvuq0=nvuq
          do j=1,numspc
 
             ift2=46
@@ -128,14 +139,20 @@ c
             read(ift2,*) n
             do i=1,n
                iv=iv+1
-               read(ift2,*) nsitev(iv)
+               read(ift2,*) nsitev(iv),isym
      &              ,sigljv(iv),epsljv(iv),qv(iv)
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
                nspc(iv)=j
+               if (isym.gt.0) then
+                  nvuq=nvuq+1
+                  iuniq(iv)=nvuq0+isym
+               else
+                  iuniq(iv)=-nvuq0+isym
+               endif
             enddo
 
             close(ift2)
-
+            nvuq0=nvuq
          enddo
 
          nv=iv
@@ -164,8 +181,8 @@ c     Print solvent parameters
 c
       write(*,9801)
       do i=1,nv
-         write(*,9800) nsitev(i),nspc(i),sigljv(i),epsljv(i),qv(i)
-     &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),dens(nspc(i))
+         write(*,9800) nsitev(i),nspc(i),iuniq(i),sigljv(i),epsljv(i)
+     &           ,qv(i),xyzv(1,i),xyzv(2,i),xyzv(3,i),dens(nspc(i))
       enddo
 c
 c     Convert densty [M] -> [/Ang^3]
@@ -185,8 +202,8 @@ c
       write(*,*) "solvent=USER requires $VDATA."
       ierr=2
       call abrt(ierr)
- 9800 format (4x,A4,1x,i3,7f12.5)
- 9801 format (4x,"ATOM"," SPC"," sig[Angs]  "
+ 9800 format (4x,A4,1x,i3,1x,i3,7f12.5)
+ 9801 format (4x,"ATOM"," SPC"," SYM"," sig[Angs]  "
      &     ," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
  9802 format (4x,"Temperature :",f12.5," [K]")
