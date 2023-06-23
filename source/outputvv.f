@@ -14,6 +14,7 @@ c     tr            ... tau bond =hr-cr
 c     ures          ... electro static potential [erg]
 c     urlj          ... LJ potential [erg]
 c     hvk           ... k-space total correlation function
+c     xvk           ... k-space solvent susceptibility
 c     
       implicit real*8 (a-h,o-z)
       character*6 char6
