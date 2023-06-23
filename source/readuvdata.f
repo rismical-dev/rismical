@@ -152,11 +152,12 @@ c
       read(ift,*) char2a,char2b,char2c,char2d,nv,ndum,ngrid,rdelta
       read(ift,*) char2a
       read(ift,*) char2a
-      read(ift,*) char2a,ndum,ndum2,temp,xt
+      read(ift,*) char2a,ndum,ndum2,nvuq,temp,xt
       read(ift,*) char2a
       do i=1,nv
-         read(ift,*) char2a,nsitev(i),nspc(i),sigljv(i),epsljv(i)
-     &        ,qv(i),xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
+         read(ift,*) char2a,nsitev(i),nspc(i),iuniq(i)
+     &            ,sigljv(i),epsljv(i)
+     &            ,qv(i),xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
          dens(nspc(i))=densv*avognum*1.D-27
       enddo
       close(ift)
@@ -176,8 +177,9 @@ c
       write(*,9802)
       do i=1,nv
          densv=dens(nspc(i))/(avognum*1.D-27)
-         write(*,9803) nsitev(i),nspc(i),sigljv(i),epsljv(i),qv(i)
-     &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
+         write(*,9803) nsitev(i),nspc(i),iuniq(i)
+     &        ,sigljv(i),epsljv(i),qv(i)
+     &        ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
       enddo
       write(*,9804) temp
       write(*,*) "Solvent xvv file:",trim(solventxvv)
@@ -195,7 +197,7 @@ c--------------------------------------------------------------
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   ")
  9802 format ("ATOM"," SPC"," sig[Angs]  "," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
- 9803 format (A4,1x,i3,7f12.5)
+ 9803 format (A4,1x,i3,1x,i3,7f12.5)
  9804 format ("Temperature :",f12.5,"[K]")
       end
 c--------------------------------------------------------------

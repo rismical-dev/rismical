@@ -4,7 +4,7 @@ ITRMAX=300,
 CONV=1.d-5,
 CHARGEUP="off",
 IGUESS=0,
-iolist="gq"
+iolist="gqu"
 grid="user"
  $END
  $chargeupopt chgstep=0.2 $end
@@ -19,7 +19,7 @@ NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
 !! solvent="h2o_vv.xvk"
 !! esptype="PC"
 !!  $end
- $vsym nvuniq=2,iuniqlabel(1)=1,2,-2 $end
+!!! $vsym nvuniq=2,iuniqlabel(1)=1,2,-2 $end
  $grid3d
 ngrid3d=64 rdelta3d=0.5
  $end

@@ -159,18 +159,19 @@ c
 c
 c     --- write solvent parameters
 c
-      write(ift,'(A3,i4,1x,i4,1x,f16.8,e16.8)') "## ",numspc,nv,temp,xt
+      write(ift,'(A3,i4,1x,i4,1x,i4,1x,f16.8,e16.8)') 
+     &             "## ",numspc,nv,nvuq,temp,xt
       write(ift,9801)
       do i=1,n2
          densm=dens(nspc(i))/(avognum*1.D-27)    ! to M
-         write(ift,9800) nsitev(i),nspc(i),sigljv(i),epsljv(i),qv(i)
-     &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densm
+         write(ift,9800) nsitev(i),nspc(i),iuniq(i),sigljv(i),epsljv(i)
+     &           ,qv(i),xyzv(1,i),xyzv(2,i),xyzv(3,i),densm
       enddo
       write(ift,'(A2)') "##"
- 9801 format ("## ATOM"," SPC"
+ 9801 format ("## ATOM"," SPC"," SYM"
      &     ," sig[Angs]  "," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
- 9800 format ("## ",A4,1x,i3,7f12.5)
+ 9800 format ("## ",A4,1x,i3,1x,i3,7f12.5)
 c
       do i2=1,n2
       do i1=1,n2
@@ -189,6 +190,8 @@ c----------------------------------------------------------------
  9993 format("##  ",a80)
  9994 format(e16.8e3)
  9995 format(e16.8e3,2x,e16.8e3)
+ 9996 format("##  ",i5)
+ 9997 format("##  ",10i5)
       end
 c**************************************************************
 c----------------------------------------------------------------

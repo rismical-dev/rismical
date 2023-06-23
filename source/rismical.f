@@ -10,6 +10,8 @@ c        #    #  #   ####   #    #  #   ####    ### #  ##
 c
 c     The Reference Interaction Site-Model integrated Calculator
 c     Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
+c     Copyright(C) 2023 -- Yutaka Maruyama, Norio Yoshida 
+c     All Rights Reserved.
 c
 c------------------------------------------------------------------
 c
