@@ -196,7 +196,7 @@ c----------------------------------------------------------------
 c----------------------------------------------------------------
 c     Write Reduced Solvent Suseptibility Function
 c----------------------------------------------------------------
-      subroutine writexvvfunc(namef,xvk,rdelta,n2,ngrid,char80)
+      subroutine writexvvfunc(namef,xvk,rdelta,n2,ngrid)
 c
       implicit real*8(a-h,o-z)
       character*256 namef
@@ -209,6 +209,8 @@ c
       dimension xvk(ngrid,n2,n2)
 c
 c----------------------------------------------------------------
+      char80="reduced xvv(k) data with solvent parameters"
+
       ift=45
       nremark=0
       open (ift,file=namef)
@@ -216,14 +218,16 @@ c
 c     --- write xvk
 c
       deltak=pi/(dble(ngrid)*rdelta)
-      write(ift,9990) n2,nvuq,ngrid,rdelta,deltak
       write(ift,9991) char80
-      write(ift,9992) 3+nv
 c
-c     --- write solvent parameters
+c     --- array size and grid parameters
 c
-      write(ift,'(A3,i4,1x,i4,1x,i4,1x,f16.8,e16.8)') 
-     &             "## ",numspc,nv,nvuq,temp,xt
+      write(ift,9990) nv,nvuq,ngrid,rdelta,deltak
+c
+c     --- solvent parameters
+c
+      write(ift,'(A3,i4,1x,f16.8,e16.8)') 
+     &             "## ",numspc,temp,xt
       write(ift,9801)
       do i=1,n2
          densm=dens(nspc(i))/(avognum*1.D-27)    ! to M
@@ -245,7 +249,7 @@ c
       close(ift)
 c----------------------------------------------------------------
       return
- 9990 format("## 1D Function :",3i8,2f16.8)
+ 9990 format("##  ",3i8,2f16.8)
  9991 format("##  ",a80)
  9992 format("##  ",i4)
  9993 format("##  ",a80)

@@ -134,10 +134,7 @@ c
       if (koutx.ne.0) then
 
          scrjob=trim(basename)//".xvk"
-
-         char80="reduced xvv(k) data with solvent parameters"
-c$$$         call writehvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
-         call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
+         call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid)
       endif
 c
       deallocate (gbuff)

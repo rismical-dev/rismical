@@ -19,10 +19,7 @@ c----------------------------------------------------------------
 c
 c     Skip header
 c
-      read(ift,*) char2
-      read(ift,*) char2
-      read(ift,*) char2,ndum
-      do i=1,ndum
+      do i=1,5+nv
          read(ift,*) char2
       enddo
 c

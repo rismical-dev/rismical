@@ -149,11 +149,9 @@ c     -----------------------
 c
       ift=45
       open(ift,file=solvent,status='old')
-      read(ift,*) char2a,char2b,char2c,char2d
-     %           ,nv,ndum,ngrid,rdelta,deltak
       read(ift,*) char2a
-      read(ift,*) char2a
-      read(ift,*) char2a,ndum,ndum2,nvuq,temp,xt
+      read(ift,*) char2a,nv,nvuq,ngrid,rdelta,deltak
+      read(ift,*) char2a,ndum,temp,xt
       read(ift,*) char2a
       do i=1,nv
          read(ift,*) char2a,nsitev(i),nspc(i),iuniq(i)
