@@ -2,7 +2,7 @@ c**************************************************************
 c------------------------------------------------------------------
 c     Read k-space 1D-VV Total Correlation Function for 3D-RISM
 c------------------------------------------------------------------
-      subroutine setup1dvx(ngr1d,n2,nx22,ngr3d,listxvv,xvv)
+      subroutine setup1dvx(ngr1d,n2uq,nx22,ngr3d,listxvv,xvv)
 c
 c     ngrid3d   ... number of grid of 3d-rdf
 c     nv        ... number of site of solvent
@@ -23,7 +23,7 @@ c
       include "phys_const.i"
       
       dimension rk(0:ngr1d)
-      dimension xvv(nx22,n2,n2),xv1d(0:ngr1d)
+      dimension xvv(nx22,n2uq,n2uq),xvk(0:ngr1d,n2uq,n2uq)
       dimension listxvv(ngr3d/2+1,ngr3d/2+1,ngr3d/2+1)
       dimension yd(0:ngr1d)
       
@@ -75,7 +75,7 @@ c
          rk(k)=deltak*dble(k)
       enddo
 c     
-c     --- read solvent h from file and make xvv
+c     --- read 1D-xvv from file and make 3D-xvv
 c     
       ift=45
       open (ift,file=solventxvv)
@@ -89,17 +89,25 @@ c
          read(ift,*) char2
       enddo
 c
-      do i=1,nv
-         do j=1,nv
+c     Read reduced xvv(k)
+c
+      do ig=1,ngrid
+         read(ift,*) ((xvk(ig,i1,i2),i1=1,nvuq),i2=1,nvuq)
+      enddo
+      do i2=1,nvuq
+      do i1=1,nvuq
+         xvk(0,i1,i2)=xvk(1,i1,i2)
+      enddo
+      enddo
+      close(ift)
+c
+c     
+c     --- make 3D-Xvv by interpolating 1D-Xvv
+c     
+      do j=1,nvuq
+         do i=1,nvuq
             
             sum=0.d0
-            
-            do k=1,ngrid
-               read(ift,*) dum
-               xv1d(k)=dum
-            enddo
-            
-            xv1d(0)=xv1d(1) ! to check later
             
             ill=3
             
@@ -112,7 +120,7 @@ c
                rkz=dble(kz)-0.5d0
                rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
                
-               dum=hrho(ngrid,deltak,xv1d,rk,rk3,yd,ill)
+               dum=hrho(ngrid,deltak,xvk(0,i,j),rk,rk3,yd,ill)
                
                k=listxvv(kx,ky,kz)
                xvv(k,i,j)=dum
@@ -123,8 +131,44 @@ c
             
          enddo                  ! of j
       enddo                     ! of i
-      close(ift)
-
+c$$$c
+c$$$c     --- Non-reduced xvv version
+c$$$c
+c$$$      do i=1,nv
+c$$$         do j=1,nv
+c$$$            
+c$$$            sum=0.d0
+c$$$            
+c$$$            do k=1,ngrid
+c$$$               read(ift,*) dum
+c$$$               xv1d(k)=dum
+c$$$            enddo
+c$$$            
+c$$$            xv1d(0)=xv1d(1) ! to check later
+c$$$            
+c$$$            ill=3
+c$$$            
+c$$$            do kz=1,ngrid3d/2
+c$$$            do ky=1,ngrid3d/2
+c$$$            do kx=1,ngrid3d/2
+c$$$
+c$$$               rkx=dble(kx)-0.5d0
+c$$$               rky=dble(ky)-0.5d0
+c$$$               rkz=dble(kz)-0.5d0
+c$$$               rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
+c$$$               
+c$$$               dum=hrho(ngrid,deltak,xv1d,rk,rk3,yd,ill)
+c$$$               
+c$$$               k=listxvv(kx,ky,kz)
+c$$$               xvv(k,i,j)=dum
+c$$$               
+c$$$            enddo
+c$$$            enddo
+c$$$            enddo
+c$$$            
+c$$$         enddo                  ! of j
+c$$$      enddo                     ! of i
+c$$$      close(ift)
 c----------------------------------------------------------------
 
  8000 continue

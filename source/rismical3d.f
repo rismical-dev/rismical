@@ -36,7 +36,7 @@ c
       allocate (tr(ng3d,nvuq))
       allocate (vres(ng3d))
       allocate (urlj(ng3d,nvuq))
-      allocate (xvv(nxvv,nv,nv))
+      allocate (xvv(nxvv,nvuq,nvuq))
       allocate (listxvv(ngrid3d/2+1,ngrid3d/2+1,ngrid3d/2+1))
       allocate (listcore(ng3d))
       allocate (fr(ng3d),fk(ng3d))
@@ -49,7 +49,7 @@ c
 c     
 c     --- Setup V-V Total Correlation Function 
 c     
-      call setup1dvx(ngrid,nv,nxvv,ngrid3d,listxvv,xvv)
+      call setup1dvx(ngrid,nvuq,nxvv,ngrid3d,listxvv,xvv)
 c     
 c     --- Make 3D f-Bond
 c     
@@ -140,7 +140,7 @@ c          "ck"  c(k)     c(k)
 c          "cr"  ----     c(r)
 c          "tr"  c(r)     t(r)
 c     
-         call oz3d(ngrid3d,nxvv,nv,nvuq
+         call oz3d(ngrid3d,nxvv,nvuq
      &            ,listxvv,ck,cr,tr,xvv)
 c    
 c     --- check convergence and make guess for next loop
@@ -179,12 +179,12 @@ c
 c
 c     calc property
 c
-      call prop3duv(ng3d,nv,nvuq
+      call prop3duv(ng3d,nvuq
      &             ,vres,urlj,listcore,cr,tr)
 c
 c     output 3D-DFs
 c
-      call output3d(ng3d,nv,nvuq
+      call output3d(ng3d,nvuq
      &             ,cr,tr,urlj,vres,fr,fk)
 c---------------------------------------------------------
 

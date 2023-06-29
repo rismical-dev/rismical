@@ -1,7 +1,7 @@
 c----------------------------------------------------------------
-c     Read  xvv(k) function from file
+c     Read reduced xvv(k) function from file
 c----------------------------------------------------------------
-      subroutine readxvk(ngrid,n2,xvk)
+      subroutine readxvk(ngrid,n2uq,xvk)
 c
       implicit real*8(a-h,o-z)
       character*2 char2
@@ -11,7 +11,7 @@ c
       include "solvent.i"
       include "solute.i"
 c
-      dimension xvk(ngrid,n2,n2)
+      dimension xvk(ngrid,n2uq,n2uq)
 c
 c----------------------------------------------------------------
       ift=45
@@ -26,15 +26,10 @@ c
          read(ift,*) char2
       enddo
 c
-c     Read xvv(k)
+c     Read reduced xvv(k)
 c
-      do i2=1,n2
-         do i1=1,n2
-            do ig=1,ngrid
-               read (ift,*) dum
-               xvk(ig,i1,i2)=dum
-            enddo
-         enddo
+      do ig=1,ngrid
+         read(ift,*) ((xvk(ig,i1,i2),i1=1,nvuq),i2=1,nvuq)
       enddo
 
       close(ift)

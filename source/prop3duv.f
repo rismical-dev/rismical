@@ -1,7 +1,7 @@
 c---------------------------------------------------------
 c     Physical Property of U-V System for 3D
 c---------------------------------------------------------
-      subroutine prop3duv(ng3d,n2,n2uq
+      subroutine prop3duv(ng3d,n2uq
      &                   ,vres,urlj,listcore,cr,tr)
 c
 c     icl           ... closure type 0...HNC, 1...MSA, 2...KH
@@ -23,7 +23,7 @@ c
       dimension vres(ng3d)
       dimension urlj(ng3d,n2uq)
       dimension listcore(ng3d)
-      dimension esolvi(n2),egfi(n2)
+      dimension esolvi(n2uq),egfi(n2uq)
 c
       namelist /RISMUC/ahnc,akh,agf,bhnc,bkh,bgf
 c
@@ -33,8 +33,8 @@ c
 
       rd33=rdelta3d**3
 c---------------------------------------------------------
-      call vclr(esolvi,1,nv)
-      call vclr(egfi,1,nv)
+      call vclr(esolvi,1,nvuq)
+      call vclr(egfi,1,nvuq)
 c
 c     --- Solvation Free Energy (Excess Chemical Potential)
 c
@@ -45,7 +45,7 @@ c
 
          sum=0.d0
 
-         do j=1,nv
+         do j=1,nvuq
 
          sumi=0.d0
          
@@ -56,10 +56,9 @@ c
 
             k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
 
-            jj=abs(iuniq(j))
-            crr=dble(cr(k,jj))
-            hr=tr(k,jj)+crr
-            sumi=sumi+(-crr+0.5d0*hr*tr(k,jj))*dens(nspc(j))
+            crr=dble(cr(k,j))
+            hr=tr(k,j)+crr
+            sumi=sumi+(-crr+0.5d0*hr*tr(k,j))*densuq(j)
 
          enddo
          enddo
@@ -80,7 +79,7 @@ c
       if (icl.eq.1) then
 
          sum=0.d0
-         do j=1,nv
+         do j=1,nvuq
          sumi=0.d0
 
 !$OMP PARALLEL DO PRIVATE(K,JJ,CRR,HR) REDUCTION(+: SUMI)
@@ -90,10 +89,9 @@ c
 
             k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
 
-            jj=abs(iuniq(j))
-            crr=dble(cr(k,jj))
-            hr=tr(k,jj)+crr
-            sumi=sumi+(-crr-0.5d0*hr*crr)*dens(nspc(j))
+            crr=dble(cr(k,j))
+            hr=tr(k,j)+crr
+            sumi=sumi+(-crr-0.5d0*hr*crr)*densuq(j)
 
          enddo
          enddo
@@ -114,7 +112,7 @@ c
 
          sum=0.d0
 
-         do j=1,nv
+         do j=1,nvuq
 
          sumi=0.d0
 
@@ -124,9 +122,8 @@ c
          do kx=1,ngrid3d
             k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
 
-            jj=abs(iuniq(j))
-            crr=dble(cr(k,jj))
-            hr=tr(k,jj)+crr
+            crr=dble(cr(k,j))
+            hr=tr(k,j)+crr
             if (hr.ge.0.d0) then 
                dhevi=0.d0
             else
@@ -135,7 +132,7 @@ c
 
             sumi=sumi
      &           +(-crr-0.5d0*hr*crr+0.5d0*hr**2*dhevi)
-     &           *dens(nspc(j))
+     &           *densuq(j)
          enddo
          enddo
          enddo
@@ -154,29 +151,28 @@ c     --- GF
 c
       sum=0.d0
 
-      do j=1,nv
+      do j=1,nvuq
 
-      sumi=0.d0
+         sumi=0.d0
 
 !$OMP PARALLEL DO PRIVATE(K,JJ,CRR,HR) REDUCTION(+: SUMi)
-      do kz=1,ngrid3d
-      do ky=1,ngrid3d
-      do kx=1,ngrid3d
-         k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
+         do kz=1,ngrid3d
+         do ky=1,ngrid3d
+         do kx=1,ngrid3d
+            k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
 
-         jj=abs(iuniq(j))
-         crr=dble(cr(k,jj))
-         hr=tr(k,jj)+crr
-         sumi=sumi+(-crr-0.5d0*hr*crr)
-     &           *dens(nspc(j))
+            crr=dble(cr(k,j))
+            hr=tr(k,j)+crr
+            sumi=sumi+(-crr-0.5d0*hr*crr)
+     &           *densuq(j)
 
-      enddo
-      enddo
-      enddo
+         enddo
+         enddo
+         enddo
 !$OMP END PARALLEL DO
       
-      sum=sum+sumi
-      egfi(j)=sumi/beta*rd33
+         sum=sum+sumi
+         egfi(j)=sumi/beta*rd33
       enddo
 
       egftot=sum/beta*rd33
@@ -189,15 +185,15 @@ c
       do k=1,ngrid3d**3
          if (listcore(k).eq.0) goto 8000
 
-         do j=1,nv
-            jj=abs(iuniq(j))
-            crr=dble(cr(k,jj))
-            gr=tr(k,jj)+crr+1.d0
+         do j=1,nvuq
+
+            crr=dble(cr(k,j))
+            gr=tr(k,j)+crr+1.d0
             if (gr.lt.0.d0) gr=0.d0
-            ebtot=ebtot+dens(nspc(j))
-     &           *gr*(vres(k)*q2uq(jj)+urlj(k,jj))*rd33
-            eblj=eblj+dens(nspc(j))
-     &           *gr*(urlj(k,jj))*rd33
+            ebtot=ebtot+densuq(j)
+     &           *gr*(vres(k)*q2uq(j)+urlj(k,j))*rd33
+            eblj=eblj+densuq(j)
+     &           *gr*(urlj(k,j))*rd33
          enddo
  8000    continue
       enddo
@@ -209,7 +205,7 @@ c
 c     ----- Partial Molar Volume
 c
       ck0=0.d0
-      do j=1,nv
+      do j=1,nvuq
       sumi=0.d0
 !$OMP PARALLEL DO PRIVATE(K,JJ) REDUCTION(+: SUMi)
       do kz=1,ngrid3d
@@ -218,8 +214,7 @@ c
 
          k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d*ngrid3d
 
-         jj=abs(iuniq(j))
-         sumi=sumi+dble(cr(k,jj))*dens(nspc(j))
+         sumi=sumi+dble(cr(k,j))*densuq(j)
          
       enddo
       enddo
@@ -243,7 +238,7 @@ c
       
       totaldens=0.d0
       ndum=0
-      do i=1,nv
+      do i=1,nvuq
          if (ndum.ne.nspc(i)) then
             totaldens=totaldens+dens(nspc(i))
             ndum=nspc(i)
@@ -264,16 +259,13 @@ c
 c     --- Total Solvent Charge
 c
       chgtot=0.d0
-      do i=1,nv
-         if (iuniq(i).gt.0) then
-            iuq=abs(iuniq(i))
-            sum=0.d0
-            do ig=1,ngrid3d**3
-               sum=sum+tr(ig,iuq)+dble(cr(ig,iuq))+1.d0
-            enddo
-            chgtot=chgtot+sum*rd33*dens(nspc(i))
-     &           *q2uq(iuq)*dble(nmulsite(iuq))
-         endif
+      do i=1,nvuq
+         sum=0.d0
+         do ig=1,ngrid3d**3
+            sum=sum+tr(ig,i)+dble(cr(ig,i))+1.d0
+         enddo
+         chgtot=chgtot+sum*rd33*densuq(i)
+     &        *q2uq(i)
       enddo 
 
       write(*,'(/,4x,A21,f16.8)') "Total Solvent Charge:",chgtot
@@ -292,11 +284,11 @@ c
       write(*,9988) esolvuc,auc,buc,esolvgfuc,agf,bgf
 c
       write(*,9992)
-      do i=1,nv
+      do i=1,nvuq
          write(*,9991) i,esolvi(i)*1.d-3
       enddo
       write(*,9990)
-      do i=1,nv
+      do i=1,nvuq
          write(*,9991) i,egfi(i)*1.d-3
       enddo
 

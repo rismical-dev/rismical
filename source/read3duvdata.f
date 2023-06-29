@@ -217,7 +217,8 @@ c     -----------------------
 c
       ift=45
       open(ift,file=solvent,status='old')
-      read(ift,*) char2a,char2b,char2c,char2d,nv,ndum,ngrid,rdelta
+      read(ift,*) char2a,char2b,char2c,char2d
+     &     ,nv,ndum,ngrid,rdelta,deltak
       read(ift,*) char2a
       read(ift,*) char2a
       read(ift,*) char2a,ndum,ndum2,nvuq,temp,xt
@@ -229,6 +230,21 @@ c
          dens(nspc(i))=densv*avognum*1.D-27
       enddo
       close(ift)
+c
+c     Set reduced solvent parameters
+c
+      nmulsite=0
+      densuq=0
+      do i=1,nv
+         iuq=iuniq(i)
+         if (iuq.gt.0) then
+            q2uq(iuq)=qv(i)
+            epsljvuq(iuq)=epsljv(i)
+            sigljvuq(iuq)=sigljv(i)
+         endif
+         nmulsite(abs(iuq))=nmulsite(abs(iuq))+1
+         densuq(abs(iuq))=densuq(abs(iuq))+dens(nspc(i))
+      enddo
 c
 c     Set inverse temperature
 c      

@@ -54,58 +54,60 @@ Temperature :   298.00000[K]
     charge up factor :   1.00000
 
    itr      residual       #-sub min      dump
-         1      0.311904766047     1  T     0.30000
-         2      0.308047039363     2  T     0.30000
-         3      0.083084949744     3  T     0.30000
-         4      0.042753589055     4  T     0.30000
-         5      0.028718747979     5  T     0.30000
-         6      0.019773133705     6  T     0.30000
-         7      0.013581604022     7  T     0.30000
-         8      0.009070723134     8  T     0.30000
-         9      0.007429965409     9  T     0.30000
-        10      0.005489005584    10  T     0.30000
-        11      0.004396273827    10  T     0.30000
-        12      0.003524981552    10  T     0.30000
-        13      0.003131969985    10  T     0.30000
-        14      0.002603680447    10  T     0.30000
-        15      0.002217896602    10  T     0.30000
-        16      0.001972099439    10  T     0.30000
-        17      0.001427612232    10  T     0.30000
-        18      0.000894120427    10  T     0.30000
-        19      0.000419244067    10  T     0.30000
-        20      0.000253741288    10  T     0.30000
-        21      0.000104405891    10  T     0.30000
-        22      0.000052781814    10  T     0.30000
-        23      0.000039262062    10  T     0.30000
-        24      0.000016338973    10  T     0.30000
-        25      0.000008154979     0  x    converged
+         1      0.311904765743     1  T     0.30000
+         2      0.308047038658     2  T     0.30000
+         3      0.083084949846     3  T     0.30000
+         4      0.042753589288     4  T     0.30000
+         5      0.028718748187     5  T     0.30000
+         6      0.019773133718     6  T     0.30000
+         7      0.013581603993     7  T     0.30000
+         8      0.009070723170     8  T     0.30000
+         9      0.007429965380     9  T     0.30000
+        10      0.005489005523    10  T     0.30000
+        11      0.004396273735    10  T     0.30000
+        12      0.003524981464    10  T     0.30000
+        13      0.003131969897    10  T     0.30000
+        14      0.002603680379    10  T     0.30000
+        15      0.002217896540    10  T     0.30000
+        16      0.001972099377    10  T     0.30000
+        17      0.001427612183    10  T     0.30000
+        18      0.000894120402    10  T     0.30000
+        19      0.000419244038    10  T     0.30000
+        20      0.000253741271    10  T     0.30000
+        21      0.000104405882    10  T     0.30000
+        22      0.000052781809    10  T     0.30000
+        23      0.000039262058    10  T     0.30000
+        24      0.000016338972    10  T     0.30000
+        25      0.000008154978     0  x    converged
 
     rism cycle is converged
 
-    Total Solvent Charge:     -0.00091520
+    Total Solvent Charge:     -0.00091521
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -18.713191    [kJ/mol]
+    Solvation Free Energy         :  -18.713195    [kJ/mol]
 
-    Solvation Free Energy(GF)     :  -26.832203    [kJ/mol]
+    Solvation Free Energy(GF)     :  -26.832207    [kJ/mol]
 
-    Solute-Solvent Binding Energy :  -86.316415    [kJ/mol]
+    Solute-Solvent Binding Energy :  -86.316423    [kJ/mol]
 
-    UV Binding Energy Component LJ:   9.5706433    [kJ/mol]
+    UV Binding Energy Component LJ:   9.5706434    [kJ/mol]
 
-    UV Binding Energy Component ES:  -95.887058    [kJ/mol]
+    UV Binding Energy Component ES:  -95.887066    [kJ/mol]
 
-    Solvation Free Energy(UC)     :  -4472.2200    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -6412.1565    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     :  -4472.2210    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -6412.1574    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   80.905565    [kJ/mol]
-       2:  -99.618756    [kJ/mol]
+       1:   80.905562    [kJ/mol]
+       2:  -49.809379    [kJ/mol]
+       3:  -49.809379    [kJ/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   77.611333    [kJ/mol]
-       2:  -104.44354    [kJ/mol]
+       1:   77.611330    [kJ/mol]
+       2:  -52.221769    [kJ/mol]
+       3:  -52.221769    [kJ/mol]
 
     ============= Partial Molar Volume =============
     Partial Molar Volume       =   0.8180E-05 [L/mol]

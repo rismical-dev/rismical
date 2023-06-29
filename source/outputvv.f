@@ -125,7 +125,7 @@ c
          scrjob=trim(basename)//".hvk"
 
          char80="hv(k) data with solvent parameters"
-         call writexvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
+         call writehvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
       endif
 c
 c
@@ -135,7 +135,8 @@ c
 
          scrjob=trim(basename)//".xvk"
 
-         char80="xvv(k) data with solvent parameters"
+         char80="reduced xvv(k) data with solvent parameters"
+c$$$         call writehvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
          call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
       endif
 c

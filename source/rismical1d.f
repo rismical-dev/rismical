@@ -29,16 +29,17 @@ c
 c
 c     --- allocate array
 c
-      allocate (cr(ngrid,nu,nv),tr(ngrid,nu,nv))
-      allocate (xvk(ngrid,nv,nv),fr(ngrid,nu,nv),fk(ngrid,nu,nv))
-      allocate (huvk(ngrid,nu,nv))
-      allocate (ures(ngrid,nu,nv),urlj(ngrid,nu,nv))
-      allocate (wk1(ngrid,nu,nu),ck(ngrid,nu,nv))
-      allocate (zrk(ngrid,nu,nv))
+      allocate (cr(ngrid,nu,nvuq),tr(ngrid,nu,nvuq))
+      allocate (fr(ngrid,nu,nvuq),fk(ngrid,nu,nvuq))
+      allocate (xvk(ngrid,nvuq,nvuq))
+      allocate (huvk(ngrid,nu,nvuq))
+      allocate (ures(ngrid,nu,nvuq),urlj(ngrid,nu,nvuq))
+      allocate (wk1(ngrid,nu,nu),ck(ngrid,nu,nvuq))
+      allocate (zrk(ngrid,nu,nvuq))
 c     
 c     --- Initialize
 c     
-      call vclr(xvk,1,nv*nv*ngrid)
+      call vclr(xvk,1,nvuq*nvuq*ngrid)
 c
       idrism=0
 c     
@@ -48,20 +49,20 @@ c
 c     
 c     --- Make Potential and F-bond
 c     
-      call potentialuv(ngrid,nu,nv,rdelta,ures,urlj)
+      call potentialuv(ngrid,nu,nvuq,rdelta,ures,urlj)
       
-      call fbonduv(ngrid,nu,nv,rdelta,fr,fk,alp1d)
+      call fbonduv(ngrid,nu,nvuq,rdelta,fr,fk,alp1d)
 c
 c     --- Read solvent suseptibility
 c
-      call readxvk(ngrid,nv,xvk)
+      call readxvk(ngrid,nvuq,xvk)
 c
 c     --- Make initial guess for tr(r)
 c
       frfac=beta*chgratio
 
       if (iguess.eq.0) then
-         do j=1,nv
+         do j=1,nvuq
             do i=1,nu
                do k=1,ngrid
                   tr(k,i,j)=frfac*fr(k,i,j)
@@ -70,7 +71,7 @@ c
             enddo
          enddo
       elseif (iguess.eq.1) then
-         call readguess1d(ngrid,nu,nv,tr)
+         call readguess1d(ngrid,nu,nvuq,tr)
       else
          write(*,9990)
          ierr=4
@@ -94,7 +95,7 @@ c     --- Make initial guess for tr(r) in charge up cycle
 c     
       prefac=frfac
       frfac=beta*chgratio
-      do j=1,nv
+      do j=1,nvuq
          do i=1,nu
             do k=1,ngrid
                tr(k,i,j)=tr(k,i,j)-prefac*fr(k,i,j)
@@ -110,7 +111,7 @@ c
 c     
 c     --- Setup mdiis 
 c     
-      ng=ngrid*nu*nv
+      ng=ngrid*nu*nvuq
       call mdiis(ng,tr,residu,cconv,0)  
 c---------------------------------------------------------
 c     RISM Iteration Cycle
@@ -120,7 +121,7 @@ c---------------------------------------------------------
 c     
 c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT trnew(r)]
 c     
-         call cl_oz1duv(icl,ngrid,rdelta,nu,nv
+         call cl_oz1duv(icl,ngrid,rdelta,nu,nvuq
      &               ,chgratio,ck,xvk,fr,fk,wk1,zrk
      &               ,cr,tr,ures,urlj)
 c     
@@ -141,7 +142,7 @@ c     Converged
 c---------------------------------------------------------
  8000 continue
 
-      call  cl_1d(icl,ngrid,rdelta,nu,nv,chgratio
+      call  cl_1d(icl,ngrid,rdelta,nu,nvuq,chgratio
      &     ,cr,tr,ures,urlj)
 
       write(*,9989) itr,residu,0,"X"
@@ -157,10 +158,12 @@ c     Output 1d-rism result
 c---------------------------------------------------------
  9000 continue
 c
-      call prop1duv(icl,ngrid,rdelta,nu,nv
+      call prop1duv(icl,ngrid,rdelta,nu,nvuq
      &     ,cr,tr,ures,urlj)
+c$$$      call prop1duv_old(icl,ngrid,rdelta,nu,nvuq
+c$$$     &     ,cr,tr,ures,urlj)
 
-      call output1d(ngrid,rdelta,nu,nv
+      call output1d(ngrid,rdelta,nu,nvuq
      &     ,cr,tr,ures,urlj,fr,ck,fk)
 
 c---------------------------------------------------------

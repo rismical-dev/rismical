@@ -134,7 +134,7 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Write 1D function to file with solvent parameter
 c----------------------------------------------------------------
-      subroutine writexvvfunc(namef,hvk,rdelta,n2,ngrid,char80)
+      subroutine writehvvfunc(namef,hvk,rdelta,n2,ngrid,char80)
 c
       implicit real*8(a-h,o-z)
       character*256 namef
@@ -190,6 +190,67 @@ c----------------------------------------------------------------
  9993 format("##  ",a80)
  9994 format(e16.8e3)
  9995 format(e16.8e3,2x,e16.8e3)
+ 9996 format("##  ",i5)
+ 9997 format("##  ",10i5)
+      end
+c----------------------------------------------------------------
+c     Write Reduced Solvent Suseptibility Function
+c----------------------------------------------------------------
+      subroutine writexvvfunc(namef,xvk,rdelta,n2,ngrid,char80)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+      character*80 char80
+c
+      include "phys_const.i"
+      include "solvent.i"
+c
+      dimension xvk(ngrid,n2,n2)
+c
+c----------------------------------------------------------------
+      ift=45
+      nremark=0
+      open (ift,file=namef)
+c
+c     --- write xvk
+c
+      deltak=pi/(dble(ngrid)*rdelta)
+      write(ift,9990) n2,nvuq,ngrid,rdelta,deltak
+      write(ift,9991) char80
+      write(ift,9992) 3+nv
+c
+c     --- write solvent parameters
+c
+      write(ift,'(A3,i4,1x,i4,1x,i4,1x,f16.8,e16.8)') 
+     &             "## ",numspc,nv,nvuq,temp,xt
+      write(ift,9801)
+      do i=1,n2
+         densm=dens(nspc(i))/(avognum*1.D-27)    ! to M
+         write(ift,9800) nsitev(i),nspc(i),iuniq(i),sigljv(i),epsljv(i)
+     &           ,qv(i),xyzv(1,i),xyzv(2,i),xyzv(3,i),densm
+      enddo
+      write(ift,'(A2)') "##"
+ 9801 format ("## ATOM"," SPC"," SYM"
+     &     ," sig[Angs]  "," eps[J/mol] "," charge[e]  "
+     &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
+ 9800 format ("## ",A4,1x,i3,1x,i3,7f12.5)
+c
+c     --- write xvv(k)
+c
+      do ig=1,ngrid
+         write (ift,9995) ((xvk(ig,i1,i2),i1=1,nvuq),i2=1,nvuq)
+      enddo
+
+      close(ift)
+c----------------------------------------------------------------
+      return
+ 9990 format("## 1D Function :",3i8,2f16.8)
+ 9991 format("##  ",a80)
+ 9992 format("##  ",i4)
+ 9993 format("##  ",a80)
+ 9994 format(e16.8e3)
+ 9995 format(10(1x,g22.15e3))
  9996 format("##  ",i5)
  9997 format("##  ",10i5)
       end

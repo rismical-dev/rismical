@@ -158,7 +158,8 @@ c     Output 1d-rism result
 c---------------------------------------------------------
  9000 continue
 c
-      call calxvk(ngrid,nv,hvk,xvk,wk2)
+c$$$      call calxvk(ngrid,nv,hvk,xvk,wk2)
+      call calredxvk(ngrid,nv,hvk,xvk,wk2)
 
       if (idrism.eq.1) then
          do iv2=1,nv

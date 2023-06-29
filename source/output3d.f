@@ -1,11 +1,11 @@
 c----------------------------------------------------------------
 c     Output 3D-RISM result
 c----------------------------------------------------------------
-      subroutine output3d(ng3d,n2,n2uq
+      subroutine output3d(ng3d,n2uq
      &                   ,cr,tr,urlj,vres,fr,fk)
 c
 c     ngr3d=ngrid3d ... number of grid of RDF
-c     n2=nv         ... number of site of solvent
+c     n2uq=nvuq     ... number of site of solvent
 c     ck            ... k-space direct correlation function 
 c     cr            ... direct correlation function 
 c     tr            ... tau bond =hr-cr
