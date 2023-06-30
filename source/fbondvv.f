@@ -32,7 +32,7 @@ c
                rr=rdelta*dble(k)
                rk=deltak*dble(k)
                
-               fr(k,i,j)=qv(i)*qv(j)/rr*xerf(alp*rr)*fel
+               fr(k,i,j)=qv(i)*qv(j)/rr*erf(alp*rr)*fel
                fk(k,i,j)=4.d0*pi*qv(i)*qv(j)/rk**2
      &              *dexp(-(rk/(2.d0*alp))**2)*fel
             enddo

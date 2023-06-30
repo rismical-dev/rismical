@@ -59,7 +59,7 @@ c
             if (rri.lt.1.d-5) then
                fr(k)=fr(k)+qu(i)*alp3d*2.d0/dsqrt(pi)
             else
-               fr(k)=fr(k)+qu(i)/rri*xerf(alp3d*rri)
+               fr(k)=fr(k)+qu(i)/rri*erf(alp3d*rri)
             endif
             
             rrik=rix*rkx+riy*rky+riz*rkz
