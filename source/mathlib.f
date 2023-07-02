@@ -559,40 +559,6 @@ c-------------------------------------------------------------
       return
       end
 c---------------------------------------------------------
-c     Gauss-Hermite inter-polation
-c---------------------------------------------------------
-      real*8 function hrho(ngrid,dk1,hwv,rk,rk3,yd,ill)
-      implicit real*8(a-h,o-z)
-      dimension rk(0:ngrid),hwv(0:ngrid)
-      dimension yd(0:ngrid)
-      n = int(rk3/dk1)+1
-      if (n.ge.ngrid+1) n=ngrid
-      if (rk3.ge.(dk1*dble(ngrid))) then 
-         hrho=hwv(ngrid)
-         return
-      endif
-      m = 0
-c-----<numpac+
-c     n     ... previous grid point number of inter-polation point
-c     rk3   ... coordinate of inter-polation point
-c     y     ... inter-polated value (output)
-c     m     ... 0
-c     ngrid ... number of input data
-c     rk    ... coordinate set of descreat point
-c     hwv   ... descreat function 
-c     yd    ... out put of 1st derivative
-c     ill   ... not 0
-c
-c     this subroutine is modified from herm31 of numpac
-c     you can see detail of this subroutine in
-c     http://netnumpac.fuis.fukui-u.ac.jp/cgi-bin/numpac/htoh?083.html
-c
-      call herd31(n,rk3,y,m,ngrid+1,rk(0),hwv(0),yd(0),ngrid+1,ill)
-c-----+numpac>
-      hrho=y
-      return
-      end
-c---------------------------------------------------------
 c     3D-FFT
 c
 c     This is service routine to connect ZFFT3D and 3D-RISM

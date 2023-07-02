@@ -58,6 +58,25 @@ c
      &        "(DOI: 10.1063/1.4879795)  "
          write(*,*) 
      &     "-----------------------------------------------------------"
+         write(*,*) 
+     &     " Implimented Math Libraries"
+         write(*,*) 
+     &     " 3D Fast Fourier Transform: "
+         write(*,*) 
+     &     " Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi"
+     &    ," (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)"
+         write(*,*) 
+     &     " Fast Fourier Transform: "
+         write(*,*) 
+     &        "Copyright Takuya OOURA, 1996-2001"
+         write(*,*)
+     &        "Mathmatical Libra: SLATEC Common Mathmatical Library"
+         write(*,*)
+     &     "Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;"
+     &    ,"Walton, Lee (July 1993). Guide to the SLATEC"
+     &    ," Common Mathematical Library"
+         write(*,*) 
+     &     "-----------------------------------------------------------"
       endif
 
 c------------------------------------------------------------------

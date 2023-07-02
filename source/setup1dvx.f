@@ -15,6 +15,7 @@ c
       implicit real*8 (a-h,o-z)
       character*1 char1
       character*2 char2
+      logical skip
 
       include "rismio.i"
       include "rismrun.i"
@@ -25,10 +26,16 @@ c
       dimension rk(0:ngr1d)
       dimension xvv(nx22,n2uq,n2uq),xvk(0:ngr1d,n2uq,n2uq)
       dimension listxvv(ngr3d/2+1,ngr3d/2+1,ngr3d/2+1)
-      dimension yd(0:ngr1d)
-      
+c
+      dimension ic(2),vc(2),xvkd(0:ngr1d)
+      dimension wk(2*ngr1d+2)
 C----------------------------------------------------------------
-      yd=0.d0
+c     parametr for Hermite interpolation
+      xvkd=0.d0
+      skip=.false.
+      ic(1)=3
+      ic(2)=3
+      nwk=2*ngrid+2
 c
 c     --- Make list for Xvv
 c
@@ -66,7 +73,7 @@ c
          call abrt
       endif
 c     
-c     --- setup hvv grid point
+c     --- setup xvv grid point
 c     
       deltak=pi/(dble(ngrid)*rdelta)
       dk3d=2.d0*pi/(rdelta3d*dble(ngrid3d))
@@ -97,13 +104,17 @@ c
       enddo
       enddo
       close(ift)
-c
 c     
 c     --- make 3D-Xvv by interpolating 1D-Xvv
 c     
       do j=1,nvuq
          do i=1,nvuq
             
+c
+c           calculate derivative of xvk
+c
+            call dpchsp(ic,vc,ngrid+1,rk,xvk(0,i,j),xvkd,1,wk,nwk,ierr)
+c
             sum=0.d0
             
             ill=3
@@ -117,7 +128,8 @@ c
                rkz=dble(kz)-0.5d0
                rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
                
-               dum=hrho(ngrid,deltak,xvk(0,i,j),rk,rk3,yd,ill)
+               call dpchfe(ngrid+1,rk,xvk(0,i,j),xvkd
+     &                     ,1,skip,1,rk3,dum,ierr)
                
                k=listxvv(kx,ky,kz)
                xvv(k,i,j)=dum
@@ -128,44 +140,6 @@ c
             
          enddo                  ! of j
       enddo                     ! of i
-c$$$c
-c$$$c     --- Non-reduced xvv version
-c$$$c
-c$$$      do i=1,nv
-c$$$         do j=1,nv
-c$$$            
-c$$$            sum=0.d0
-c$$$            
-c$$$            do k=1,ngrid
-c$$$               read(ift,*) dum
-c$$$               xv1d(k)=dum
-c$$$            enddo
-c$$$            
-c$$$            xv1d(0)=xv1d(1) ! to check later
-c$$$            
-c$$$            ill=3
-c$$$            
-c$$$            do kz=1,ngrid3d/2
-c$$$            do ky=1,ngrid3d/2
-c$$$            do kx=1,ngrid3d/2
-c$$$
-c$$$               rkx=dble(kx)-0.5d0
-c$$$               rky=dble(ky)-0.5d0
-c$$$               rkz=dble(kz)-0.5d0
-c$$$               rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
-c$$$               
-c$$$               dum=hrho(ngrid,deltak,xv1d,rk,rk3,yd,ill)
-c$$$               
-c$$$               k=listxvv(kx,ky,kz)
-c$$$               xvv(k,i,j)=dum
-c$$$               
-c$$$            enddo
-c$$$            enddo
-c$$$            enddo
-c$$$            
-c$$$         enddo                  ! of j
-c$$$      enddo                     ! of i
-c$$$      close(ift)
 c----------------------------------------------------------------
 
  8000 continue
