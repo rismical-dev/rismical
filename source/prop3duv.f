@@ -223,7 +223,7 @@ c
       ck0=ck0+sumi*rd33
       enddo
 
-      pmv=xt*(1.d0-ck0)
+      pmv=xt*(1.d0-ck0)/beta
 c
 c     --- Universal correction for excess chemical potential
 c

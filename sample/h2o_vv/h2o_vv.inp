@@ -12,14 +12,14 @@ grid="standard"
 numspc=1
 solvent(1)="tip3p"
 TEMP=298.d0,
-DENS(1)=54.d00
+DENS(1)=55.3d00
  $end
  $MDIIS
 NSUB=10,DUMPMAX=0.2d0,DUMPMIN=0.001d0
  $END
 !!  $GRID1D
-!! NGRID=128,
-!! RDELTA=0.1d0,
+!! NGRID=4096,
+!! RDELTA=0.05d0,
 !!  $END
 !!  $VDATA
 !! 3    tip3p

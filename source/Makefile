@@ -51,7 +51,6 @@ SRCS = calxvk.f  output3d.f  readguess3d.f  cl_oz1d.f  outputvv.f  readxvk.f \
        rismiofile.f  setup1dvx.f  misc.f  read3duvdata.f\
        setuparraysize.f  output1d.f  readguess1d.f  uvbind3d.f\
        mathlib.f ffte.f ffto.f slatec.f
-#numericalrecipes.f numpac.f
 
 OBJS = $(SRCS:.f=.o)
 #OBJS = $(OBJDIR)/$(SRCS:.f=.o)
