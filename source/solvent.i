@@ -15,7 +15,7 @@ c     epsljv :solvent site LJ parameter [J/mol]
 c     sigljv :solvent site LJ parameter [Ang]
 c     temp   : Temperature [K]
 c     beta   : 1/kBT [mol/J]
-c     xt     : isothermal compressibility [/Pa]
+c     xt     : isothermal compressibility [/Pa] = [m^3/J]
 c
       common /rismslv/
      &      nspc(maxslv),temp,beta,xt

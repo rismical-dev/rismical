@@ -10,6 +10,7 @@ c
       character*6 char6a,char6b,chardum
       character*6 esptype
       character*256 solute,solutexyz,soluteesp,solutelj
+      character*256 soluteepc
       character*256 solvent,solute_up,ljparam
 
       include "phys_const.i"
@@ -19,7 +20,7 @@ c
       include "rismio.i"
 c
       namelist /rismsolution/solute,solutexyz,soluteesp,solutelj
-     &     ,solvent,ljparam,esptype
+     &     ,soluteepc,solvent,ljparam,esptype
       namelist /GRID3D/ngrid3d,rdelta3d
 c--------------------------------------------------------------
 c     
@@ -100,7 +101,10 @@ c
       solute_up=solute
       call upcasex(solute_up)
       call upcasex(esptype)
-      if (esptype.eq."MAP") ipot3d=1
+      if (esptype.eq."MAP") then
+         ipot3d=1
+         espfile=soluteesp
+      endif
 c
       if (len_trim(solvent).eq.0) then
          write(*,*) "Error. solvent in $rismsolution is empty."
@@ -113,7 +117,6 @@ c
 c     -----------------------
 c     Get Solute Params
 c     -----------------------
-c
 c
 c     Read solute parameter from $UDATA
 c
@@ -138,11 +141,9 @@ c
 c
 c     Set default if not given
 c
-         if (len_trim(soluteesp).eq.0) soluteesp=trim(solute)//".esp"
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
          if (len_trim(solutexyz).eq.0) solutexyz=trim(solute)//".xyz"
          if (len_trim(solutelj ).eq.0) solutelj =trim(solute)//".lj"
-
-         espfile=soluteesp
 c
 c     Read xyz file to get coordinate
 c
@@ -155,9 +156,9 @@ c
          enddo
          close(ift2)
 c
-c     Read EPS file to get point charge
+c     Read EPC file to get RESP point charge
 c
-         call readresp(soluteesp,qu,maxslu)
+         call readresp(soluteepc,qu,maxslu)
 c
 c     Get LJ parameter 
 c

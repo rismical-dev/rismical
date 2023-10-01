@@ -223,7 +223,15 @@ c
       ck0=ck0+sumi*rd33
       enddo
 
-      pmv=xt*(1.d0-ck0)/beta
+      pmv=xt*(1.d0-ck0)/beta    ![m^3/mol]
+c
+c     --- Total solvent density
+c
+      totaldens=0.d0
+      do i=1,nvuq
+         totaldens=totaldens+densuq(i)
+      enddo
+      totaldens=totaldens*1.D+30 ![molecule/m^3]
 c
 c     --- Universal correction for excess chemical potential
 c
@@ -236,15 +244,7 @@ c
 
       close(ir)
       
-      totaldens=0.d0
-      ndum=0
-      do i=1,nvuq
-         if (ndum.ne.nspc(i)) then
-            totaldens=totaldens+dens(nspc(i))
-            ndum=nspc(i)
-         endif
-      enddo
-      pmvx=pmv*totaldens        ! Dimensionless PMV
+      pmvx=pmv*totaldens/avognum        ! Dimensionless PMV 
 
       if (icl.eq.0.or.icl.eq.3) then ! for HNC
          auc=ahnc
@@ -253,8 +253,17 @@ c
          auc=akh
          buc=bkh
       endif
-      esolvuc=esolvtot/ekcal+auc*pmvx+buc ! for HNC or KH
-      esolvgfuc=egftot/ekcal+agf*pmvx+bgf ! for GF  
+      ucterm=(auc*pmvx+buc)*1.d+3 ! for HNC or KH [J/mol]
+      uctermgf=(agf*pmvx+bgf)*1.d+3 ! for GF      [J/mol]
+
+      esolvuc=esolvtot/ekcal+ucterm ! for HNC or KH
+      esolvgfuc=egftot/ekcal+uctermgf ! for GF  
+c
+c     --- Pressure correction for excess chemical potential
+c
+      pressure=0.5d0/beta*(beta/xt+totaldens/avognum) 
+                                                 ![Pa]=[J/m^3]
+      pcterm=-pressure*pmv ![J/mol]
 c
 c     --- Total Solvent Charge
 c
@@ -281,7 +290,10 @@ c---------------------------------------------------------
       write(*,9995) (ebindtot-ebindlj)*1.d-3 
       if (icl.eq.3) write(*,9994)
 c
-      write(*,9988) esolvuc,auc,buc,esolvgfuc,agf,bgf
+      write(*,9988) esolvuc*1.d-3,ucterm*1.d-3,auc,buc
+     &             ,esolvgfuc*1.d-3,uctermgf*1.d-3,agf,bgf
+c
+      write(*,9987) (pcterm+esolvtot)*1.d-3,pcterm*1.d-3
 c
       write(*,9992)
       do i=1,nvuq
@@ -292,20 +304,26 @@ c
          write(*,9991) i,egfi(i)*1.d-3
       enddo
 
-      write(*,9989) pmv*1.d+3 ! from [m^3/mol] to [L/mol]
-     &              ,xt*1.d+9 ! from [/Pa] to [/GPa]
+      write(*,9989) pmv*1.d+3      ! from [m^3/mol] to [L/mol]
+     &             ,xt*1.d+9       ! from [/Pa] to [/GPa]
+     &             ,pressure/1.d+9 ! from [Pa] to [GPa]
 c---------------------------------------------------------
       return
 c---------------------------------------------------------
+ 9987 format (/,4x,"Solvation Free Energy(PC)     :",g16.8,"[kJ/mol]"
+     &         ,4x,"PC term :",g16.8,"[kJ/mol]")
  9988 format (/,4x,"Solvation Free Energy(UC)     :",g16.8,"[kJ/mol]"
+     &         ,4x,"UC term :",g16.8,"[kJ/mol]"
      &         ,4x,"UC param: A=",g16.8
      &            ,"[kJ/mol], B=",g16.8,"[kJ/mol]"
      &        /,4x,"Solvation Free Energy(GF-UC)  :",g16.8,"[kJ/mol]"
+     &         ,4x,"UC term :",g16.8,"[kJ/mol]"
      &         ,4x,"UC param: A=",g16.8
      &            ,"[kJ/mol], B=",g16.8,"[kJ/mol]")
  9989 format (/,4x,"============= Partial Molar Volume ============="
      &       ,/,4x,"Partial Molar Volume       = ",G12.4," [L/mol]"
-     &       ,/,4x,"Isothermal Compressibility = ",G12.4," [/GPa]")
+     &       ,/,4x,"Isothermal Compressibility = ",G12.4," [/GPa]"
+     &       ,/,4x,"Pressure                   = ",G12.4," [GPa]")
  9990 format (/,4x,"======= GF Solvation Free Energy Component =====")
  9991 format (  4x,i4,":",g16.8,"[kJ/mol]")
  9992 format (/,4x,"======= Solvation Free Energy Component  =======")

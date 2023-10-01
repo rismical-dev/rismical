@@ -22,9 +22,16 @@ c     --- get RISM run parameters
 c
       call readinput
 c      
-c     --- get solution  parameters
+c     --- get solution parameters
 c
       call read3duvdata
+c      
+c     --- external program
+c
+      iflag=0
+      call extern3d(iflag)
+      if (iflag.eq.1) goto 9000
+      if (iflag.eq.999) call abrt(40090)
 c
 c     --- allocate array
 c
@@ -198,6 +205,7 @@ c---------------------------------------------------------
       deallocate (listxvv)
       deallocate (fr,fk)
 c---------------------------------------------------------
+ 9000 continue
       return
 c---------------------------------------------------------
  9989 format (4x,i6,f20.12,2x,i4,2x,a1,4x,"converged")

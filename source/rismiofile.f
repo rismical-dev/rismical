@@ -446,61 +446,52 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Read electrostatic potential map
 c----------------------------------------------------------------
-      subroutine readespmap(namef,vres,qu,rdelta3d,ngrid3d,maxslu)
+      subroutine readespmap(namef,vres,rdelta3d,ngrid3d)
 c
       implicit real*8(a-h,o-z)
+c
+      include "phys_const.i"
+c
       character*256 namef
       character*2 char2
       character*4 char4
       character*15 char15
+      character*20 char20
 c
       dimension vres(ngrid3d**3)
-      dimension qu(maxslu)
 c
+      
 c----------------------------------------------------------------
       ift=45
       open (ift,file=namef,status='old',err=999)
 c
-c     Read point charges
-c
-      read(ift,*,err=999) char2
-      read(ift,*) nu
-      do i=1,nu
-         read(ift,*) qu(i)
-      enddo
-c
-c     Read Grid
-c
-      read(ift,*,err=999) char2,char4,ng3d,rd3d
-c
-      if (ng3d.ne.ngrid3d.or.rd3d.ne.rdelta3d) then
-         write(*,*) "Error. ESP map grid inconsistent."
-         write(*,*) ng3d,ngrid3d
-         write(*,*) rd3d,rdelta3d
-         ierr=410
-         call abrt(ierr)
-      endif
-c
-c     Skip remark lines
-c
-      read(ift,*) char2
-      read(ift,*) char2,char4,iremark
-      do i=1,iremark
-         read(ift,*) char2
-      enddo
+      write(*,*) "Reading electrostatic potential map from :",namef
 c
 c     Read ESP map
+c
+c     Format notes:
+c     x y z V(x,y,z)
+c     
+c     Unit: xyz=[Angstrom], V=[Hartree/e]
 c
       k0=ngrid3d/2+1
       do iv=1,ngrid3d**3
 
-         read (ift,*) rx,ry,rz,val
+         read (ift,'(3f20.12,A20)') rx,ry,rz,char20
+         read(char20,*,err=100) val
+         goto 200
+ 100     continue
+         write(*,'("ESP map contains non-numeric value ",A20
+     &        " at ",3f20.12)') char20,rx,ry,rz
+         write(*,*) "The ESP value set to 0.d0."
+         val=0.d0
+ 200     continue
 
          kx=nint(rx/rdelta3d)+k0
          ky=nint(ry/rdelta3d)+k0
          kz=nint(rz/rdelta3d)+k0
          k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
-         vres(k)=val
+         vres(k)=val*hart2jmol
  
       enddo
 c      
@@ -514,7 +505,7 @@ c----------------------------------------------------------------
       end
 c**************************************************************
 c----------------------------------------------------------------
-c     Read electrostatic potential map
+c     Read RESP point charge
 c----------------------------------------------------------------
       subroutine readresp(namef,qu,maxslu)
 c
@@ -522,7 +513,7 @@ c
       character*256 namef
       character*2 char2
 c
-       dimension qu(maxslu)
+      dimension qu(maxslu)
 c----------------------------------------------------------------
       ift=45
       open (ift,file=namef,status='old')

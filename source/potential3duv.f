@@ -145,7 +145,7 @@ c     Read from external file
 c
       elseif (ipot3d.eq.1) then
 
-         call readespmap(espfile,vres,qu,rdelta3d,ngrid3d,maxslu)
+         call readespmap(espfile,vres,rdelta3d,ngrid3d)
 
       else
 

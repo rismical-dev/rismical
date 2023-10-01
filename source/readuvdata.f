@@ -9,7 +9,8 @@ c
       character*2 char2a,char2b,char2c,char2d
       character*6 char6a,char6b,chardum
       character*256 solute,solutexyz,soluteesp,solutelj
-      character*256 solvent,solute_up,ljparam
+      character*256 soluteepc
+      character*256 solvent,solute_up,ljparam,esptype
 
       include "phys_const.i"
       include "solvent.i"
@@ -18,7 +19,7 @@ c
       include "rismio.i"
 c
       namelist /rismsolution/solute,solutexyz,soluteesp,solutelj
-     &     ,solvent,ljparam
+     &     ,soluteepc,solvent,ljparam,esptype
 c--------------------------------------------------------------
 c
       ift=45
@@ -72,6 +73,7 @@ c
       else
 c
 c     Set default if not given
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
          if (len_trim(soluteesp).eq.0) soluteesp=trim(solute)//".esp"
          if (len_trim(solutexyz).eq.0) solutexyz=trim(solute)//".xyz"
          if (len_trim(solutelj ).eq.0) solutelj =trim(solute)//".lj"
@@ -87,9 +89,9 @@ c
          enddo
          close(ift2)
 c
-c     Read EPS file to get point charge
+c     Read EPC file to get point charge
 c
-         call readresp(soluteesp,qu,maxslu)
+         call readresp(soluteepc,qu,maxslu)
 c
 c     Get LJ parameter 
 c

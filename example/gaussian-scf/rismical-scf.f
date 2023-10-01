@@ -1,0 +1,362 @@
+c------------------------------------------------------------------
+c                                                                   
+c        #####   #   ####   #    #      ####           #    
+c        #    #  #  #    #  ##  ##  #  #    #          #   
+c        #    #  #  #       # ## #     #         ##    #   
+c        #####   #   ####   # ## #  #  #           #   #   
+c        # #     #       #  #    #  #  #        ####   #   
+c        #  #    #  #    #  #    #  #  #    #  #   #   #   
+c        #    #  #   ####   #    #  #   ####    ### #  ##  
+c
+c     The Reference Interaction Site-Model integrated Calculator
+c     Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
+c     Copyright(C) 2023 -- Yutaka Maruyama, Norio Yoshida 
+c     All Rights Reserved.
+c
+c     Self-consistent field program
+c
+c     Usage: rismical-scf.x [rismical.inp] 
+c
+c------------------------------------------------------------------
+      program rismicalscf
+
+      implicit real*8(a-h,o-z)
+
+      character*80 rismicalinp
+      character*256 char256,qcpath
+
+c---------------------------------------------------------------
+c
+c     Get input file name
+c
+      call getarg(1,rismicalinp)
+c
+c     Read input file and make QC input file
+c
+      call readinp(rismicalinp,qcpath,iqcprog,itrmax,conv)
+c
+c     SCF iteration
+c
+c     Gaussian-RISMiCal
+
+      if (iqcprog.eq.1) then
+         call scf1(rismicalinp,qcpath,itrmax,conv)
+      endif
+c$$$c
+c$$$c     For future implementation
+c$$$c
+c$$$      if (iqcprog.eq.2) then
+c$$$         call scf2(rismicalinp,qcpath,itrmax,conv)
+c$$$      endif
+
+c---------------------------------------------------------------
+      stop
+      end
+c---------------------------------------------------------------
+c     SCF1
+c
+c     Gaussian-RISMiCal iteration
+c---------------------------------------------------------------
+      subroutine scf1(rismicalinp,qcpath,itrmax,conv)
+c
+      implicit real*8(a-h,o-z)
+      character*80 rismicalinp,jobname
+      character*256 qcpath,rismicalhome
+
+c---------------------------------------------------------------
+      jobname=rismicalinp(1:index(rismicalinp,".",back=.true.)-1)
+c
+c     Get environmental valuable RISMICAL
+c
+      call getenv("RISMICALHOME",rismicalhome)
+c
+c     1st Gaussian run
+c
+      call system(trim(qcpath)//" "//trim(jobname)//"_0.gjf")
+c
+      do itr=1,itrmax
+c
+         call system(trim(rismicalhome)//"source"//rismical.x
+     &        //" 3d "//trim(rismicalinp))
+
+
+
+c
+      enddo
+c
+c     Not Converged
+c
+      write(*,*) "================================================="
+      write(*,*) "Oooops!! 3D-RISM-SCF iteration does not converge."
+      write(*,*) "Please reconsider computational condition."
+      write(*,*) "================================================="
+      stop
+c
+c     Converged
+c
+ 5000 continue
+c---------------------------------------------------------------
+
+      return
+      end
+c---------------------------------------------------------------
+c     Read input file and make QC input file
+c
+c---------------------------------------------------------------
+      subroutine readinp(rismicalinp,qcpath,iqcprog,itrmax,conv)
+c
+      implicit real*8(a-h,o-z)
+      character*6 char6a,char6b
+      character*20 runtype,basis,qcprog
+      character*80 rismicalinp,jobname,qcinp0,qcinp1
+      character*256 solute,solutexyz,soluteesp,solutelj
+      character*256 soluteepc
+      character*256 solvent,solute_up,ljparam,esptype
+      character*256 qcpath
+      character*256 char256
+      character*4 nsiteu
+c
+      parameter (maxslu=1000)
+      dimension nsiteu(maxslu)
+      dimension xyzu(3,maxslu)
+c
+      namelist /rismscf/itrmax,conv,runtype,basis,qcprog
+     &     ,qcpath,icharge,ispinmult
+      namelist /rismsolution/solute,solutexyz,soluteesp,solutelj
+     &     ,soluteepc,solvent,ljparam,esptype
+c
+c---------------------------------------------------------------
+      ift=45
+      open (ift,file=rismicalinp,err=999,status='old')
+c
+c     Read scfinp
+c
+      iqcprog=0
+      itrmax=30
+      conv=1.d-5
+      icharge=0
+      ispinmult=1
+c
+      read (ift,rismscf,end=799)
+c
+c     Check QC program type
+c
+      if (qcprog.eq."g16") then
+         iqcprog=1
+      endif
+
+      if (iqcprog.eq.0) goto 999
+c
+c
+c     check solute data type
+      open(ift,file=rismicalinp,err=998)
+      read(ift,rismsolution,end=899)
+      solute_up=solute
+      call upcasex(solute_up)
+      if (solute_up.ne."UDATA") then
+         write(*,*) "For SCF run, solute parameter must"
+     &        ," be given in $UDATA."
+         goto 899
+      endif
+c
+c     read $UDATA
+c
+      char6a="$UDATA"
+      rewind ift
+ 100  read(ift,*,end=899) char6b
+      call upcasex(char6b)
+      if (char6b.ne.char6a) goto 100
+c
+      read(ift,*) nu
+      if (nu.gt.maxslu) then
+         write(*,*) "Too many solute atoms.",nu
+         goto 899
+      endif
+      do iu=1,nu
+         read(ift,*) nsiteu(iu)
+     &        ,dum1,dum2,dum3
+     &        ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
+      enddo
+c
+      close(ift)
+c
+c     Get grid
+c
+      call getgrid(ngrid3d,rdelta3d,rismicalinp)
+c
+c     write QC input file
+c
+c     Gaussian16
+      if (iqcprog.eq.1) then
+c     Set file name
+         jobname=rismicalinp(1:index(rismicalinp,".",back=.true.)-1)
+         qcinp0=trim(jobname)//"_0.gjf"
+         qcinp1=trim(jobname)//".gjforg"
+
+c     Write initial QC step (gas phase) input 
+         open(ift,file=qcinp0,status='new')
+         write (ift,'(A)') "%chk="//trim(jobname)//"_0.chk"
+         write (ift,'(A)') "# "//trim(runtype)//"/"//trim(basis)
+     &        //" nosymm prop=(potential,grid,fitcharge)"
+     &        //" scf=tight"
+         write (ift,*)
+         write (ift,'(A)') trim(jobname)
+         write (ift,*)
+         write (ift,'(2i4)') icharge,ispinmult
+         do iu=1,nu
+            write (ift,'(1x,A,5x,3f14.8)') nsiteu(iu)
+     &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
+         enddo
+         write(ift,*)
+         write(ift,'(i12,3i4)') ngrid3d**3,3,10,11
+         write(ift,*)
+        
+         close(ift)
+
+c     Write iterative QC step (liquid phase) input 
+         open(ift,file=qcinp1,status='new')
+         write (ift,'(A)') "%chk="//trim(jobname)//".chk"
+         write (ift,'(A)') "# "//trim(runtype)//"/"//trim(basis)
+     &        //" nosymm prop=(potential,grid,fitcharge)"
+     &        //" charge scf=tight"
+         write (ift,*)
+         write (ift,'(A)') trim(jobname)
+         write (ift,*)
+         write (ift,'(2i4)') icharge,ispinmult
+         do iu=1,nu
+            write (ift,'(1x,A,5x,3f14.8)') nsiteu(iu)
+     &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
+         enddo
+         write(ift,*)
+        
+         close(ift)
+
+c     Write ESP grid file
+         open(ift,file="fort.10",status='new')
+
+         do iz=1,ngrid3d
+         do iy=1,ngrid3d
+         do ix=1,ngrid3d
+            x=rdelta3d*dble(ix-1-ngrid3d/2)
+            y=rdelta3d*dble(iy-1-ngrid3d/2)
+            z=rdelta3d*dble(iz-1-ngrid3d/2)
+            write(ift,'(3f20.12)') x,y,z
+         enddo
+         enddo
+         enddo
+
+         close(ift)
+
+      endif
+
+c---------------------------------------------------------------
+      return
+ 799  continue
+      write(*,*) "Error. No $RISMSCF is found."
+      stop
+ 899  continue
+      write(*,*) "Error in $RISMSOLUTION in rismical input file."
+      stop
+ 998  continue
+      write(*,*) "Error in rismical input file."
+ 999  continue
+      write(*,*) "Error in scf input file."
+      stop
+      end
+c--------------------------------------------------------------
+      subroutine getgrid(ngrid3d,rdelta3d,rismicalinp)
+
+      implicit real*8(a-h,o-z)
+      character*80 rismicalinp
+c
+      character*3 closure
+      character*24 grid
+      character*256 iolist,guessfile
+c
+      namelist /GRID3D/ngrid3d,rdelta3d
+      namelist /RISM/CLOSURE
+     &              ,ITRMAX,CONV,CHARGEUP,IGUESS
+     &              ,ALP1D,ALP3D,iolist,guessfile,grid
+c---------------------------------------------------------------
+      ift=45
+      open(ift,file=rismicalinp,err=998)
+      rewind ift
+      read(ift,rism)
+      call upcasex(grid)
+      if (grid.eq."USER") then
+
+         rewind ift
+         read(ift,grid3d)
+
+      elseif (grid.eq."FINE") then
+
+         ngrid3d=256
+         rdelta3d=0.25d0
+
+      elseif (grid.eq."LFINE") then
+
+         ngrid3d=512
+         rdelta3d=0.25d0
+
+      elseif (grid.eq."STANDARD") then
+
+         ngrid3d=128
+         rdelta3d=0.5d0
+
+      elseif (grid.eq."LSTANDARD") then
+
+         ngrid3d=256
+         rdelta3d=0.5d0
+
+      elseif (grid.eq."TEST") then
+
+         ngrid3d=64
+         rdelta3d=1.d0
+
+      elseif (grid.eq."LTEST") then
+
+         ngrid3d=128
+         rdelta3d=1.d0
+
+      endif
+
+      close(ift)
+
+      write(*,*) "     --------------------------------------"
+      write(*,'(A19,A24)')   "Grid preset       :",grid
+      write(*,'(A19,i12)')   "Number of 3D-Grid :",ngrid3d
+      write(*,'(A19,f12.4,A5)') "3D-Grid width    :",rdelta3d," [A]"
+      write(*,*) "     --------------------------------------"
+c----------------------------------------------------------------
+      return
+      end
+
+c--------------------------------------------------------------
+c     Converts text string to capital letters
+c
+      subroutine upcasex(string)
+      implicit none
+      character*1 char
+      character*(*) string
+      integer leng_str,icode_a,icode_z,icode_aa,icode,i
+c
+c-----------------------
+c
+      icode_a=ichar("a") 
+      icode_z=ichar("z") 
+      icode_aa=ichar("A")-icode_a
+
+      leng_str = len(string)
+      do i = 1, leng_str
+         icode = ichar(string(i:i))
+         write(*,*) icode
+         if (icode.ge.icode_a.and. icode.le.icode_z) then
+            string(i:i) = char(icode+icode_aa)
+         endif
+      end do
+c
+      return
+c-----------------------
+      end
+c--------------------------------------------------------------
+

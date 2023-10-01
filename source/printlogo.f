@@ -56,6 +56,12 @@ c
          write(*,*) 
      &        "N. Yoshida, J. Chem. Phys. 140 (2014) 214118 ",
      &        "(DOI: 10.1063/1.4879795)  "
+         write(*,*)
+     &        "Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, ",
+     &        "M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347."
+         write(*,*) 
+     &        "Y. Maruyama, F. Hirata, J. Chem. Theory Comput. ",
+     &        "8 (2012) 3015. (DOI: 10.1063/1.4879795)  "
          write(*,*) 
      &     "-----------------------------------------------------------"
          write(*,*) 
@@ -68,9 +74,9 @@ c
          write(*,*) 
      &     " Fast Fourier Transform: "
          write(*,*) 
-     &        "Copyright Takuya OOURA, 1996-2001"
+     &        " Copyright Takuya OOURA, 1996-2001"
          write(*,*)
-     &        "Mathmatical Libra: SLATEC Common Mathmatical Library"
+     &        " Mathmatical Libra: SLATEC Common Mathmatical Library"
          write(*,*)
      &     "Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;"
      &    ,"Walton, Lee (July 1993). Guide to the SLATEC"
