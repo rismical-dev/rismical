@@ -27,6 +27,13 @@ c
 c     Get home path
 c
       call getenv('RISMICALHOME',homepath)
+c     
+      if (len(trim(homepath)).eq.0) then
+         write(*,*) "Error. Please set environment variable "
+     &        ,"RISMICALHOME to root directory of RISMical "
+     &        ,"package."
+         call abrt
+      endif
 c
       write(*,*)
       write(*,*) "    RISMiCal home dir:",trim(homepath)
