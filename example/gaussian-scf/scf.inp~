@@ -1,0 +1,10 @@
+ $rismscf
+itrmax=30
+conv=1.d-5
+runtype="hf"
+basis="6-31/G(d)"
+qcprog="g16"
+path="/home/PROG/g16/g16"
+icharge=0
+spinmult=1
+ $end
