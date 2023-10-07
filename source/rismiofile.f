@@ -32,6 +32,7 @@ c
          write(*,*) "Error. Please set environment variable "
      &        ,"RISMICALHOME to root directory of RISMical "
      &        ,"package."
+         write(*,*) "ie: export RISMICALHOME=/foo/bar/rismical"
          call abrt
       endif
 c
@@ -269,45 +270,91 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Read 3D function from file
 c----------------------------------------------------------------
-      subroutine read3dfunc(namef,func3d,nvuq,ng3d)
+      subroutine read3dfunc(namef,func3d,nvuq,ng3d,outtype)
 c
       implicit real*8(a-h,o-z)
-      character*256 namef
+      character*256 namef,outtype,char256
       character*2 char2
 c
       dimension func3d(ng3d,nvuq)
 c
 c----------------------------------------------------------------
-      ift=45
-      open (ift,file=namef)
+      if (trim(outtype).eq."ASCII") then
+         ift=45
+         open (ift,file=namef)
 c
 c     read header
-      read(ift,*) char2 nvuqx,ng3dx,ncmpx,rdelta3dx
-      read(ift,*) char2
-      read(ift,*) char2,ndum
+ 100     continue
+         read(ift,*) char256
+         if (char256(1:2).eq."##") goto 100
+c
+c     read solvent site, grid
+         read(char256,*) nvuqx,ngrid3dx,ngrid3dy,ngrid3dz,
+     &        rnx,rny,rnz,shiftx,shifty,shiftz
+         ng3dx=ngrid3dx*ngrid3dy*ngrid3dz
 c
 c     check consistency
-      if (nvuq.ne.nvuqx .or. ng3d.ne.ng3dx
-     &     .or. ncmpx.ne.1 ) then
-         write(*,*) "Error."
-         write(*,*) "Reading 3d function inconsistency."
-         ierr=568
-         call abrt(ierr)
-      endif
-c
-c     skip remark
-      do i=1,ndum
-         read(ift,*) char2
-      enddo
+         if (nvuq.ne.nvuqx .or. ng3d.ne.ng3dx) then
+            write(*,*) "Error."
+            write(*,*) "Reading 3d function inconsistency."
+            ierr=568
+            call abrt(ierr)
+         endif
 c
 c     read function
-      do j=1,nvuq
-         do k=1,ng3d
-            read(ift,*)  func3d(k,j)
+         do j=1,nvuq
+            do k=1,ng3d
+               read(ift,*)  func3d(k,j)
+            enddo
          enddo
-      enddo
-      
-      close(ift)
+         
+         close(ift)
+c
+c
+      elseif (trim(outtype(1:3)).eq."BIN") then
+
+         ift=45
+         open (ift,file=namef,form="unformatted",access="direct",recl=4)
+c
+c     read solvent site, grid
+         read(ift,rec=1) nvuqx
+         read(ift,rec=2) ngrid3dx
+         read(ift,rec=3) ngrid3dy
+         read(ift,rec=4) ngrid3dz
+         close(ift)
+         ng3dx=ngrid3dx*ngrid3dy*ngrid3dz
+c
+c     check consistency
+         if (nvuq.ne.nvuqx .or. ng3d.ne.ng3dx) then
+            write(*,*) "Error."
+            write(*,*) "Reading 3d function inconsistency."
+            ierr=568
+            call abrt(ierr)
+         endif
+c
+         open (ift,file=namef,form="unformatted",access="direct",recl=8)
+         read(ift,rec=3) rnx
+         read(ift,rec=4) rny
+         read(ift,rec=5) rnz
+         read(ift,rec=6) shiftx
+         read(ift,rec=7) shifty
+         read(ift,rec=8) shiftz
+c
+c     read function
+         do j=1,nvuq
+            do k=1,ng3d
+               irec=(iv-1)*ng3d+ig+8
+               read(ift,rec=irec)  func3d(k,j)
+            enddo
+         enddo
+         
+         close(ift)
+
+      else
+         write(*,*) "Error. Invalid outtype in $RISM."
+         ierr=987
+         call abrt(ierr)
+      endif
 c----------------------------------------------------------------
       return
       end
@@ -315,84 +362,147 @@ c**************************************************************
 c----------------------------------------------------------------
 c     Write 3D function to file
 c----------------------------------------------------------------
-      subroutine write3dfunc(namef,func3d,rdelta3d,nvuq,ng3d
-     &                      ,char80)
+      subroutine write3dfunc(namef,func3d,rdelta3d,nvuq,ngrid3d
+     &                      ,outtype,char80)
 c
       implicit real*8(a-h,o-z)
-      character*256 namef
+      character*256 namef,outtype,char256
       character*2 char2
       character*80 char80
 c
-      dimension func3d(ng3d,nvuq)
+      dimension func3d(ngrid3d**3,nvuq)
 c
+      ng3d=ngrid3d**3
+      rn=ngrid3d*rdelta3d
+      xyzshift=0.d0
 c----------------------------------------------------------------
-      ift=45
-      nremark=0
-      open (ift,file=namef)
-      write(ift,9990) nvuq,ng3d,1,rdelta3d
-      write(ift,9991) char80
-      write(ift,9992) nremark
-      do i=1,nremark
-         write (ift,9993) "remarks "
-      enddo
+      if (outtype(1:5).eq."ASCII") then
+         ift=45
+         open (ift,file=namef)
+         write(ift,9991) char80
+         write(ift,9990) nvuq,ngrid3d,ngrid3d,ngrid3d
+     &        rn,rn,rn,xyzshift,xyzshift,xyzshift
       
-      do iv=1,nvuq
-         do ig=1,ng3d
-            write (ift,9995) func3d(ig,iv)
+         do iv=1,nvuq
+            do ig=1,ng3d
+               write (ift,9992) func3d(ig,iv)
+            enddo
          enddo
-      enddo
-      
-      close(ift)
+
+         close(ift)
+
+      elseif (outtype(1:3).eq."BIN") then
+
+         ift=45
+         open (ift,file=namef,form="unformatted",access="direct",recl=4)
+         write(ift,rec=1) nvuq
+         write(ift,rec=2) ngrid3d
+         write(ift,rec=3) ngrid3d
+         write(ift,rec=4) ngrid3d
+         close(ift)
+
+         open (ift,file=namef,form="unformatted",access="direct",recl=8)
+         write(ift,rec=3) rn
+         write(ift,rec=4) rn
+         write(ift,rec=5) rn
+         write(ift,rec=6) xyzshift
+         write(ift,rec=7) xyzshift
+         write(ift,rec=8) xyzshift
+
+         do iv=1,nvuq
+            do ig=1,ng3d
+               irec=(iv-1)*ng3d+ig+8
+               write (ift,rec=irec) func3d(ig,iv)
+            enddo
+         enddo
+         close(ift)
+
+      else
+         write(*,*) "Error. Invalid outtype in $RISM.",outtype,namef
+         ierr=987
+         call abrt(ierr)
+      endif
+
 c----------------------------------------------------------------
       return
- 9990 format("## 3D Function :",3i8,f16.8)
+ 9990 format(4i8,4f16.8)
  9991 format("##  ",a80)
- 9992 format("##  ",i4)
- 9993 format("##  ",a80)
- 9994 format(e16.8e3)
- 9995 format(e16.8e3,2x,e16.8e3)
+ 9992 format(e16.8e3)
       end
 c**************************************************************
 c----------------------------------------------------------------
 c     Write 3D function to file (complex)
 c----------------------------------------------------------------
-      subroutine write3dfuncz(namef,func3d,rdelta3d,nvuq,ng3d
-     &                      ,char80)
+      subroutine write3dfuncz(namef,zfunc3d,rdelta3d,nvuq,ngrid3d
+     &                      ,outtype,char80)
 c
       implicit real*8(a-h,o-z)
-      character*256 namef
+      character*256 namef,outtype
       character*2 char2
       character*80 char80
-      complex*16 func3d
+      complex*16 zfunc3d
 c
-      dimension func3d(ng3d,nvuq)
+      dimension zfunc3d(ngrid3d**3,nvuq)
 c
+      ng3d=ngrid3d**3
+      rn=ngrid3d*rdelta3d
+      xyzshift=0.d0
 c----------------------------------------------------------------
-      ift=45
-      nremark=0
-      open (ift,file=namef)
-      write(ift,9990) nvuq,ng3d,2,rdelta3d
-      write(ift,9991) char80
-      write(ift,9992) nremark
-      do i=1,nremark
-         write (ift,9993) "remarks "
-      enddo
-      
-      do iv=1,nvuq
-         do ig=1,ng3d
-            write (ift,9995) func3d(ig,iv)
+      if (outtype(1:5).eq."ASCII") then
+         ift=45
+         open (ift,file=namef)
+         write(ift,9991) char80
+         write(ift,9990) nvuq,ngrid3d,ngrid3d,ngrid3d
+     &        rn,rn,rn,0.d0,0.d0,0.d0
+
+         do iv=1,nvuq
+            do ig=1,ng3d
+               write (ift,9992) zfunc3d(ig,iv)
+            enddo
          enddo
-      enddo
-      
-      close(ift)
+         close(ift)
+
+      elseif (outtype(1:3).eq."BIN") then
+
+         ift=45
+         open (ift,file=namef,form="unformatted",access="direct",recl=4)
+         write(ift,rec=1) nvuq
+         write(ift,rec=2) ngrid3d
+         write(ift,rec=3) ngrid3d
+         write(ift,rec=4) ngrid3d
+         close(ift)
+
+         open (ift,file=namef,form="unformatted",access="direct",recl=8)
+         write(ift,rec=3) rn
+         write(ift,rec=4) rn
+         write(ift,rec=5) rn
+         write(ift,rec=6) xyzshift
+         write(ift,rec=7) xyzshift
+         write(ift,rec=8) xyzshift
+         close(ift)
+
+         open (ift,file=namef,form="unformatted",access="direct"
+     &        ,recl=16)
+         do iv=1,nvuq
+            do ig=1,ng3d
+               irec=(iv-1)*ng3d+ig+4
+               write (ift,rec=irec) zfunc3d(ig,iv)
+            enddo
+         enddo
+
+         close(ift)
+
+      else
+         write(*,*) "Error. Invalid outtype in $RISM."
+         ierr=987
+         call abrt(ierr)
+      endif
+
 c----------------------------------------------------------------
       return
- 9990 format("## 3D Function :",3i8,f16.8)
+ 9990 format(4i8,4f16.8)
  9991 format("##  ",a80)
- 9992 format("##  ",i4)
- 9993 format("##  ",a80)
- 9994 format(e16.8e3)
- 9995 format(e16.8e3,2x,e16.8e3)
+ 9992 format(e16.8e3,2x,e16.8e3)
       end
 c**************************************************************
 c----------------------------------------------------------------

@@ -38,7 +38,7 @@ c
 c
 c     Read guess t(r)
 c     
-      call read3dfunc(scrjob,tr,n2uq,ng3d)
+      call read3dfunc(scrjob,tr,n2uq,ng3d,outtype)
 
 c----------------------------------------------------------------
       return

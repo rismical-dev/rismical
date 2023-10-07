@@ -1,11 +1,12 @@
  $RISM
 CLOSURE="KH",
 ITRMAX=300,
-CONV=1.d-5,
+CONV=1.d-3,
 CHARGEUP="off",
 IGUESS=0,
 iolist="gqu"
 grid="user"
+outtype="bin"
  $END
  $chargeupopt chgstep=0.2 $end
  $MDIIS

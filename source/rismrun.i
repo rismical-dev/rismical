@@ -22,5 +22,4 @@ c
 c
       common /rismchgup/chgstep,chgratio,chgconv
       common /rismgrid/grid
-  
 c
