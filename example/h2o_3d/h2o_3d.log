@@ -21,7 +21,7 @@
     ======= Computational Conditions =======
     Closure Equation       : KH 
     Maximum Iteration      :       300
-    Convergence Criterion  :  1.0000E-05
+    Convergence Criterion  :  1.0000E-06
     Use CHARGEUP Procedure : OFF
     Guess of tau-bond      : F-BOND   
       --------------------------------------
@@ -78,37 +78,40 @@ Temperature :   298.00000[K]
         22      0.000057584466    10  T     0.30000
         23      0.000040643117    10  T     0.30000
         24      0.000017153487    10  T     0.30000
-        25      0.000008611101     0  x    converged
+        25      0.000008611101    10  T     0.30000
+        26      0.000004224009    10  T     0.30000
+        27      0.000001849897    10  T     0.30000
+        28      0.000001204879    10  T     0.30000
+        29      0.000000715150     0  x    converged
 
     rism cycle is converged
- BUHI:  -14603.610067488071        3.2627970130995645       -4.5799999237060547       0.34000000357627869     
 
-    Total Solvent Charge:     -0.00086642
+    Total Solvent Charge:     -0.00089518
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -17.110827    [kJ/mol]
+    Solvation Free Energy         :  -17.096863    [kJ/mol]
 
-    Solvation Free Energy(GF)     :  -25.384414    [kJ/mol]
+    Solvation Free Energy(GF)     :  -25.370405    [kJ/mol]
 
-    Solute-Solvent Binding Energy :  -86.655309    [kJ/mol]
+    Solute-Solvent Binding Energy :  -86.629229    [kJ/mol]
 
-    UV Binding Energy Component LJ:   10.077248    [kJ/mol]
+    UV Binding Energy Component LJ:   10.074616    [kJ/mol]
 
-    UV Binding Energy Component ES:  -96.732557    [kJ/mol]
+    UV Binding Energy Component ES:  -96.703845    [kJ/mol]
 
-    Solvation Free Energy(UC)     :  -18.693196    [kJ/mol]    UC term :  -14.603610    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -15.483459    [kJ/mol]    UC term :  -9.4164388    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     :  -18.690602    [kJ/mol]    UC term :  -14.604353    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
+    Solvation Free Energy(GF-UC)  :  -15.480624    [kJ/mol]    UC term :  -9.4169516    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
 
-    Solvation Free Energy(PC)     :  -41.222649    [kJ/mol]    PC term :  -24.111822    [kJ/mol]
+    Solvation Free Energy(PC)     :  -41.209884    [kJ/mol]    PC term :  -24.113021    [kJ/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   84.082530    [kJ/mol]
-       2:  -101.19336    [kJ/mol]
+       1:   84.086842    [kJ/mol]
+       2:  -101.18371    [kJ/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   80.705604    [kJ/mol]
-       2:  -106.09002    [kJ/mol]
+       1:   80.709907    [kJ/mol]
+       2:  -106.08031    [kJ/mol]
 
     ============= Partial Molar Volume =============
     Partial Molar Volume       =   0.1967E-01 [L/mol]
@@ -125,6 +128,8 @@ Temperature :   298.00000[K]
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347.
+ Y. Maruyama, F. Hirata, J. Chem. Theory Comput. 8 (2012) 3015. (DOI: 10.1063/1.4879795)  
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 

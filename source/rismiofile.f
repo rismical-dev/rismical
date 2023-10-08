@@ -381,7 +381,7 @@ c----------------------------------------------------------------
          open (ift,file=namef)
          write(ift,9991) char80
          write(ift,9990) nvuq,ngrid3d,ngrid3d,ngrid3d
-     &        rn,rn,rn,xyzshift,xyzshift,xyzshift
+     &        ,rn,rn,rn,xyzshift,xyzshift,xyzshift
       
          do iv=1,nvuq
             do ig=1,ng3d
@@ -425,7 +425,7 @@ c----------------------------------------------------------------
 
 c----------------------------------------------------------------
       return
- 9990 format(4i8,4f16.8)
+ 9990 format(4i8,6f16.8)
  9991 format("##  ",a80)
  9992 format(e16.8e3)
       end

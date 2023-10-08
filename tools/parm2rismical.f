@@ -29,6 +29,7 @@ c
       real*8, allocatable::sigma(:),epsilon(:),charge(:)
       real*8, allocatable::xyz(:,:)
 
+      kcal2j=4184.d0
 c-----------------
 c
 c     Get arguments
@@ -261,16 +262,18 @@ c     write rism inp
 c
       write(*,'(i8)') numatoms
       if (iformat.eq.0) then
-c     Kovarism/Marurism
+c     CUDA
          do iu=1,numatoms
-            write(*,'(3f10.4,3f12.7)') charge(iu),sigma(iu),epsilon(iu)
+            epsj=epsilon(iu)*kcal2j
+            write(*,'(3f10.4,3f12.7)') sigma(iu),epsj,charge(iu)
      &           ,(xyz(i,iu),i=1,3)
          enddo
       else
-c     Norism
+c     RISMiCal
          do iu=1,numatoms
+            epsj=epsilon(iu)*kcal2j
             write(*,'(a4,3f10.4,3f12.7)') atomname(iu)
-     &           ,sigma(iu),epsilon(iu),charge(iu)
+     &           ,sigma(iu),epsj,charge(iu)
      &           ,(xyz(i,iu),i=1,3)
          enddo
       endif

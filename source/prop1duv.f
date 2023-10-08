@@ -250,28 +250,28 @@ c----------------------------------------------------------------
 c
 c     --- Excess Chemical Potential
 c      
-      write(*,9998) esolvtot*1.d-3
+      write(*,9998) esolvtot
       do i=1,n1
-         write(*,9997) nsiteu(i),esolv(i)*1.d-3
+         write(*,9997) nsiteu(i),esolv(i)
       enddo
 c
 c     --- GF Formula Excess Chemical Potential
 c      
-      write(*,9992) egftot*1.d-3
+      write(*,9992) egftot
       do i=1,n1
-         write(*,9997) nsiteu(i),egf(i)*1.d-3
+         write(*,9997) nsiteu(i),egf(i)
       enddo
 c
 c     --- U-V Binding Energy
 c
-      write(*,9994) ebindtot*1.d-3
+      write(*,9994) ebindtot
       do i=1,n1
-         write(*,9993) nsiteu(i),ebind(i)*1.d-3
+         write(*,9993) nsiteu(i),ebind(i)
       enddo
 c
 c     --- Electrostatic interaction
 c
-      write(*,9984) electot*1.d-3
+      write(*,9984) electot
       do i=1,n1
          write(*,9983) nsiteu(i),elec(i)*1.d-3
       enddo
@@ -293,7 +293,7 @@ c
          imax=min(i+9,n2)
          write(*,9986) (nsitev(j),j=i,imax)
          do j=1,n1
-            write(*,9985) nsiteu(j),(esoluv(j,k)*1.d-3,k=i,imax)
+            write(*,9985) nsiteu(j),(esoluv(j,k),k=i,imax)
          enddo
       enddo
 c
@@ -305,27 +305,27 @@ c
 c----------------------------------------------------------------
       return
 c----------------------------------------------------------------
- 9983 format (  6x,"              ----->",a4,":",e16.8,"[kJ/mol]")
- 9984 format (/,4x,"Electrostatic Intraction  :",e16.8,"[kJ/mol]",
+ 9983 format (  6x,"              ----->",a4,":",e16.8,"[J/mol]")
+ 9984 format (/,4x,"Electrostatic Intraction  :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9985 format (4x,A8,1x,10F16.5)
- 9986 format (/,4x,"Excess Chemical Potential Components [kJ/mol]",
+ 9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
      &     /,4x,"U\V",4x,10A16)
  9989 format (/,4x,"============= Partial Molar Volume ============="
      &       ,/,4x,"Partial Molar Volume       = ",G16.8," [L/mol]"
      &       ,/,4x,"Isothermal Compressibility = ",G16.8," [/GPa]")
- 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",f16.8,"[kJ/mol]",
+ 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",f16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
- 9993 format (  6x,"              ----->",a4,":",f16.8,"[kJ/mol]")
- 9994 format (/,4x,"U-V Binding Energy        :",f16.8,"[kJ/mol]",
+ 9993 format (  6x,"              ----->",a4,":",f16.8,"[J/mol]")
+ 9994 format (/,4x,"U-V Binding Energy        :",f16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
      &        /,5x,"U\V ",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"              ----->",a4,":",f16.8,"[kJ/mol]") 
- 9998 format (/,4x,"Excess Chemical Potential :",f16.8,"[kJ/mol]",
-     &        /,4x,"                  RBC/TPT :",f16.8,"[kJ/mol]",
-     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",f16.8,"[kJ/mol]",
+ 9997 format (  6x,"              ----->",a4,":",f16.8,"[J/mol]") 
+ 9998 format (/,4x,"Excess Chemical Potential :",f16.8,"[J/mol]",
+     &        /,4x,"                  RBC/TPT :",f16.8,"[J/mol]",
+     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",f16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9999 format (/,4x,"======= Physical Property of U-V System =======")
       end

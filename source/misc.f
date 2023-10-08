@@ -96,7 +96,7 @@ c**************************************************************
 
       implicit real*8 (a-h,o-z)
       
-      write(*,'(A5,i8)') "BUHI:",i
+      write(*,'(A5,i8)') "For Debug:",i
       
       return
       end
@@ -106,7 +106,7 @@ c---------------------------------------------------------------
       implicit real*8 (a-h,o-z)
       dimension f(n)
       
-      write(*,'(A5,i8,5f16.8)') "BUHI:",i,(f(j),j=1,n)
+      write(*,'(A5,i8,5f16.8)') "For Debug:",i,(f(j),j=1,n)
       
       return
       end
@@ -116,7 +116,7 @@ c---------------------------------------------------------------
       implicit real*8 (a-h,o-z)
       dimension integ(n)
       
-      write(*,'(A5,i8,5i8)') "BUHI:",i,(integ(j),j=1,n)
+      write(*,'(A5,i8,5i8)') "For Debug:",i,(integ(j),j=1,n)
       
       return
       end

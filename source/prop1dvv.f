@@ -448,17 +448,17 @@ C
 c
 c     --- Excess Chemical Potential
 c      
-      write(*,9998) esolvtot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9998) esolvtot
 c
 c     --- GF Formula Excess Chemical Potential
 c      
-      write(*,9990) egftot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9990) egftot
 c
 c     --- V-V Binding Energy
 c
-      write(*,9992) ebindtot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9992) ebindtot
       do i=1,n
-         write(*,9991) nsitev(i),ebind(i)*1.d-3  ! [J/mol -> kJ/mol]
+         write(*,9991) nsitev(i),ebind(i)
       enddo
 c
 c     --- Coordination Number
@@ -492,8 +492,8 @@ c
             imax=min(i+9,n)
             write(*,9986) (nsitev(j),j=i,imax)
             do j=1,n
-               write(*,9985) nsitev(j),(esolvv(j,k)*1.d-3 ,k=i,imax)
-                                            ![J/mol -> kJ/mol]
+               write(*,9985) nsitev(j),(esolvv(j,k) ,k=i,imax)
+                           
             enddo
          enddo
 
@@ -505,7 +505,7 @@ c
          
          write(*,9984)
          do i=1,numspc
-            write(*,9983) i,esolspc(i)*1.d-3 ![J/mol -> kJ/mol]
+            write(*,9983) i,esolspc(i)
          enddo
 
       endif
@@ -515,13 +515,13 @@ c---------------------------------------------------------
 c---------------------------------------------------------
  9983 format (4x,i8,4x,F20.9)
  9984 format (/,4x,"Excess Chemical Potential on Each Species",
-     &        /,4x,"# of Spc",14x,"[kJ/mol]")
+     &        /,4x,"# of Spc",14x,"[J/mol]")
  9985 format (4x,A8,1x,10F16.5)
- 9986 format (/,4x,"Excess Chemical Potential Components [kJ/mol]",
+ 9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
      &        /,13x,10A16)
- 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",f16.8,"[kJ/mol]")
- 9991 format (  6x,"             ----->",a4,":",f16.8,"[kJ/mol]")
- 9992 format (/,4x,"V-V Binding Energy       :",f16.8,"[kJ/mol]",
+ 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",f16.8,"[J/mol]")
+ 9991 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
+ 9992 format (/,4x,"V-V Binding Energy       :",f16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solvent Site)")
  9993 format (/,4x,"Pressure (A route)         :",e16.8,"[Pa]"
      &        /,4x,"                           :",e16.8,"[atm]")
@@ -531,7 +531,7 @@ c---------------------------------------------------------
  9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
      &        /,5x,"NAME",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"             ----->",a4,":",f16.8,"[kJ/mol]")
- 9998 format (/,4x,"Excess Chemical Potential:",f16.8,"[kJ/mol]")
+ 9997 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
+ 9998 format (/,4x,"Excess Chemical Potential:",f16.8,"[J/mol]")
  9999 format (/,4x,"======= Physical Property of V-V System =======")
       end
