@@ -3,11 +3,11 @@ c     Program for making RISM molecular data format
 c     from Amber mol2 and allff files.
 c
 c     usage
-c     mk_rism_udata.x  [mol2] [allff] [c] > [udata]
+c     allff2rismical.x  [mol2] [allff] [c] > [udata]
 c
 c     c: option for centering 0..no 1..yes
 c-------------------------------------------------
-      program mk_rism_udata
+      program allff2rismical
 c
       implicit real*8(a-h,o-z)
       character*2 char2,nty
