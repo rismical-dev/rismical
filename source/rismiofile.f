@@ -33,7 +33,8 @@ c
      &        ,"RISMICALHOME to root directory of RISMical "
      &        ,"package."
          write(*,*) "ie: export RISMICALHOME=/foo/bar/rismical"
-         call abrt
+         ierr=569
+         call abrt(ierr)
       endif
 c
       write(*,*)
@@ -341,10 +342,10 @@ c
          read(ift,rec=8) shiftz
 c
 c     read function
-         do j=1,nvuq
-            do k=1,ng3d
+         do iv=1,nvuq
+            do ig=1,ng3d
                irec=(iv-1)*ng3d+ig+8
-               read(ift,rec=irec)  func3d(k,j)
+               read(ift,rec=irec)  func3d(ig,iv)
             enddo
          enddo
          
