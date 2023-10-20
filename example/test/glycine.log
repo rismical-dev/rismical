@@ -2,8 +2,8 @@
  Input=glycine.gjf
  Output=glycine.log
  Initial command:
- /home/PROG/g16/l1.exe "/work/noriwo/Gau-21819.inp" -scrdir="/work/noriwo/"
- Entering Link 1 = /home/PROG/g16/l1.exe PID=     21820.
+ /home/PROG/g16/l1.exe "/work/noriwo/Gau-14279.inp" -scrdir="/work/noriwo/"
+ Entering Link 1 = /home/PROG/g16/l1.exe PID=     14280.
   
  Copyright (c) 1988-2019, Gaussian, Inc.  All Rights Reserved.
   
@@ -76,18 +76,18 @@
  
  ******************************************
  Gaussian 16:  ES64L-G16RevC.01  3-Jul-2019
-                30-Sep-2023 
+                20-Oct-2023 
  ******************************************
  %chk=glycine.chk
- ----------------------------------------------------------------
- # hf/6-31g(d) nosymm prop=(potential,fitcharge) charge scf=tight
- ----------------------------------------------------------------
+ ---------------------------------------------------------------------
+ # hf/6-31g(d) nosymm prop=(read,potential,fitcharge) charge scf=tight
+ ---------------------------------------------------------------------
  1/18=10,28=-2,38=1,125=101,172=1/1;
  2/12=2,15=1,17=6,18=5,40=1/2;
  3/5=1,6=6,7=1,11=9,25=1,30=1/1,2,3;
  4//1;
  5/5=2,32=2,38=5/2;
- 6/7=2,8=2,9=2,10=2,14=3,15=8,28=1/1,2;
+ 6/7=2,8=2,9=2,10=2,14=3,15=9,28=1/1,2;
  99/5=1,9=1/99;
  -------
  Glycine
@@ -107,7 +107,7 @@
  
  Background charge distribution read from input stream:
  Point Charges:
- XYZ=   10.0000   10.0000   10.0000 Q=    0.0000 A=    0.0000 R=    0.0000 C=    0.0000
+ XYZ=   11.0000   11.0000   11.0000 Q=    0.0000 A=    0.0000 R=    0.0000 C=    0.0000
                           Input orientation:                          
  ---------------------------------------------------------------------
  Center     Atomic      Atomic             Coordinates (Angstroms)
@@ -284,6 +284,7 @@
        Atomic Center    8 is at  -0.629459 -0.009782  0.889823
        Atomic Center    9 is at   2.094062  1.195930  0.000000
        Atomic Center   10 is at   0.197631  2.549272  0.000000
+      Read-in Center  608 is at  10.000000 10.000000 10.000000
      597 points will be used for fitting atomic charges
  Fitting point charges to electrostatic potential
  Charges from ESP fit, RMS=   0.00270 RRMS=   0.04175:
@@ -326,28 +327,27 @@
     8 Atom     -1.036268
     9 Atom    -22.383075
    10 Atom    -22.448661
+  608          -0.003433
  -----------------------------------------------------------------
 
  Test job not archived.
- 1\1\GINC-FALCO01\SP\RHF\6-31G(d)\C2H5N1O2\NORIWO\30-Sep-2023\0\\# hf/6
- -31g(d) nosymm prop=(potential,fitcharge) charge scf=tight\\Glycine\\0
- ,1\N,0,0.85574373,-1.1693172,0.\H,0,1.81577633,-0.85556984,0.\C,0,0.,0
- .,0.\H,0,0.66736703,-1.63786714,-0.874686\H,0,0.66736703,-1.63786714,0
- .874686\C,0,0.83787925,1.27060798,0.\H,0,-0.62945942,-0.0097818,-0.889
- 823\H,0,-0.62945942,-0.0097818,0.889823\O,0,2.09406193,1.19593025,0.\O
- ,0,0.19763128,2.54927233,0.\\Version=ES64L-G16RevC.01\HF=-282.7087728\
- RMSD=4.949e-09\Dipole=-0.761207,-5.2601553,0.\Quadrupole=-0.4827588,-7
- .0441063,7.5268651,-7.5337827,0.,0.\PG=CS [SG(C2H1N1O2),X(H4)]\\@
+ 1\1\GINC-FALCO01\SP\RHF\6-31G(d)\C2H5N1O2\NORIWO\20-Oct-2023\0\\# hf/6
+ -31g(d) nosymm prop=(read,potential,fitcharge) charge scf=tight\\Glyci
+ ne\\0,1\N,0,0.85574373,-1.1693172,0.\H,0,1.81577633,-0.85556984,0.\C,0
+ ,0.,0.,0.\H,0,0.66736703,-1.63786714,-0.874686\H,0,0.66736703,-1.63786
+ 714,0.874686\C,0,0.83787925,1.27060798,0.\H,0,-0.62945942,-0.0097818,-
+ 0.889823\H,0,-0.62945942,-0.0097818,0.889823\O,0,2.09406193,1.19593025
+ ,0.\O,0,0.19763128,2.54927233,0.\\Version=ES64L-G16RevC.01\HF=-282.708
+ 7728\RMSD=4.949e-09\Dipole=-0.761207,-5.2601553,0.\Quadrupole=-0.48275
+ 88,-7.0441063,7.5268651,-7.5337827,0.,0.\PG=CS [SG(C2H1N1O2),X(H4)]\\@
 
 
- The earth never tires,
- The earth is rude, silent, incomprehensible at first,
- Nature is rude and incomprehensible at first,
- Be not discouraged, keep on,
- There are divine things well envelop'd,
- I swear to you there are divine things more beautiful than words can tell.
-                                 -- Walt Whitman
+ THIS CURIOUS WORLD WHICH WE INHABIT IS MORE WONDERFUL THAN IT IS CONVENIENT;
+ MORE BEAUTIFUL THAN IT IS USEFUL;
+ IT IS MORE TO BE ADMIRED THAN IT IS TO BE USED.
+
+                                                                 -- THOREAU
  Job cpu time:       0 days  0 hours  0 minutes  0.9 seconds.
  Elapsed time:       0 days  0 hours  0 minutes  0.9 seconds.
  File lengths (MBytes):  RWF=      6 Int=      0 D2E=      0 Chk=      2 Scr=      1
- Normal termination of Gaussian 16 at Sat Sep 30 15:46:04 2023.
+ Normal termination of Gaussian 16 at Fri Oct 20 07:04:43 2023.

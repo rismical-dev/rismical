@@ -76,10 +76,8 @@ c
 c
       do itr=1,itrmax
 c
-         call system(trim(rismicalhome)//"source"//rismical.x
+         call system(trim(rismicalhome)//"source rismical.x"
      &        //" 3d "//trim(rismicalinp))
-
-
 
 c
       enddo
@@ -149,7 +147,7 @@ c
 c
 c
 c     check solute data type
-      open(ift,file=rismicalinp,err=998)
+      open(ift,file=rismicalinp,err=899)
       read(ift,rismsolution,end=899)
       solute_up=solute
       call upcasex(solute_up)
@@ -329,6 +327,8 @@ c---------------------------------------------------------------
       write(*,*) "     --------------------------------------"
 c----------------------------------------------------------------
       return
+ 998  continue
+      write(*,*) "Error in rismical input file."
       end
 
 c--------------------------------------------------------------

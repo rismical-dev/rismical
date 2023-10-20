@@ -23,6 +23,7 @@ c
       implicit real*8 (a-h,o-z)
 
       include "phys_const.i"
+      include "rismio.i"
       include "solvent.i"
       include "solute.i"
 
@@ -302,6 +303,25 @@ c
       write(*,9989) pmv*1.d+3 ! from [m^3/mol] to [L/mol]
      &              ,xt*1.d+9 ! from [/Pa] to [/GPa]
 c
+c---------------------------------------------------------
+c     Ourput .xmu file
+c---------------------------------------------------------
+      ift=45
+      open (ift,file=trim(basename)//".xmu")
+      write(ift,'(1X,A8)') "$RESULT"
+      write(ift,'(A7,F16.5,A8)') "SFE_SC=",esolvtot,"!(J/mol)"
+      do i=1,nvuq
+         write(ift,'(A8,i3,A2,f16.5)') "SFEC_SC(",i-1,")=",esolv(i)
+      enddo
+      write(ift,'(A7,F16.5,A8)') "SFE_GF=",egftot,"!(J/mol)"
+      do i=1,nvuq
+         write(ift,'(A8,i3,A2,f16.5)') "SFEC_GF(",i-1,")=",egf(i)
+      enddo
+
+      write(ift,'(A4,f16.5,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
+
+      write(ift,'(1X,A4)') "$END"
+      close(ift)
 c----------------------------------------------------------------
       return
 c----------------------------------------------------------------

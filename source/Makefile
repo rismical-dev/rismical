@@ -29,14 +29,13 @@ OBJDIR = $(RISMICALDIR)/object
 # GNU Compiler
 FC =  gfortran
 FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -Wno-argument-mismatch -std=legacy 
-# FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -fallow-argument-mismatch -std=legacy 
 LDFLAGS = -lblas -llapack
 
-# Intel Compiler
-#FC =  ifort
-#FCFLAGS = -O3 -shared-intel -mcmodel=medium -fixed
-#FCFLAGS = -O3 -shared-intel -qopenmp -fixed
-# # LDFLAGS =  -mkl 
+# # Intel Compiler
+# FC =  ifort
+# FCFLAGS = -O3 -shared-intel -mcmodel=medium -fixed
+# FCFLAGS = -O3 -shared-intel -qopenmp -fixed
+# LDFLAGS = -lblas -llapack
 
 
 FCLD = $(FC)

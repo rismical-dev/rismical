@@ -1,5 +1,5 @@
 %chk=glycine.chk
-# hf/6-31g(d) nosymm prop=(potential,fitcharge) charge scf=tight
+# hf/6-31g(d) nosymm prop=(read,potential,fitcharge) charge scf=tight
 
 Glycine
 
@@ -15,4 +15,6 @@ Glycine
  O                  2.09406193    1.19593025    0.00000000
  O                  0.19763128    2.54927233    0.00000000
 
-10.0  10.0  10.0  0.00
+11.  11.  11.  0.00
+
+10.0  10.0  10.0
