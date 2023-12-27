@@ -8,8 +8,10 @@ c
       implicit real*8(a-h,o-z)
       character*2 char2a,char2b,char2c,char2d
       character*6 char6a,char6b,chardum
+      character*6 char8a,char8b
       character*256 solute,solutexyz,soluteesp,solutelj
-      character*256 solvent,solute_up,ljparam
+      character*256 soluteepc
+      character*256 solvent,solute_up,ljparam,esptype
 
       include "phys_const.i"
       include "solvent.i"
@@ -18,7 +20,7 @@ c
       include "rismio.i"
 c
       namelist /rismsolution/solute,solutexyz,soluteesp,solutelj
-     &     ,solvent,ljparam
+     &     ,soluteepc,solvent,ljparam,esptype
 c--------------------------------------------------------------
 c
       ift=45
@@ -66,30 +68,44 @@ c
      &           ,siglju(iu),epslju(iu),qu(iu)
      &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
          enddo
-c     
-c     Read solute parameter from external files
+c
+c     Read solute parameter from $UDATA and epc file
+c
+      elseif (trim(solute_up).eq."UDATAQC") then
+
+         char8a="$UDATAQC"
+         rewind ift
+ 2100    read(ift,*,end=9999) char8b
+         call upcasex(char8b)
+         if (char8b.ne.char8a) goto 2100
+c
+         read(ift,*) nu
+         do iu=1,nu
+            read(ift,*) nsiteu(iu)
+     &           ,siglju(iu),epslju(iu)
+     &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
+         enddo
+c
+c     Read EPC file to get effective point charge
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
+         call readrepc(soluteepc)
+c
+c     Read solute parameter from exernal files
 c
       else
 c
 c     Set default if not given
-         if (len_trim(soluteesp).eq.0) soluteesp=trim(solute)//".esp"
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
          if (len_trim(solutexyz).eq.0) solutexyz=trim(solute)//".xyz"
          if (len_trim(solutelj ).eq.0) solutelj =trim(solute)//".lj"
 c
 c     Read xyz file to get coordinate
 c
-         ift2=46
-         open(ift2,file=solutexyz,status='old')
-         read(ift2,*) nu
-         read(ift2,*) chardum
-         do i=1,nu
-            read (ift2,*) nsiteu(i),xyzu(1,i),xyzu(2,i),xyzu(3,i)
-         enddo
-         close(ift2)
+         call readxyz(solutexyz)
 c
-c     Read EPS file to get point charge
+c     Read EPC file to get effective point charge
 c
-         call readresp(soluteesp,qu,maxslu)
+         call readrepc(soluteepc)
 c
 c     Get LJ parameter 
 c
@@ -99,29 +115,9 @@ c
 
             call readbuiltinsoluteparam(ljparam)
 
-         elseif (solute_up.eq."UDATA") then
-            
-            char6a="$UDATA"
-            rewind ift
- 3000       read(ift,*,end=9999) char6b
-            call upcasex(char6b)
-            if (char6b.ne.char6a) goto 3000
-c
-            read(ift,*) n
-            do iu=1,nu
-               read(ift,*) dum,siglju(iu),epslju(iu)
-            enddo
-
          else
 
-         ift2=46
-         open(ift2,file=solutelj,status='old')
-         read(ift2,*) n
-         if (n.ne.nu) goto 9998
-         do i=1,nu
-            read (ift2,*) siglju(iu),epslju(iu)
-         enddo
-         close(ift2)
+            call readlj(solutelj)
 
          endif
 
@@ -149,10 +145,9 @@ c     -----------------------
 c
       ift=45
       open(ift,file=solvent,status='old')
-      read(ift,*) char2a,char2b,char2c,char2d,nv,ndum,ngrid,rdelta
       read(ift,*) char2a
-      read(ift,*) char2a
-      read(ift,*) char2a,ndum,ndum2,nvuq,temp,xt
+      read(ift,*) char2a,nv,nvuq,ngrid,rdelta,deltak
+      read(ift,*) char2a,ndum,temp,xt
       read(ift,*) char2a
       do i=1,nv
          read(ift,*) char2a,nsitev(i),nspc(i),iuniq(i)
@@ -161,6 +156,21 @@ c
          dens(nspc(i))=densv*avognum*1.D-27
       enddo
       close(ift)
+c
+c     Set reduced solvent parameters
+c
+      nmulsite=0
+      densuq=0
+      do i=1,nv
+         iuq=iuniq(i)
+         if (iuq.gt.0) then
+            q2uq(iuq)=qv(i)
+            epsljvuq(iuq)=epsljv(i)
+            sigljvuq(iuq)=sigljv(i)
+         endif
+         nmulsite(abs(iuq))=nmulsite(abs(iuq))+1
+         densuq(abs(iuq))=densuq(abs(iuq))+dens(nspc(i))
+      enddo
 c
 c     Set inverse temperature
 c      

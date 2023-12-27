@@ -12,7 +12,7 @@ grid="user"
 NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
  $END
  $grid3d
-ngrid3d=64 rdelta3d=0.5
+ngrid3d=128 rdelta3d=0.5
  $end
  $rismsolution
 solute="udata"

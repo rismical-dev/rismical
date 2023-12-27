@@ -1,0 +1,11 @@
+ $RESULT
+SFE_SC=   -172845.65756  !(J/mol)
+SFEC_SC(  0)=   -265385.31715
+SFEC_SC(  1)=     92539.65959
+SFE_GF=   -195238.29546  !(J/mol)
+SFEC_GF(  0)=   -274312.20269
+SFEC_GF(  1)=     79073.90723
+PMV=         0.04934  !(L/mol)
+Pressure=1225988384.80316  !(Pa=L/m^3)
+Correction_term=    -60490.78830  !(J/mol)
+ $END

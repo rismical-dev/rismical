@@ -1,11 +1,11 @@
 c----------------------------------------------------------------
 c     Output 3D-RISM result
 c----------------------------------------------------------------
-      subroutine output3d(ng3d,n2,n2uq
+      subroutine output3d(ng3d,n2uq
      &                   ,cr,tr,urlj,vres,fr,fk)
 c
 c     ngr3d=ngrid3d ... number of grid of RDF
-c     n2=nv         ... number of site of solvent
+c     n2uq=nvuq     ... number of site of solvent
 c     ck            ... k-space direct correlation function 
 c     cr            ... direct correlation function 
 c     tr            ... tau bond =hr-cr
@@ -63,7 +63,7 @@ c
          enddo
          char80="guv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &        ,nvuq,ng3d,char80)
+     &        ,nvuq,ngrid3d,outtype,char80)
       endif
 c
 c     write ur
@@ -79,7 +79,7 @@ c
          enddo
          char80="uuv data"
          call write3dfunc(scrjob,gbuff,rdelta3d
-     &           ,nvuq,ng3d,char80)
+     &           ,nvuq,ngrid3d,outtype,char80)
       endif
 c         
 c     write vres
@@ -92,7 +92,8 @@ c
             gbuff(ig,1)=vres(ig)
          enddo
          char80="vres data (electrostatic field due to solute)"
-         call write3dfunc(scrjob,gbuff,rdelta3d,1,ng3d,char80)
+         call write3dfunc(scrjob,gbuff,rdelta3d,1,ngrid3d
+     &        ,outtype,char80)
       endif
 c
 c     write cr
@@ -102,7 +103,8 @@ c
          scrjob=trim(basename)//".cuv"
          
          char80="cuv data"
-         call write3dfuncz(scrjob,cr,rdelta3d,nvuq,ng3d,char80)
+         call write3dfuncz(scrjob,cr,rdelta3d,nvuq,ngrid3d
+     &        ,outtype,char80)
             
       endif
 c
@@ -113,7 +115,8 @@ c
          scrjob=trim(basename)//".tuv"
 
          char80="tuv data"
-         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ng3d,char80)
+         call write3dfunc(scrjob,tr,rdelta3d,nvuq,ngrid3d
+     &        ,outtype,char80)
          
       endif
 c     
@@ -138,7 +141,8 @@ c
 
          scrjob=trim(basename)//".huvk"
          char80="huv(k) data"
-         call write3dfuncz(scrjob,hk,rdelta3d,nvuq,ng3d,char80)
+         call write3dfuncz(scrjob,hk,rdelta3d,nvuq,ngrid3d
+     &        ,outtype,char80)
             
          deallocate (hk)
 
@@ -150,12 +154,14 @@ c
          scrjob=trim(basename)//".fuv"
          
          char80="f(r) data"
-         call write3dfunc(scrjob,fr,rdelta3d,1,ng3d,char80)
+         call write3dfunc(scrjob,fr,rdelta3d,1,ngrid3d
+     &        ,outtype,char80)
          
          scrjob=trim(basename)//".fuvk"
 
          char80="f(k) data"
-         call write3dfuncz(scrjob,fk,rdelta3d,1,ng3d,char80)
+         call write3dfuncz(scrjob,fk,rdelta3d,1,ngrid3d
+     &        ,outtype,char80)
             
       endif
 c

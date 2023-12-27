@@ -56,6 +56,31 @@ c
          write(*,*) 
      &        "N. Yoshida, J. Chem. Phys. 140 (2014) 214118 ",
      &        "(DOI: 10.1063/1.4879795)  "
+         write(*,*)
+     &        "Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, ",
+     &        "M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347."
+         write(*,*) 
+     &        "Y. Maruyama, F. Hirata, J. Chem. Theory Comput. ",
+     &        "8 (2012) 3015. (DOI: 10.1063/1.4879795)  "
+         write(*,*) 
+     &     "-----------------------------------------------------------"
+         write(*,*) 
+     &     " Implimented Math Libraries"
+         write(*,*) 
+     &     " 3D Fast Fourier Transform: "
+         write(*,*) 
+     &     " Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi"
+     &    ," (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)"
+         write(*,*) 
+     &     " Fast Fourier Transform: "
+         write(*,*) 
+     &        " Copyright Takuya OOURA, 1996-2001"
+         write(*,*)
+     &        " Mathmatical Libra: SLATEC Common Mathmatical Library"
+         write(*,*)
+     &     " Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;"
+     &    ," Walton, Lee (July 1993). Guide to the SLATEC"
+     &    ," Common Mathematical Library"
          write(*,*) 
      &     "-----------------------------------------------------------"
       endif

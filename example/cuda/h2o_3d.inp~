@@ -1,11 +1,11 @@
  $RISM
 CLOSURE="KH",
 ITRMAX=300,
-CONV=1.d-5,
+CONV=1.d-8,
 CHARGEUP="off",
 IGUESS=0,
-iolist="gqu"
-grid="user"
+iolist="gutc"
+grid="standard"
  $END
  $chargeupopt chgstep=0.2 $end
  $MDIIS
@@ -17,7 +17,10 @@ ngrid3d=64 rdelta3d=0.5
  $rismsolution
 solute="udata"
 solvent="h2o_vv.xvk"
+<<<<<<< HEAD:example/cuda/h2o_3d.inp~
 esptype="PC"
+=======
+>>>>>>> xvv-mod:example/h2o_1d/h2o_1d.inp
  $end
  $UDATA
 3    tip3p

@@ -17,10 +17,15 @@ DENS(1)=54.d0,0.1d0,0.1d0
  $MDIIS
 NSUB=10,DUMPMAX=0.2d0,DUMPMIN=0.001d0
  $END
+!!!!Followings are used when user defined grids are  requested.
+!!!! Like grid="user"
 !!  $GRID1D
-!! NGRID=128,
-!! RDELTA=0.1d0,
+!! NGRID=4096,
+!! RDELTA=0.05d0,
 !!  $END
+!!
+!!!!Followings are used when user defined solvents are requested.
+!!!! Like solvent(1)="user"
 !!  $VDATA
 !! 3    tip3p
 !! O   1  3.150d0   636.0d0  -0.8340d0   0.0000000  0.0000000  0.0000000

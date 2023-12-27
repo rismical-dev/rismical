@@ -54,6 +54,7 @@ c$$$         call rismicalxmoz
 
          write(*,*) "Invalid option."
          write(*,*) "1st argument option: VV  1D  3D"
+         write(*,*) "Usage: rismical.x [1st option] [input file] "
          ierr=999
          call abrt(ierr)
 

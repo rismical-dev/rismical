@@ -15,16 +15,17 @@ c     epsljv :solvent site LJ parameter [J/mol]
 c     sigljv :solvent site LJ parameter [Ang]
 c     temp   : Temperature [K]
 c     beta   : 1/kBT [mol/J]
-c     xt     : isothermal compressibility [/Pa]
+c     xt     : isothermal compressibility [/Pa] = [m^3/J]
 c
       common /rismslv/
-     &      nspc(maxslv),nmulsite(maxslv)
-     &     ,dens(maxspc),densuq(maxslv)
-     &     ,temp,beta,xt
+     &      nspc(maxslv),temp,beta,xt
+     &     ,dens(maxspc)
 
       common /rismslvmol/nv,nsitev(maxslv),numspc,nvsym(maxslv)
      &     ,qv(maxslv),xyzv(3,maxslv),epsljv(maxslv),sigljv(maxslv)
 c
-c     solvent parameters for 3D-RISM
+c     reduced solvent parameters 
 c
-      common /rismslv_3d/nxvv,nvuq,iuniq(maxslv),q2uq(maxslv)
+      common /rismslvred/nxvv,nvuq,iuniq(maxslv),q2uq(maxslv)
+     &     ,epsljvuq(maxslv),sigljvuq(maxslv),densuq(maxslv)
+     &     ,nmulsite(maxslv)

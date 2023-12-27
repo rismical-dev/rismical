@@ -2,7 +2,7 @@ c**************************************************************
 c------------------------------------------------------------------
 c     Read k-space 1D-VV Total Correlation Function for 3D-RISM
 c------------------------------------------------------------------
-      subroutine setup1dvx(ngr1d,n2,nx22,ngr3d,listxvv,xvv)
+      subroutine setup1dvx(ngr1d,n2uq,nx22,ngr3d,listxvv,xvv)
 c
 c     ngrid3d   ... number of grid of 3d-rdf
 c     nv        ... number of site of solvent
@@ -15,6 +15,7 @@ c
       implicit real*8 (a-h,o-z)
       character*1 char1
       character*2 char2
+      logical skip
 
       include "rismio.i"
       include "rismrun.i"
@@ -23,12 +24,18 @@ c
       include "phys_const.i"
       
       dimension rk(0:ngr1d)
-      dimension xvv(nx22,n2,n2),xv1d(0:ngr1d)
+      dimension xvv(nx22,n2uq,n2uq),xvk(0:ngr1d,n2uq,n2uq)
       dimension listxvv(ngr3d/2+1,ngr3d/2+1,ngr3d/2+1)
-      dimension yd(0:ngr1d)
-      
+c
+      dimension ic(2),vc(2),xvkd(0:ngr1d)
+      dimension wk(2*ngr1d+2)
 C----------------------------------------------------------------
-      yd=0.d0
+c     parametr for Hermite interpolation
+      xvkd=0.d0
+      skip=.false.
+      ic(1)=3
+      ic(2)=3
+      nwk=2*ngrid+2
 c
 c     --- Make list for Xvv
 c
@@ -66,7 +73,7 @@ c
          call abrt
       endif
 c     
-c     --- setup hvv grid point
+c     --- setup xvv grid point
 c     
       deltak=pi/(dble(ngrid)*rdelta)
       dk3d=2.d0*pi/(rdelta3d*dble(ngrid3d))
@@ -75,31 +82,40 @@ c
          rk(k)=deltak*dble(k)
       enddo
 c     
-c     --- read solvent h from file and make xvv
+c     --- read 1D-xvv from file and make 3D-xvv
 c     
       ift=45
       open (ift,file=solventxvv)
 c
 c     Skip header
 c
-      read(ift,*) char2
-      read(ift,*) char2
-      read(ift,*) char2,ndum
-      do i=1,ndum
+      do i=1,5+nv
          read(ift,*) char2
       enddo
 c
-      do i=1,nv
-         do j=1,nv
+c     Read reduced xvv(k)
+c
+      do ig=1,ngrid
+         read(ift,*) ((xvk(ig,i1,i2),i1=1,nvuq),i2=1,nvuq)
+      enddo
+      do i2=1,nvuq
+      do i1=1,nvuq
+         xvk(0,i1,i2)=xvk(1,i1,i2)
+      enddo
+      enddo
+      close(ift)
+c     
+c     --- make 3D-Xvv by interpolating 1D-Xvv
+c     
+      do j=1,nvuq
+         do i=1,nvuq
             
+c
+c           calculate derivative of xvk
+c
+            call dpchsp(ic,vc,ngrid+1,rk,xvk(0,i,j),xvkd,1,wk,nwk,ierr)
+c
             sum=0.d0
-            
-            do k=1,ngrid
-               read(ift,*) dum
-               xv1d(k)=dum
-            enddo
-            
-            xv1d(0)=xv1d(1) ! to check later
             
             ill=3
             
@@ -112,7 +128,8 @@ c
                rkz=dble(kz)-0.5d0
                rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
                
-               dum=hrho(ngrid,deltak,xv1d,rk,rk3,yd,ill)
+               call dpchfe(ngrid+1,rk,xvk(0,i,j),xvkd
+     &                     ,1,skip,1,rk3,dum,ierr)
                
                k=listxvv(kx,ky,kz)
                xvv(k,i,j)=dum
@@ -123,8 +140,6 @@ c
             
          enddo                  ! of j
       enddo                     ! of i
-      close(ift)
-
 c----------------------------------------------------------------
 
  8000 continue

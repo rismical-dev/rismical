@@ -14,6 +14,7 @@ c     tr            ... tau bond =hr-cr
 c     ures          ... electro static potential [erg]
 c     urlj          ... LJ potential [erg]
 c     hvk           ... k-space total correlation function
+c     xvk           ... k-space solvent susceptibility
 c     
       implicit real*8 (a-h,o-z)
       character*6 char6
@@ -124,7 +125,7 @@ c
          scrjob=trim(basename)//".hvk"
 
          char80="hv(k) data with solvent parameters"
-         call writexvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
+         call writehvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
       endif
 c
 c
@@ -133,9 +134,7 @@ c
       if (koutx.ne.0) then
 
          scrjob=trim(basename)//".xvk"
-
-         char80="xvv(k) data with solvent parameters"
-         call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid,char80)
+         call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid)
       endif
 c
       deallocate (gbuff)

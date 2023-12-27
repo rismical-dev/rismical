@@ -2,7 +2,7 @@ c**************************************************************
 c-----------------------------------------------------------------
 c     3-Dimensional Ornstein-Zernike equation
 c-----------------------------------------------------------------
-      subroutine oz3d(ngr3d,nx22,n2,n2uq
+      subroutine oz3d(ngr3d,nx22,n2uq
      &               ,listxvv,ck,cr,tr,xvv)
 c     
 c     ngrid3d   ... number of grid of 3d-rdf
@@ -29,7 +29,7 @@ c
       dimension ck(ngr3d**3,n2uq)
       dimension cr(ngr3d**3,n2uq)
       dimension tr(ngr3d**3,n2uq)
-      dimension xvv(nx22,n2,n2)
+      dimension xvv(nx22,n2uq,n2uq)
       dimension listxvv(ngr3d/2+1,ngr3d/2+1,ngr3d/2+1)
       dimension cdum(n2uq)
 
@@ -65,23 +65,35 @@ c
             cdum(j)=ck(k,j)     ! here, c(k) is in "ck"
          enddo
          
-         do j=1,nv
+         do j=1,nvuq
             
-            jj=iuniq(j)
-            if (jj.le.0) goto 8000
-
             dsum=(0.d0,0.d0)
 
-            do j2=1,nv
+            do j2=1,nvuq
 
-               jj2=abs(iuniq(j2))
-               dsum=dsum+cdum(jj2)*dcmplx(xvv(kxvv,j2,j),0.d0)
+               dsum=dsum+cdum(j2)*dcmplx(xvv(kxvv,j2,j),0.d0)
 
             enddo
             
-            cr(k,jj)=dsum       ! here, hr(k) is in "cr"
+            cr(k,j)=dsum       ! here, hr(k) is in "cr"
 
- 8000       continue
+c$$$         do j=1,nv
+c$$$            
+c$$$            jj=iuniq(j)
+c$$$            if (jj.le.0) goto 8000
+c$$$
+c$$$            dsum=(0.d0,0.d0)
+c$$$
+c$$$            do j2=1,nv
+c$$$
+c$$$               jj2=abs(iuniq(j2))
+c$$$               dsum=dsum+cdum(jj2)*dcmplx(xvv(kxvv,j2,j),0.d0)
+c$$$
+c$$$            enddo
+c$$$            
+c$$$            cr(k,jj)=dsum       ! here, hr(k) is in "cr"
+c$$$
+c$$$ 8000       continue
 
          enddo
 

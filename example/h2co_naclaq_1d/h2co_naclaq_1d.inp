@@ -1,0 +1,19 @@
+ $RISM
+CLOSURE="KH",
+ITRMAX=300,
+CONV=1.d-8,
+CHARGEUP="off",
+IGUESS=0,
+iolist="gutc"
+ $END
+ $chargeupopt chgstep=0.2 $end
+ $MDIIS
+NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
+ $END
+ $rismsolution
+solute="h2co"
+solutexyz="h2co.xyz"
+soluteepc="h2co.epc"
+solutelj="h2co.lj"
+solvent="naclaq_vv.xvk"
+ $end

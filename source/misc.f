@@ -17,40 +17,30 @@ C
 c--------------------------------------------------------------
       end
 c--------------------------------------------------------------
+c     Converts text string to capital letters
 c
-c     ###################################################
-c     ##  COPYRIGHT (C)  1990  by  Jay William Ponder  ##
-c     ##              All Rights Reserved              ##
-c     ###################################################
-c
-c     ###############################################################
-c     ##                                                           ##
-c     ##  subroutine upcase  --  convert string to all upper case  ##
-c     ##                                                           ##
-c     ###############################################################
-c
-c
-c     "upcase" converts a text string to all upper case letters
-c
-c
-      subroutine upcasex (string)
+      subroutine upcasex(string)
       implicit none
-      integer i,length,code,ichar
       character*1 char
       character*(*) string
+      integer leng_str,icode_a,icode_z,icode_aa,icode,i
 c
 c
-c     move through the string one character at a time,
-c     converting lower case letters to upper case
-c
-      length = len(string)
-      do i = 1, length
-         code = ichar(string(i:i))
-         if (code.ge.97 .and. code.le.122)
-     &      string(i:i) = char(code-32)
+      icode_a=ichar("a") 
+      icode_z=ichar("z") 
+      icode_aa=ichar("A")-icode_a
+
+      leng_str = len(string)
+      do i = 1, leng_str
+         icode = ichar(string(i:i))
+         if (icode.ge.icode_a.and. icode.le.icode_z) then
+            string(i:i) = char(icode+icode_aa)
+         endif
       end do
       return
+c--------------------------------------------------------------
       end
+c
 c-------------------------------------------------------------
 c     Combine the LJ parameter
 c-------------------------------------------------------------
@@ -106,7 +96,7 @@ c**************************************************************
 
       implicit real*8 (a-h,o-z)
       
-      write(*,'(A5,i8)') "BUHI:",i
+      write(*,'(A5,i8)') "For Debug:",i
       
       return
       end
@@ -116,7 +106,7 @@ c---------------------------------------------------------------
       implicit real*8 (a-h,o-z)
       dimension f(n)
       
-      write(*,'(A5,i8,5f16.8)') "BUHI:",i,(f(j),j=1,n)
+      write(*,'(A5,i8,5f16.8)') "For Debug:",i,(f(j),j=1,n)
       
       return
       end
@@ -126,7 +116,7 @@ c---------------------------------------------------------------
       implicit real*8 (a-h,o-z)
       dimension integ(n)
       
-      write(*,'(A5,i8,5i8)') "BUHI:",i,(integ(j),j=1,n)
+      write(*,'(A5,i8,5i8)') "For Debug:",i,(integ(j),j=1,n)
       
       return
       end

@@ -111,13 +111,13 @@ c
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
                nspc(iv)=j
                if (isym.gt.0) then
-                  nvuq=nvuq+1
-                  iuniq(iv)=nvuq0+isym
+                  nvuq0=nvuq0+1
+                  iuniq(iv)=nvuq+isym
                else
-                  iuniq(iv)=-nvuq0+isym
+                  iuniq(iv)=-nvuq+isym
                endif
             enddo
-            nvuq0=nvuq
+            nvuq=nvuq0
          enddo
          nv=iv
 c
@@ -144,15 +144,15 @@ c
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
                nspc(iv)=j
                if (isym.gt.0) then
-                  nvuq=nvuq+1
-                  iuniq(iv)=nvuq0+isym
+                  nvuq0=nvuq0+1
+                  iuniq(iv)=nvuq+isym
                else
-                  iuniq(iv)=-nvuq0+isym
+                  iuniq(iv)=-nvuq+isym
                endif
             enddo
 
             close(ift2)
-            nvuq0=nvuq
+            nvuq=nvuq0
          enddo
 
          nv=iv
@@ -160,6 +160,30 @@ c
       endif
 c
       close(ift)
+c
+c     --- Make Symmetry Uniq Solvent Point Charge
+c
+      do i=1,nv
+         if (iuniq(i).gt.0) then
+            q2uq(iuniq(i))=qv(i)
+         endif
+      enddo
+c
+c     --- Set symmetry multiplicity of solvent site
+c
+      do i=1,maxspc
+         nmulsite(i)=0
+      enddo
+      do i=1,nv
+         j=abs(iuniq(i))
+         nmulsite(j)=nmulsite(j)+1
+      enddo
+      do i=1,nv
+         j=abs(iuniq(i))
+         if (iuniq(i).gt.0) then
+            densuq(j)=dens(nspc(i))*nmulsite(j)
+         endif
+      enddo
 c
       write(*,*) "   -----------------------------------------------"
       write(*,*) "                Solvent parameters"
@@ -189,6 +213,9 @@ c     Convert densty [M] -> [/Ang^3]
 c
       do i=1,numspc
          dens(i)=dens(i)*avognum*1.D-27
+      enddo
+      do i=1,nvuq
+         densuq(i)=densuq(i)*avognum*1.D-27
       enddo
 c----------------------------------------------------------------------
       return

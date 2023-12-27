@@ -43,132 +43,12 @@ c---------------------------------------------------------
          esolspc(i)=0.d0
       enddo
 c
-c     --- Excess Helmholtz Free Energy per Particle
+c     --- Excess Helmholtz Free Energy
 c
       esolvtot=0.d0
       do i=1,n
          esolv(i)=0.d0
       enddo
-c
-      if (numspc.eq.1) then
-c
-c
-c     --- Excess Helmholtz Free Energy per Particle for pure solvent
-c
-c     --- 1st term (0.5*hr**2*(heviside)-cr)
-c
-c
-c     --- HNC
-c      
-      if (icl.eq.0) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  hr=tr(k,i,j)+cr(k,i,j)
-                  sum=sum+rr*(0.5d0*hr**2-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- MSA
-c      
-      if (icl.eq.1) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  sum=sum+rr*(-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- KH
-c      
-      if (icl.eq.2) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  hr=tr(k,i,j)+cr(k,i,j)
-                  hevi=1.d0
-                  if (hr.gt.0.d0) hevi=0.d0
-                  sum=sum+rr*(0.5d0*hr**2*hevi-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- GF
-c      
-      egftot=0.d0
-      do i=1,n
-         sum=0.d0
-         do j=1,n
-            do k=1,ngrid
-               rr=(rdelta*dble(k))**2*rdelta
-               sum=sum+rr*(-cr(k,i,j))
-            enddo
-         enddo
-         sum=sum*4.d0*pi*dens(1)/beta
-         egftot=egftot+sum
-      enddo
-c
-c     --- 2nd term (Tr[wc]+lndet[I-wc*rho])
-c
-      ierr=0
-      sumk=0.d0
-      do k=1,ngrid
-
-         do i=1,n
-            do j=1,n
-               dum1(i,j)=wk(k,i,j)
-               dum2(i,j)=ck(k,i,j)
-            enddo
-         enddo
-
-         call matprd(dum1,dum2,dum3,n,n,n,n,n,n,ill)
-
-         do i=1,n
-            do j=1,n
-               dum2(i,j)=-dum3(i,j)*dens(1)
-            enddo
-            dum2(i,i)=1.d0+dum2(i,i)
-         enddo
-         
-         call matdet(dum2,n,n,d)
-
-         if (d.le.0.d0) then
-            ierr=1
-            goto 90
-         endif
-         
-         call trd(t,dum3,n)
-         
-         rk2=(deltak*dble(k))**2
-         sumk=sumk+rk2*(t+dlog(d)/dens(1))
-
-      enddo
-      
-      esolvtot=esolvtot+sumk/(4.d0*pi**2*beta)*deltak
-      egftot=egftot+sumk/(4.d0*pi**2*beta)*deltak
- 90   continue
-c
-      else 
-c
-c     --- Solvation Free Energy (Excess Chemical Potential) for mixture
-c
 c
 c     --- HNC
 c
@@ -263,8 +143,6 @@ c
          egf(i)=sum*4.d0*pi/beta
          egftot=egftot+egf(i)
       enddo
-c
-      endif
 c
 c     --- Coordination Number
 c
@@ -448,17 +326,17 @@ C
 c
 c     --- Excess Chemical Potential
 c      
-      write(*,9998) esolvtot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9998) esolvtot
 c
 c     --- GF Formula Excess Chemical Potential
 c      
-      write(*,9990) egftot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9990) egftot
 c
 c     --- V-V Binding Energy
 c
-      write(*,9992) ebindtot*1.d-3  ! [J/mol -> kJ/mol]
+      write(*,9992) ebindtot
       do i=1,n
-         write(*,9991) nsitev(i),ebind(i)*1.d-3  ! [J/mol -> kJ/mol]
+         write(*,9991) nsitev(i),ebind(i)
       enddo
 c
 c     --- Coordination Number
@@ -492,8 +370,8 @@ c
             imax=min(i+9,n)
             write(*,9986) (nsitev(j),j=i,imax)
             do j=1,n
-               write(*,9985) nsitev(j),(esolvv(j,k)*1.d-3 ,k=i,imax)
-                                            ![J/mol -> kJ/mol]
+               write(*,9985) nsitev(j),(esolvv(j,k) ,k=i,imax)
+                           
             enddo
          enddo
 
@@ -505,7 +383,7 @@ c
          
          write(*,9984)
          do i=1,numspc
-            write(*,9983) i,esolspc(i)*1.d-3 ![J/mol -> kJ/mol]
+            write(*,9983) i,esolspc(i)
          enddo
 
       endif
@@ -515,13 +393,13 @@ c---------------------------------------------------------
 c---------------------------------------------------------
  9983 format (4x,i8,4x,F20.9)
  9984 format (/,4x,"Excess Chemical Potential on Each Species",
-     &        /,4x,"# of Spc",14x,"[kJ/mol]")
+     &        /,4x,"# of Spc",14x,"[J/mol]")
  9985 format (4x,A8,1x,10F16.5)
- 9986 format (/,4x,"Excess Chemical Potential Components [kJ/mol]",
+ 9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
      &        /,13x,10A16)
- 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",f16.8,"[kJ/mol]")
- 9991 format (  6x,"             ----->",a4,":",f16.8,"[kJ/mol]")
- 9992 format (/,4x,"V-V Binding Energy       :",f16.8,"[kJ/mol]",
+ 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",f16.8,"[J/mol]")
+ 9991 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
+ 9992 format (/,4x,"V-V Binding Energy       :",f16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solvent Site)")
  9993 format (/,4x,"Pressure (A route)         :",e16.8,"[Pa]"
      &        /,4x,"                           :",e16.8,"[atm]")
@@ -531,7 +409,7 @@ c---------------------------------------------------------
  9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
      &        /,5x,"NAME",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"             ----->",a4,":",f16.8,"[kJ/mol]")
- 9998 format (/,4x,"Excess Chemical Potential:",f16.8,"[kJ/mol]")
+ 9997 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
+ 9998 format (/,4x,"Excess Chemical Potential:",f16.8,"[J/mol]")
  9999 format (/,4x,"======= Physical Property of V-V System =======")
       end
