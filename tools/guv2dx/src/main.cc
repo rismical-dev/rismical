@@ -69,7 +69,7 @@ int main(int argc, char * argv[]) {
     fout << "object 2 class gridconnections counts     "
 	 << g[0] << "     " << g[1] << "     " << g[2] << endl;
     fout << "object 3 class array type double rank 0 items "
-	 << grid << " follows" << endl;
+	 << grid << " data follows" << endl;
     
     int ip = grid * iv;
 #pragma omp parallel for
@@ -83,6 +83,7 @@ int main(int argc, char * argv[]) {
     for (int ig = 0; ig < grid; ++ig) {
       fout << tmp[ig] << endl;
     }
+    fout << "object \"Untitled\" call field" << endl;
     fout.close();
   }
   return 0;

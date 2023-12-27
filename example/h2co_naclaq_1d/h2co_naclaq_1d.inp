@@ -10,20 +10,10 @@ iolist="gutc"
  $MDIIS
 NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
  $END
-!!  $rismsolution
-!! solute="udata"
-!! solvent="h2o_vv.xvk"
-!!  $end
-!!  $UDATA
-!! 3    tip3p
-!! O    3.150d0   636.0d0  -0.8340d0   0.0000000  0.0000000  0.0000000
-!! H    0.400d0   192.5d0   0.4170d0   0.0000000  0.7566950  0.5858800
-!! H    0.400d0   192.5d0   0.4170d0   0.0000000 -0.7566950  0.5858800
-!!  $END
  $rismsolution
 solute="h2co"
 solutexyz="h2co.xyz"
 soluteepc="h2co.epc"
-solutelj="builtin"
+solutelj="h2co.lj"
 solvent="naclaq_vv.xvk"
  $end

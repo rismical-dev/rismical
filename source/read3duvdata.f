@@ -8,6 +8,7 @@ c
       implicit real*8(a-h,o-z)
       character*2 char2a,char2b,char2c,char2d
       character*6 char6a,char6b,chardum
+      character*8 char8a,char8b
       character*6 esptype
       character*256 solute,solutexyz,soluteesp,solutelj
       character*256 soluteepc
@@ -103,6 +104,7 @@ c
       call upcasex(esptype)
       if (esptype.eq."MAP") then
          ipot3d=1
+         if (len_trim(soluteesp).eq.0) soluteesp=trim(solute)//".esp"
          espfile=soluteesp
       endif
 c
@@ -135,6 +137,29 @@ c
      &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
          enddo
 c     
+      elseif (trim(solute_up).eq."UDATAQC") then
+
+c
+c     Read solute parameter from $UDATAQC and external epc file
+c
+         char8a="$UDATAQC"
+         rewind ift
+ 2100    read(ift,*,end=9999) char8b
+         call upcasex(char8b)
+         if (char8b.ne.char8a) goto 2100
+c
+         read(ift,*) nu
+         do iu=1,nu
+            read(ift,*) nsiteu(iu)
+     &           ,siglju(iu),epslju(iu)
+     &           ,xyzu(1,iu),xyzu(2,iu),xyzu(3,iu)
+         enddo
+c
+c     Read EPC file to get RESP point charge
+c
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
+         call readrepc(soluteepc,qu,maxslu)
+c     
 c     Read solute parameter from external files
 c
       else
@@ -147,18 +172,11 @@ c
 c
 c     Read xyz file to get coordinate
 c
-         ift2=46
-         open(ift2,file=solutexyz,status='old')
-         read(ift2,*) nu
-         read(ift2,*) chardum
-         do i=1,nu
-            read (ift2,*) nsiteu(i),xyzu(1,i),xyzu(2,i),xyzu(3,i)
-         enddo
-         close(ift2)
+         call readxyz(solutexyz)
 c
 c     Read EPC file to get RESP point charge
 c
-         call readresp(soluteepc,qu,maxslu)
+         call readrepc(soluteepc,qu,maxslu)
 c
 c     Get LJ parameter 
 c
@@ -168,29 +186,9 @@ c
 
             call readbuiltinsoluteparam(ljparam)
 
-         elseif (solute_up.eq."UDATA") then
-            
-            char6a="$UDATA"
-            rewind ift
- 3000       read(ift,*,end=9999) char6b
-            call upcasex(char6b)
-            if (char6b.ne.char6a) goto 3000
-c
-            read(ift,*) n
-            do iu=1,nu
-               read(ift,*) dum,siglju(iu),epslju(iu)
-            enddo
-
          else
 
-            ift2=46
-            open(ift2,file=solutelj,status='old')
-            read(ift2,*) n
-            if (n.ne.nu) goto 9998
-            do i=1,nu
-               read (ift2,*) siglju(i),epslju(i)
-            enddo
-            close(ift2)
+            call readlj(solutelj)
             
          endif
 

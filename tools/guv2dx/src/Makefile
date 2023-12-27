@@ -1,6 +1,6 @@
 CC      = g++
 
-CFLAGS  = -O3 -Xpreprocessor  -fopenmp -lomp -fomit-frame-pointer -std=c++11
+CFLAGS  = -O3 -Xpreprocessor -fopenmp -lgomp -fomit-frame-pointer -std=c++11
 #CFLAGS  = -O3 -Xpreprocessor -fopenmp -lomp -fomit-frame-pointer -std=c++11
 
 OBJS	= main.o set_fname.o

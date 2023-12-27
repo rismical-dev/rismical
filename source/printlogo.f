@@ -78,8 +78,8 @@ c
          write(*,*)
      &        " Mathmatical Libra: SLATEC Common Mathmatical Library"
          write(*,*)
-     &     "Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;"
-     &    ,"Walton, Lee (July 1993). Guide to the SLATEC"
+     &     " Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;"
+     &    ," Walton, Lee (July 1993). Guide to the SLATEC"
      &    ," Common Mathematical Library"
          write(*,*) 
      &     "-----------------------------------------------------------"

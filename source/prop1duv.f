@@ -116,7 +116,7 @@ c
             enddo
             esolv(i)=sum*4.d0*pi/beta
             esolvtot=esolvtot+esolv(i)
-         enddo
+        enddo
       endif
 c     
 c     --- HNC+RBC (Same as HNC case, this is not correct.)
@@ -328,7 +328,7 @@ c----------------------------------------------------------------
  9983 format (  6x,"              ----->",a4,":",e16.8,"[J/mol]")
  9984 format (/,4x,"Electrostatic Intraction  :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
- 9985 format (4x,A8,1x,10F16.5)
+ 9985 format (4x,A8,1x,10e16.8)
  9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
      &     /,4x,"U\V",4x,10A16)
  9989 format (/,4x,"============= Partial Molar Volume ============="

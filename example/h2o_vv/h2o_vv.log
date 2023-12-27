@@ -250,15 +250,15 @@
 
     ======= Physical Property of V-V System =======
 
-    Excess Chemical Potential:     -7.92757624[kJ/mol]
+    Excess Chemical Potential: -24920.38751503[J/mol]
 
-    GF Form Ex.Chem.Pot.     :    -23.77195619[kJ/mol]
+    GF Form Ex.Chem.Pot.     : -40764.76748677[J/mol]
 
-    V-V Binding Energy       :   -110.78564914[kJ/mol]
+    V-V Binding Energy       :-110785.64913935[J/mol]
      Site Contribution (On Solvent Site)
-                   ----->O   :    -98.56115823[kJ/mol]
-                   ----->H   :     -6.11224546[kJ/mol]
-                   ----->H   :     -6.11224546[kJ/mol]
+                   ----->O   : -98561.15822790[J/mol]
+                   ----->H   :  -6112.24545573[J/mol]
+                   ----->H   :  -6112.24545573[J/mol]
 
     Coordination Number 
      NAME     O   [Radius ]    H   [Radius ]    H   [Radius ]
@@ -283,11 +283,14 @@
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347.
+ Y. Maruyama, F. Hirata, J. Chem. Theory Comput. 8 (2012) 3015. (DOI: 10.1063/1.4879795)  
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 
   Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
   Fast Fourier Transform: 
- Copyright Takuya OOURA, 1996-2001
- Mathmatical Libra: SLATEC Common Mathmatical Library
- Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+  Copyright Takuya OOURA, 1996-2001
+  Mathmatical Libra: SLATEC Common Mathmatical Library
+  Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko; Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+ -----------------------------------------------------------

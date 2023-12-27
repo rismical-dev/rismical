@@ -623,15 +623,15 @@ c----------------------------------------------------------------
       end
 c**************************************************************
 c----------------------------------------------------------------
-c     Read RESP point charge
+c     Read RESP effective point charge
 c----------------------------------------------------------------
-      subroutine readresp(namef,qu,maxslu)
+      subroutine readrepc(namef)
 c
       implicit real*8(a-h,o-z)
       character*256 namef
       character*2 char2
 c
-      dimension qu(maxslu)
+      include "solute.i"
 c----------------------------------------------------------------
       ift=45
       open (ift,file=namef,status='old')
@@ -639,11 +639,61 @@ c
 c     Read point charges
 c
       read(ift,*) char2
-      read(ift,*) nu
+      read(ift,*) nux
+      if (nux.ne.nu) then
+         write(*,*) "Error. Inconsistent epc file.",nux,nu
+         ierr=576
+         call abrt(ierr)
+      endif
       do i=1,nu
          read(ift,*) qu(i)
       enddo
 c      
+      close(ift)
+c----------------------------------------------------------------
+      return
+      end
+c----------------------------------------------------------------
+c     Read XYZ coordinate file
+c----------------------------------------------------------------
+      subroutine readxyz(namef)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+c
+      include "solute.i"
+c
+c----------------------------------------------------------------
+      ift=46
+      open(ift,file=namef,status='old')
+      read(ift,*) nu
+      read(ift,*) char2         !Skip comment line
+      do i=1,nu
+         read (ift,*) nsiteu(i),xyzu(1,i),xyzu(2,i),xyzu(3,i)
+      enddo
+      close(ift)
+c----------------------------------------------------------------
+      return
+      end
+c----------------------------------------------------------------
+c     Read LJ parameter file
+c----------------------------------------------------------------
+      subroutine readlj(namef)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*4 dum
+c
+      include "solute.i"
+c
+c----------------------------------------------------------------
+      ift=46
+      open(ift,file=namef,status='old')
+      read(ift,*) nu
+      do i=1,nu
+         read (ift,*) dum,siglju(i),epslju(i)
+      enddo
       close(ift)
 c----------------------------------------------------------------
       return

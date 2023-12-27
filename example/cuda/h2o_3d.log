@@ -11,47 +11,12 @@
   The Reference Interaction Site-Model integrated Calculator
   Copyright(C) 2021 -- Norio Yoshida -- All Rights Reserved.
  -----------------------------------------------------------
-          51
-         100
-          32
-          32
-          32
-          32
-          32
-          32
 
      RISMiCal home dir:/home/noriwo/software/RISMiCal
 
   -------------------------------------------------
      3D-RISM run for solute-solvent system
   -------------------------------------------------
-         111
-         102
-         102
-         117
-         115
-         101
-         114
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
 
     ======= Computational Conditions =======
     Closure Equation       : KH 
@@ -61,403 +26,9 @@
     Guess of tau-bond      : F-BOND   
       --------------------------------------
 Grid preset       :USER                    
-Number of 3D-Grid :          64
+Number of 3D-Grid :         128
  3D-Grid width    :      0.5000  [A]
       --------------------------------------
-         117
-         100
-          97
-         116
-          97
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          80
-          67
-          32
-          32
-          32
-          32
-          36
-          82
-          73
-          83
-          77
-          32
-          67
-          76
-          79
-          83
-          85
-          82
-          73
-          84
-          82
-          77
-          65
-          88
-          67
-          79
-          78
-          86
-          61
-          49
-          67
-          72
-          65
-          82
-          71
-          69
-          73
-          71
-          85
-          69
-          83
-          83
-         105
-         111
-         108
-         105
-         115
-         116
-         103
-         114
-         105
-         100
-          61
-          34
-          36
-          69
-          78
-          68
-          32
-          32
-          36
-          99
-         104
-          97
-         114
-         103
-          36
-          77
-          68
-          73
-          73
-          83
-          78
-          83
-          85
-          66
-          61
-          49
-          36
-          69
-          78
-          68
-          32
-          32
-          36
-         103
-         114
-         105
-         100
-          51
-         110
-         103
-         114
-         105
-         100
-          51
-          36
-         101
-         110
-         100
-          32
-          32
-          36
-         114
-         105
-         115
-         109
-         115
-         115
-         111
-         108
-         117
-         116
-         101
-         115
-         111
-         108
-         118
-         101
-         110
-         101
-         115
-         112
-         116
-         121
-         112
-          36
-         101
-         110
-         100
-          32
-          32
-          36
-          85
-          68
-          65
-          84
-          65
  -----------------------------------------------
              Solute parameters
  -----------------------------------------------
@@ -482,56 +53,56 @@ tabulating solute Lennard-Jones potential ...
 synthesizing solute Coulomb potential ...
 synthesizing initial estimate for Tuv ...
 relaxing 3D UV RISM: Charge Up Factor = 1
- Step = 1 Reside = 0.317223
- Step = 2 Reside = 0.148523
- Step = 3 Reside = 0.107749
- Step = 4 Reside = 0.0540026
- Step = 5 Reside = 0.034279
- Step = 6 Reside = 0.0287021
- Step = 7 Reside = 0.0185817
- Step = 8 Reside = 0.0146549
- Step = 9 Reside = 0.0111112
- Step = 10 Reside = 0.00896666
- Step = 11 Reside = 0.00735444
- Step = 12 Reside = 0.00655607
- Step = 13 Reside = 0.00560965
- Step = 14 Reside = 0.00412412
- Step = 15 Reside = 0.00389006
- Step = 16 Reside = 0.00343542
- Step = 17 Reside = 0.00262485
- Step = 18 Reside = 0.00218376
- Step = 19 Reside = 0.00138393
- Step = 20 Reside = 0.00103237
- Step = 21 Reside = 0.000661807
- Step = 22 Reside = 0.00039101
- Step = 23 Reside = 0.000304879
- Step = 24 Reside = 0.000176883
- Step = 25 Reside = 0.000134202
- Step = 26 Reside = 9.08433e-05
- Step = 27 Reside = 5.10787e-05
- Step = 28 Reside = 4.03449e-05
- Step = 29 Reside = 1.45959e-05
- Step = 30 Reside = 1.34971e-05
- Step = 31 Reside = 8.7599e-06
+ Step = 1 Reside = 0.112155
+ Step = 2 Reside = 0.0525108
+ Step = 3 Reside = 0.038095
+ Step = 4 Reside = 0.0190928
+ Step = 5 Reside = 0.0121195
+ Step = 6 Reside = 0.0101477
+ Step = 7 Reside = 0.00656949
+ Step = 8 Reside = 0.00518123
+ Step = 9 Reside = 0.00392823
+ Step = 10 Reside = 0.00317011
+ Step = 11 Reside = 0.00260016
+ Step = 12 Reside = 0.00231791
+ Step = 13 Reside = 0.00198327
+ Step = 14 Reside = 0.00145807
+ Step = 15 Reside = 0.00137533
+ Step = 16 Reside = 0.00121459
+ Step = 17 Reside = 0.000927806
+ Step = 18 Reside = 0.000771741
+ Step = 19 Reside = 0.000488896
+ Step = 20 Reside = 0.000364749
+ Step = 21 Reside = 0.000233838
+ Step = 22 Reside = 0.000138088
+ Step = 23 Reside = 0.000107639
+ Step = 24 Reside = 6.23867e-05
+ Step = 25 Reside = 4.73597e-05
+ Step = 26 Reside = 3.20816e-05
+ Step = 27 Reside = 1.80763e-05
+ Step = 28 Reside = 1.42714e-05
+ Step = 29 Reside = 5.13783e-06
+outputting Guv to file:  curism.guv  ...
+done.
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -17122.661    [kJ/mol]
+    Solvation Free Energy         :  -17169.733    [J/mol]
 
-    Solvation Free Energy(GF)     :  -25399.424    [kJ/mol]
+    Solvation Free Energy(GF)     :  -25447.105    [J/mol]
 
-    Solvation Free Energy(PC)     :  -41233.892    [kJ/mol]    PC term :  -24111.231    [kJ/mol]
+    Solvation Free Energy(PC)     :  -41255.002    [J/mol]    PC term :  -24085.269    [J/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   84305.278    [kJ/mol]
-       2:  -101427.94    [kJ/mol]
+       1:   84269.885    [J/mol]
+       2:  -101439.62    [J/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   80923.465    [kJ/mol]
-       2:  -106322.89    [kJ/mol]
+       1:   80887.832    [J/mol]
+       2:  -106334.94    [J/mol]
 
     ============= Partial Molar Volume =============
-    Partial Molar Volume       =   0.1967E-01 [L/mol]
+    Partial Molar Volume       =   0.1965E-01 [L/mol]
     Isothermal Compressibility =   0.4900     [/GPa]
     Pressure                   =   0.2070E+10 [GPa]
 
@@ -545,6 +116,8 @@ relaxing 3D UV RISM: Charge Up Factor = 1
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347.
+ Y. Maruyama, F. Hirata, J. Chem. Theory Comput. 8 (2012) 3015. (DOI: 10.1063/1.4879795)  
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 
@@ -552,5 +125,5 @@ relaxing 3D UV RISM: Charge Up Factor = 1
   Fast Fourier Transform: 
   Copyright Takuya OOURA, 1996-2001
   Mathmatical Libra: SLATEC Common Mathmatical Library
- Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+  Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko; Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
  -----------------------------------------------------------

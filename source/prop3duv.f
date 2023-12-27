@@ -313,18 +313,19 @@ c---------------------------------------------------------
       ift=45
       open (ift,file=trim(basename)//".xmu")
       write(ift,'(1X,A7)') "$RESULT"
-      write(ift,'(A7,F16.5,A8)') "SFE_SC=",esolvtot,"!(J/mol)"
+      write(ift,'(A7,F16.5,2x,A8)') "SFE_SC=",esolvtot,"!(J/mol)"
       do i=1,nvuq
          write(ift,'(A8,i3,A2,f16.5)') "SFEC_SC(",i-1,")=",esolvi(i)
       enddo
-      write(ift,'(A7,F16.5,A8)') "SFE_GF=",egftot,"!(J/mol)"
+      write(ift,'(A7,F16.5,2x,A8)') "SFE_GF=",egftot,"!(J/mol)"
       do i=1,nvuq
          write(ift,'(A8,i3,A2,f16.5)') "SFEC_GF(",i-1,")=",egfi(i)
       enddo
 
-      write(ift,'(A4,f16.5,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
-      write(ift,'(A9,f16.5,A8)') "Pressure=",pressure,"!(Pa=L/m^3)"
-      write(ift,'(A16,f16.5,A8)') "Correction_term=",pcterm,"!(J/mol)"
+      write(ift,'(A4,f16.5,2x,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
+      write(ift,'(A9,f16.5,2x,A11)') "Pressure=",pressure,"!(Pa=L/m^3)"
+      write(ift,'(A16,f16.5,2x,A8)') 
+     &     "Correction_term=",pcterm,"!(J/mol)"
 
       write(ift,'(1X,A4)') "$END"
       close(ift)

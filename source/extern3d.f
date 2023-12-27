@@ -154,7 +154,7 @@ c
 c     
       dimension sfec_sc(0:maxslv-1), sfec_gf(0:maxslv-1)
 c
-      namelist /results/sfe_sc,sfec_sc,sfe_gf,sfec_gf
+      namelist /result/sfe_sc,sfec_sc,sfe_gf,sfec_gf
      &     ,pmv,pressure,correction_term
 
 c---------------------------------------------------------
@@ -164,8 +164,12 @@ c
       ift=45
       open(ift,file="curism.xmu")
       rewind ift
-      read (ift,results)
+      read (ift,result)
       close(ift)
+c
+c     Copy curism.xmu to basename.xmu
+c
+      call system("cp curism.xmu "//trim(basename)//".xmu")
 c
 c     Print Property of U-V System for 3D
 c

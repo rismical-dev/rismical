@@ -90,28 +90,28 @@ Temperature :   298.00000[K]
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -17.096863    [kJ/mol]
+    Solvation Free Energy         :  -17096.863    [J/mol]
 
-    Solvation Free Energy(GF)     :  -25.370405    [kJ/mol]
+    Solvation Free Energy(GF)     :  -25370.405    [J/mol]
 
-    Solute-Solvent Binding Energy :  -86.629229    [kJ/mol]
+    Solute-Solvent Binding Energy :  -86629.229    [J/mol]
 
-    UV Binding Energy Component LJ:   10.074616    [kJ/mol]
+    UV Binding Energy Component LJ:   10074.616    [J/mol]
 
-    UV Binding Energy Component ES:  -96.703845    [kJ/mol]
+    UV Binding Energy Component ES:  -96703.845    [J/mol]
 
-    Solvation Free Energy(UC)     :  -18.690602    [kJ/mol]    UC term :  -14.604353    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -15.480624    [kJ/mol]    UC term :  -9.4169516    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     :  -18690.602    [J/mol]    UC term :  -14604.353    [J/mol]    UC param: A=  -4.5799999    [J/mol], B=  0.34000000    [J/mol]
+    Solvation Free Energy(GF-UC)  :  -15480.624    [J/mol]    UC term :  -9.4169516    [J/mol]    UC param: A=  -3.1600001    [J/mol], B=  0.89399999    [J/mol]
 
-    Solvation Free Energy(PC)     :  -41.209884    [kJ/mol]    PC term :  -24.113021    [kJ/mol]
+    Solvation Free Energy(PC)     :  -41209.884    [J/mol]    PC term :  -24113.021    [J/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:   84.086842    [kJ/mol]
-       2:  -101.18371    [kJ/mol]
+       1:   84086.842    [kJ/mol]
+       2:  -101183.71    [kJ/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:   80.709907    [kJ/mol]
-       2:  -106.08031    [kJ/mol]
+       1:   80709.907    [kJ/mol]
+       2:  -106080.31    [kJ/mol]
 
     ============= Partial Molar Volume =============
     Partial Molar Volume       =   0.1967E-01 [L/mol]
@@ -137,5 +137,5 @@ Temperature :   298.00000[K]
   Fast Fourier Transform: 
   Copyright Takuya OOURA, 1996-2001
   Mathmatical Libra: SLATEC Common Mathmatical Library
- Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+  Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko; Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
  -----------------------------------------------------------

@@ -43,132 +43,12 @@ c---------------------------------------------------------
          esolspc(i)=0.d0
       enddo
 c
-c     --- Excess Helmholtz Free Energy per Particle
+c     --- Excess Helmholtz Free Energy
 c
       esolvtot=0.d0
       do i=1,n
          esolv(i)=0.d0
       enddo
-c
-      if (numspc.eq.1) then
-c
-c
-c     --- Excess Helmholtz Free Energy per Particle for pure solvent
-c
-c     --- 1st term (0.5*hr**2*(heviside)-cr)
-c
-c
-c     --- HNC
-c      
-      if (icl.eq.0) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  hr=tr(k,i,j)+cr(k,i,j)
-                  sum=sum+rr*(0.5d0*hr**2-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- MSA
-c      
-      if (icl.eq.1) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  sum=sum+rr*(-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- KH
-c      
-      if (icl.eq.2) then
-         do i=1,n
-            sum=0.d0
-            do j=1,n
-               do k=1,ngrid
-                  rr=(rdelta*dble(k))**2*rdelta
-                  hr=tr(k,i,j)+cr(k,i,j)
-                  hevi=1.d0
-                  if (hr.gt.0.d0) hevi=0.d0
-                  sum=sum+rr*(0.5d0*hr**2*hevi-cr(k,i,j))
-               enddo
-            enddo
-            sum=sum*4.d0*pi*dens(1)/beta
-            esolvtot=esolvtot+sum
-         enddo
-      endif
-c
-c     --- GF
-c      
-      egftot=0.d0
-      do i=1,n
-         sum=0.d0
-         do j=1,n
-            do k=1,ngrid
-               rr=(rdelta*dble(k))**2*rdelta
-               sum=sum+rr*(-cr(k,i,j))
-            enddo
-         enddo
-         sum=sum*4.d0*pi*dens(1)/beta
-         egftot=egftot+sum
-      enddo
-c
-c     --- 2nd term (Tr[wc]+lndet[I-wc*rho])
-c
-      ierr=0
-      sumk=0.d0
-      do k=1,ngrid
-
-         do i=1,n
-            do j=1,n
-               dum1(i,j)=wk(k,i,j)
-               dum2(i,j)=ck(k,i,j)
-            enddo
-         enddo
-
-         call matprd(dum1,dum2,dum3,n,n,n,n,n,n,ill)
-
-         do i=1,n
-            do j=1,n
-               dum2(i,j)=-dum3(i,j)*dens(1)
-            enddo
-            dum2(i,i)=1.d0+dum2(i,i)
-         enddo
-         
-         call matdet(dum2,n,n,d)
-
-         if (d.le.0.d0) then
-            ierr=1
-            goto 90
-         endif
-         
-         call trd(t,dum3,n)
-         
-         rk2=(deltak*dble(k))**2
-         sumk=sumk+rk2*(t+dlog(d)/dens(1))
-
-      enddo
-      
-      esolvtot=esolvtot+sumk/(4.d0*pi**2*beta)*deltak
-      egftot=egftot+sumk/(4.d0*pi**2*beta)*deltak
- 90   continue
-c
-      else 
-c
-c     --- Solvation Free Energy (Excess Chemical Potential) for mixture
-c
 c
 c     --- HNC
 c
@@ -263,8 +143,6 @@ c
          egf(i)=sum*4.d0*pi/beta
          egftot=egftot+egf(i)
       enddo
-c
-      endif
 c
 c     --- Coordination Number
 c

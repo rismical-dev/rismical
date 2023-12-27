@@ -413,17 +413,17 @@
 
     ======= Physical Property of V-V System =======
 
-    Excess Chemical Potential:   -680.37655344[kJ/mol]
+    Excess Chemical Potential:-680376.55343514[J/mol]
 
-    GF Form Ex.Chem.Pot.     :   -716.15077059[kJ/mol]
+    GF Form Ex.Chem.Pot.     :-716150.77059112[J/mol]
 
-    V-V Binding Energy       :  -1540.22125671[kJ/mol]
+    V-V Binding Energy       :****************[J/mol]
      Site Contribution (On Solvent Site)
-                   ----->O   :    -98.14421193[kJ/mol]
-                   ----->H   :     -6.24788659[kJ/mol]
-                   ----->H   :     -6.24788659[kJ/mol]
-                   ----->Na  :   -667.15948456[kJ/mol]
-                   ----->Cl  :   -762.42178705[kJ/mol]
+                   ----->O   : -98144.21192818[J/mol]
+                   ----->H   :  -6247.88658741[J/mol]
+                   ----->H   :  -6247.88658741[J/mol]
+                   ----->Na  :-667159.48455523[J/mol]
+                   ----->Cl  :-762421.78704680[J/mol]
 
     Coordination Number 
      NAME     O   [Radius ]    H   [Radius ]    H   [Radius ]    Na  [Radius ]    Cl  [Radius ]
@@ -437,19 +437,19 @@
     Isothermal Compressibility :      0.53806431[/GPa]
                                :      0.00005452[/atm]
 
-    Excess Chemical Potential Components [kJ/mol]
+    Excess Chemical Potential Components [J/mol]
                          O               H               H               Na              Cl  
-        O       8283480.19930  -4141751.31281  -4141751.31281    -18392.84198     18392.46800
-        H      -4141751.31281   2070874.88531   2070874.88531      9196.21340     -9196.46115
-        H      -4141751.31281   2070874.88531   2070874.88531      9196.21340     -9196.46115
-        Na     -9932134.66747   4965955.23640   4965955.23640     22025.68452    -22118.03622
-        Cl      9931932.71903  -4966089.02267  -4966089.02267    -22118.03622     22025.91248
+        O    8283480199.30267******************************** -18392841.97679  18392467.99821
+        H    ****************2070874885.313712070874885.31371   9196213.40075  -9196461.15310
+        H    ****************2070874885.313712070874885.31371   9196213.40075  -9196461.15310
+        Na   ****************4965955236.403564965955236.40356  22025684.51983 -22118036.21558
+        Cl   9931932719.03451******************************** -22118036.21558  22025912.47948
 
     Excess Chemical Potential on Each Species
-    # of Spc              [kJ/mol]
-           1           -26.380151035
-           2          -316.546355571
-           3          -337.450046793
+    # of Spc              [J/mol]
+           1        -26380.151034543
+           2       -316546.355571464
+           3       -337450.046792515
 
  -----------------------------------------------------------
          RISMiCal computation is completed normally.        
@@ -461,4 +461,14 @@
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347.
+ Y. Maruyama, F. Hirata, J. Chem. Theory Comput. 8 (2012) 3015. (DOI: 10.1063/1.4879795)  
+ -----------------------------------------------------------
+  Implimented Math Libraries
+  3D Fast Fourier Transform: 
+  Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
+  Fast Fourier Transform: 
+  Copyright Takuya OOURA, 1996-2001
+  Mathmatical Libra: SLATEC Common Mathmatical Library
+ Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
  -----------------------------------------------------------

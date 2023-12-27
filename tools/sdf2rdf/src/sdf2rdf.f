@@ -15,6 +15,10 @@ c     r_max: Maximum distance of RDF
 c     rdelta: Grid width of RDF
 c     name: Name of center point (less than 12 characters)
 c     x,y,z: Coordinate of cemter point
+c
+c     Aknowledgement:
+c     This program is a modified version of the SDF to RDF converter
+c     coded by A. Kovalenko for his own 3D-RISM software.
 c----------------------------------------------------------------------
       Program  sdf2rdf
 
@@ -25,7 +29,7 @@ c----------------------------------------------------------------------
       parameter (maxnod=1000)
       parameter (maxnv=50)
 
-      dimension cshift(3),box(3),ngrid3d(3),origin(3)
+      dimension cshift(3),box(3),ngrid3d(3),center(3),origin(3)
       dimension phi(maxnod), theta(maxnod), angwei(maxnod),
      .      cosphi(maxnod), sinphi(maxnod),
      .      costhe(maxnod), sinthe(maxnod)                             
@@ -77,7 +81,10 @@ c
          enddo
       enddo
       close(ift)
-c
+
+      do ixyz=1,3
+         origin(ixyz)=box(ixyz)*0.5d0
+      enddo
 c
 c     Get angular nodes data
 c
@@ -89,7 +96,6 @@ c
         costhe(inod) = cos( theta(inod))                               
         sinthe(inod) = sin( theta(inod))                               
       enddo                                                             
-                                                                        
 c
 c     Calculate RDF from SDF for given center
 c
@@ -105,10 +111,10 @@ c
      &        "CENTER:",cname(ip),(cxyz(i,ip),i=1,3),"to ",rdffile
                                                                         
          do ixyz=1,3
-            origin(ixyz)=cxyz(ixyz,ip)+cshift(ixyz)
+            center(ixyz)=cxyz(ixyz,ip)+cshift(ixyz)+origin(ixyz)
          enddo
 
-         open (ift,file=rdffile,err=9000)                               
+         open (ift,file=rdffile,err=9000)
 
          do ir=imin,imax
 
@@ -116,70 +122,63 @@ c
             
             do iv=1,nvuq
                gr(iv) = 0.d0
-            enddo                                                       
+            enddo
 
-            do inod=1,nod                                               
+            do inod=1,nod 
 
-               rv(1) = origin(1) + r*sinthe(inod)*cosphi(inod)       
-               rv(2) = origin(2) + r*sinthe(inod)*sinphi(inod)       
-               rv(3) = origin(3) + r*costhe(inod)                    
+               rv(1) = origin(1) + r*sinthe(inod)*cosphi(inod)  
+               rv(2) = origin(2) + r*sinthe(inod)*sinphi(inod) 
+               rv(3) = origin(3) + r*costhe(inod) 
+c     applying periodic boundary conditions
+               do ixyz=1,3
+                  rv(ixyz)=rv(ixyz)
+     &                 -box(ixyz)*anint(rv(ixyz/box(ixyz)-0.5d0))
+               enddo
 
 c     determin grid point of the cell including interpolation point
                do ixyz=1,3                                                 
                   rv0 = dble(ngrid3d(ixyz))*rv(ixyz)/box(ixyz)
-                  igc(ixyz,1) = mod( int(rv0), ngrid3d(1))
-                  igc(ixyz,2) = mod( igc(ixyz,1)+1, ngrid3d(1))
-                  delc(ixyz,2) = rv0 - igc(ixyz,1)                  
-                  delc(ixyz,1) = 1.d0 - delc(ixyz,2) 
-c------<NOR+
-               write(*,*) "BUHI0",igc(ixyz,1),igc(ixyz,2),rv0,rv(ixyz)
-c------+NOR>
-                                                                        
-               enddo                                                     
-c------<NOR+
-               write(*,*) "BUHI1",inod,ir
-c------+NOR>
-                                                                        
+                  igc(ixyz,1) = mod( int(rv0), ngrid3d(ixyz) )
+                  igc(ixyz,2) = mod( igc(ixyz,1)+1, ngrid3d(ixyz) )
+                  delc(ixyz,2) = rv0 - dble(igc(ixyz,1) )
+                  delc(ixyz,1) = 1.d0 - delc(ixyz,2)
+               enddo
+
 c     summing up grid points value of guv
                do iv=1,nvuq
                   gvv8(iv) = 0.d0
-               enddo                                                     
+               enddo
 
-               do id1=1,2
-               do id2=1,2
-               do id3=1,2
-                                                                        
-                  ig = 1 + igc(1,id1) + igc(2,id2)*ngrid3d(1)
-     .                                + igc(3,id3)*ngrid3d(1)*ngrid3d(2)
-                  weight = delc(1,id1)*delc(2,id2)*delc(3,id3)            
+               do idx=1,2
+               do idy=1,2
+               do idz=1,2
+
+                  ig = 1 + igc(1,idx) + igc(2,idy)*ngrid3d(1)
+     .                                + igc(3,idz)*ngrid3d(1)*ngrid3d(2)
+                  weight = delc(1,idx)*delc(2,idy)*delc(3,idz)
+
                   do iv=1,nvuq
-                     gvv8(iv) = gvv8(iv) + weight*guv(ig,iv)               
-                  enddo                                                   
+                     gvv8(iv) = gvv8(iv) + weight*guv(ig,iv) 
+                  enddo
 
-               enddo                                                     
-               enddo                                                     
-               enddo                                                     
-c------<NOR+
-               write(*,*) "BUHI2",inod,ir
-c------+NOR>
+               enddo
+               enddo
+               enddo
+
 c      Get interpolated guv value
                do iv=1,nvuq
                   gr(iv) = gr(iv) + angwei(inod)*gvv8(iv)
-               enddo                                                     
-                                                                        
-            enddo                                                       
-c------<NOR+
-               write(*,*) "BUHI3",inod,ir
-c------+NOR>
-                                                                        
+               enddo
+            enddo
+
 c      Write rdf
             write (ift,'(f12.4,20(1x,f16.6))')  r, (gr(iv),iv=1,nvuq) 
-                                                                        
-          enddo                                                         
-                                                                        
+
+          enddo
+
         close (ift,err=9000)
-                                                                        
-      enddo                                                             
+
+      enddo
 c
       deallocate (guv,cxyz,cname)
 c                                                                        
