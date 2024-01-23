@@ -5,8 +5,7 @@ This program is designed to automatically place explicit solvent atoms/ions base
 on 3D-RISM data. The 3D-RISM correlations should be in a DX file
 
 The details of the algorithm are described in:
-Sindhikara, DJ; Yoshida N; Hirata F;    (201x) ...
-(in preparation)
+Sindhikara, DJ; Yoshida N; Hirata F; J. Comput. Chem. 33   (2012) 1536-1543, DOI:10.1002/jcc.22984
 https://sites.google.com/site/dansindhikara/Home/software/placement
 
 This package requires Numpy.
