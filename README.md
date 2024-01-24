@@ -1,2 +1,5 @@
-# rismical
-The reference interaction site model integrate calculator
+# RISMiCal
+The Reference Interaction-Site Model integrated Calculator
+
+Copyright: Norio YOSHIDA, Nagoya University
+
