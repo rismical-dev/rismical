@@ -7,7 +7,7 @@ Go to install directory, and
 ```
 wget https://github.com/rismical-dev/rismical.git
 ```
-Set enviromental valuable RISMICALHOME to your installed directory
+Set enviromental valuable RISMICALHOME to your installation directory
 ```
 export RISMICALHOME="/foo/bar/RISMiCal"
 ```
