@@ -5,7 +5,7 @@ The Reference Interaction-Site Model integrated Calculator
 
 Go to install directory, and
 ```
-wget https://github.com/rismical-dev/rismical.git
+git clone https://github.com/rismical-dev/rismical.git
 ```
 Set enviromental valuable RISMICALHOME to your installation directory
 ```
