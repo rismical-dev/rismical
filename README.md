@@ -50,7 +50,5 @@ Norio YOSHIDA, Nagoya University
 
 # Contact Information
 Norio YOSHIDA, Prof. of Graduate School of Informatics, Nagoya University
-
 noriwo@nagoya-u.jp
-
 https://sites.google.com/view/yoshida-group/homenoriwo@nagoya-u.jp
