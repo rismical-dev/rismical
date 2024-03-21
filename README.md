@@ -33,13 +33,13 @@ cd h2o_vv
 $RISMICALHOME/source/rismical.x vv h2o_vv.inp &> h2o_vv.log
 ```
 1st argument of `rismical.x` specifies the system to be computed.
-You can obtain the solvent susptibility function `h2o_vv.xsv`.
+You can obtain the solvent susptibility function `h2o_vv.xvk`.
 For the system having a solute molecule immersed in solvent at infinite dilution, solute-solvent RISM or 3D-RISM is performed. 
-To run the solute-solvent system, `.xsv` file is needed. 
+To run the solute-solvent system, `.xvk` file is needed. 
 For example, 
 ```
 cd $RISMICALHOME/example/h2o_3d
-cp $RISMICALHOME/example/h2o_vv/h2o_vv.xsv ./
+cp $RISMICALHOME/example/h2o_vv/h2o_vv.xvk ./
 $RISMICALHOME/source/rismical.x 3d h2o_3d.inp &> h2o_3d.log
 ```
 You can find some examples in `$RISMICALHOME/example/`.
