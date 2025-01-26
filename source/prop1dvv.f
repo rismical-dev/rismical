@@ -5,20 +5,21 @@ c------------------------------------------------------------
      &                    ,wk,ck,cr,tr,ures,urlj)
 c
 c     icl           ... closure type 0...HNC, 1...MSA, 2...KH 3...RBC
+c                                    4...KGK
 c     ngrid         ... number of grid of RDF
 c     rdelta        ... grid width of r-space
 c     rcore         ... ratio of core diameter (less than 1)
 c     n             ... number of site of 2 (solvent)
-c     dens          ... number density[molecule/angstrom3]
+c     dens          ... number density
 c     cr            ... direct correlation function 
 c     ck            ... k-space direct correlation function 
 c     tr            ... tau bond =hr-cr
 c     wk            ... intra-molecular correlation function
-c     ures          ... electro static potential [erg]
-c     urlj          ... LJ potential [erg]
-c     beta          ... inverse of kbT [/erg]
-c     siglj         ... sigma of LJ parameter [Angstrom]
-c     q             ... partial charge of site [e]
+c     ures          ... electro static potential 
+c     urlj          ... LJ potential 
+c     beta          ... inverse of kbT 
+c     siglj         ... sigma of LJ parameter
+c     q             ... partial charge of site
 c     
       implicit real*8 (a-h,o-z)
 
@@ -117,7 +118,7 @@ c
      &                 *dens(nspc(j))
                   esolvv(i,j)=esolvv(i,j)
      &                 +rr*(-cr(k,i,j)-0.5d0*hr*cr(k,i,j)
-     &                 +0.5d0*hr**2*dhevi)
+     &                      +0.5d0*hr**2*dhevi)
      &                 *dens(nspc(j))*4.d0*pi/beta
                enddo
             enddo
@@ -143,6 +144,15 @@ c
          egf(i)=sum*4.d0*pi/beta
          egftot=egftot+egf(i)
       enddo
+c
+c     --- KGK
+c
+      if (icl.eq.4) then
+         do i=1,n
+            esolv(i)=egf(i)
+            esolvtot=egftot
+         enddo
+      endif
 c
 c     --- Coordination Number
 c
@@ -203,7 +213,6 @@ c
          endif
       enddo
       dfluc=totaldens/(totaldens-ck0)
-c      comp=beta*dfluc/totaldens*101325.d0*1.d-23*1.d+5
       comp=dfluc/totaldens*beta*1d-30*avognum ![/Pa]
       xt=comp   ! for record in common block
 c
@@ -349,7 +358,6 @@ c
          enddo
       enddo
 c
-c
 c     --- Isothermal Compressibility
 c
       write(*,9994) dfluc,comp*1.d+9,comp/9.86923d-6
@@ -370,7 +378,7 @@ c
             imax=min(i+9,n)
             write(*,9986) (nsitev(j),j=i,imax)
             do j=1,n
-               write(*,9985) nsitev(j),(esolvv(j,k) ,k=i,imax)
+               write(*,9985) nsitev(j),(esolvv(j,k)/1000.d0,k=i,imax)
                            
             enddo
          enddo
@@ -395,21 +403,21 @@ c---------------------------------------------------------
  9984 format (/,4x,"Excess Chemical Potential on Each Species",
      &        /,4x,"# of Spc",14x,"[J/mol]")
  9985 format (4x,A8,1x,10F16.5)
- 9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
+ 9986 format (/,4x,"Excess Chemical Potential Components [kJ/mol]",
      &        /,13x,10A16)
- 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",f16.8,"[J/mol]")
- 9991 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
- 9992 format (/,4x,"V-V Binding Energy       :",f16.8,"[J/mol]",
+ 9990 format (/,4x,"GF Form Ex.Chem.Pot.     :",e16.8,"[J/mol]")
+ 9991 format (  6x,"             ----->",a4,":",e16.8,"[J/mol]")
+ 9992 format (/,4x,"V-V Binding Energy       :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solvent Site)")
  9993 format (/,4x,"Pressure (A route)         :",e16.8,"[Pa]"
      &        /,4x,"                           :",e16.8,"[atm]")
- 9994 format (/,4x,"Density Fluctuation        :",f16.8,
-     &        /,4x,"Isothermal Compressibility :",f16.8,"[/GPa]",
-     &        /,4x,"                           :",f16.8,"[/atm]")
- 9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
+ 9994 format (/,4x,"Density Fluctuation        :",e16.8,
+     &        /,4x,"Isothermal Compressibility :",e16.8,"[/GPa]",
+     &        /,4x,"                           :",e16.8,"[/atm]")
+ 9995 format (5x,a4,1x,10(f10.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
-     &        /,5x,"NAME",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"             ----->",a4,":",f16.8,"[J/mol]")
- 9998 format (/,4x,"Excess Chemical Potential:",f16.8,"[J/mol]")
+     &        /,5x,"NAME",1x,10(A10,"[Radius ]"))
+ 9997 format (  6x,"             ----->",a4,":",e16.8,"[J/mol]")
+ 9998 format (/,4x,"Excess Chemical Potential:",e16.8,"[J/mol]")
  9999 format (/,4x,"======= Physical Property of V-V System =======")
       end

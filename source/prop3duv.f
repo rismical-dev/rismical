@@ -5,6 +5,7 @@ c---------------------------------------------------------
      &                   ,vres,urlj,listcore,cr,tr)
 c
 c     icl           ... closure type 0...HNC, 1...MSA, 2...KH
+c                                    4...KGK
 c     ngrid3d       ... number of grid of 3D-RDF
 c     nv            ... number of site of solvent
 c     cr            ... direct correlation function 
@@ -176,6 +177,17 @@ c
       enddo
 
       egftot=sum/beta*rd33
+c
+c     --- KGK
+c
+      if (icl.eq.4) then
+         write(*,*) "   KGK closure has no analytical formula for SFE."
+         write(*,*) "   GF formula is used instead."
+         do j=1,nvuq
+            esolvi(j)=egfi(j)
+            esolvtot=egftot
+         enddo
+      endif
 c     
 c     ----- Solute-Solvent Binding Energy
 c     
@@ -252,6 +264,9 @@ c
       elseif (icl.eq.2) then    ! for KH
          auc=akh
          buc=bkh
+      else                      ! for KGK
+         auc=0.d0
+         buc=0.d0
       endif
       ucterm=(auc*pmvx+buc)*1.d+3 ! for HNC or KH [J/mol]
       uctermgf=(agf*pmvx+bgf)*1.d+3 ! for GF      [J/mol]
@@ -332,32 +347,32 @@ c---------------------------------------------------------
 c---------------------------------------------------------
       return
 c---------------------------------------------------------
- 9987 format (/,4x,"Solvation Free Energy(PC)     :",g16.8,"[J/mol]"
-     &         ,4x,"PC term :",g16.8,"[J/mol]")
- 9988 format (/,4x,"Solvation Free Energy(UC)     :",g16.8,"[J/mol]"
-     &         ,4x,"UC term :",g16.8,"[J/mol]"
-     &         ,4x,"UC param: A=",g16.8
-     &            ,"[J/mol], B=",g16.8,"[J/mol]"
-     &        /,4x,"Solvation Free Energy(GF-UC)  :",g16.8,"[J/mol]"
-     &         ,4x,"UC term :",g16.8,"[J/mol]"
-     &         ,4x,"UC param: A=",g16.8
-     &            ,"[J/mol], B=",g16.8,"[J/mol]")
+ 9987 format (/,4x,"Solvation Free Energy(PC)     :",e16.8,"[J/mol]"
+     &         ,4x,"PC term :",e16.8,"[J/mol]")
+ 9988 format (/,4x,"Solvation Free Energy(UC)     :",e16.8,"[J/mol]"
+     &         ,4x,"UC term :",e16.8,"[J/mol]"
+     &         ,4x,"UC param: A=",e16.8
+     &            ,"[J/mol], B=",e16.8,"[J/mol]"
+     &        /,4x,"Solvation Free Energy(GF-UC)  :",e16.8,"[J/mol]"
+     &         ,4x,"UC term :",e16.8,"[J/mol]"
+     &         ,4x,"UC param: A=",e16.8
+     &            ,"[J/mol], B=",e16.8,"[J/mol]")
  9989 format (/,4x,"============= Partial Molar Volume ============="
-     &       ,/,4x,"Partial Molar Volume       = ",G12.4," [L/mol]"
-     &       ,/,4x,"Isothermal Compressibility = ",G12.4," [/GPa]"
-     &       ,/,4x,"Pressure                   = ",G12.4," [GPa]")
+     &       ,/,4x,"Partial Molar Volume       = ",e16.8," [L/mol]"
+     &       ,/,4x,"Isothermal Compressibility = ",e16.8," [/GPa]"
+     &       ,/,4x,"Pressure                   = ",e16.8," [GPa]")
  9990 format (/,4x,"======= GF Solvation Free Energy Component =====")
- 9991 format (  4x,i4,":",g16.8,"[kJ/mol]")
+ 9991 format (  4x,i4,":",e16.8,"[J/mol]")
  9992 format (/,4x,"======= Solvation Free Energy Component  =======")
- 9993 format (/,4x,"Solvation Free Energy(GF)     :",g16.8,"[J/mol]")
+ 9993 format (/,4x,"Solvation Free Energy(GF)     :",e16.8,"[J/mol]")
  9994 format (/,4x,"----------------------------------------------"
      &       ,/,4x,"NOTE:When HNC+RBC closure are selected,       "  
      &       ,/,4x,"     Solvation Free Energy is not correct.    "  
      &       ,/,4x,"     This value is evaluated based on HNC.    "  
      &       ,/,4x,"----------------------------------------------")
- 9995 format (/,4x,"UV Binding Energy Component ES:",g16.8,"[J/mol]")
- 9996 format (/,4x,"UV Binding Energy Component LJ:",g16.8,"[J/mol]")
- 9997 format (/,4x,"Solute-Solvent Binding Energy :",g16.8,"[J/mol]")
- 9998 format (/,4x,"Solvation Free Energy         :",g16.8,"[J/mol]")
+ 9995 format (/,4x,"UV Binding Energy Component ES:",e16.8,"[J/mol]")
+ 9996 format (/,4x,"UV Binding Energy Component LJ:",e16.8,"[J/mol]")
+ 9997 format (/,4x,"Solute-Solvent Binding Energy :",e16.8,"[J/mol]")
+ 9998 format (/,4x,"Solvation Free Energy         :",e16.8,"[J/mol]")
  9999 format (/,4x,"======= Physical Property of U-V System =======")
       end

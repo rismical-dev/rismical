@@ -1,12 +1,12 @@
 c**************************************************************
 c----------------------------------------------------------------
-c     Make intraction potential for uv system
+c     Make intraction potential for uv system : reduced solvent
 c----------------------------------------------------------------
-      subroutine potentialuv(ngrid,n1,n2,rdelta,ures,urlj)
+      subroutine potentialuv(ngrid,n1,n2uq,rdelta,ures,urlj)
 c     
 c     ngrid         ... number of grid of RDF
 c     n1            ... number of site of 1 (solute or solvent)
-c     n2            ... number of site of 2 (solvent)
+c     n2uq          ... number of site of 2 (solvent)
 c     rdelta        ... grid width of r-space [Angstrom]
 c     ures          ... electro static potential [erg]
 c     urlj          ... LJ potential [erg]
@@ -22,22 +22,22 @@ c     epsig12,epsig6 ... combined parameter
       include "solvent.i"
       include "solute.i"
       
-      dimension ures(ngrid,n1,n2),urlj(ngrid,n1,n2)
-      dimension epsig12(n1,n2),epsig6(n1,n2)
+      dimension ures(ngrid,n1,n2uq),urlj(ngrid,n1,n2uq)
+      dimension epsig12(n1,n2uq),epsig6(n1,n2uq)
       dimension ftfunc(ngrid)
 c
 c-----------------------------------------------------------------
 c
 c     --- LJ Parameter Settings
 c
-      call rsmljcomb(6,n1,n2
-     &     ,siglju,epslju,sigljv,epsljv,epsig6)
-      call rsmljcomb(12,n1,n2
-     &     ,siglju,epslju,sigljv,epsljv,epsig12)
+      call rsmljcomb(6,n1,n2uq
+     &     ,siglju,epslju,sigljvuq,epsljvuq,epsig6)
+      call rsmljcomb(12,n1,n2uq
+     &     ,siglju,epslju,sigljvuq,epsljvuq,epsig12)
 c     
 c     --- Initialize
 c     
-      do j=1,n2
+      do j=1,n2uq
          do i=1,n1
             do k=1,ngrid
                ures(k,i,j)=0.d0
@@ -48,7 +48,7 @@ c
 c     
 c     --- Make Potential
 c     
-      do j=1,n2
+      do j=1,n2uq
          do i=1,n1
             do k=1,ngrid
                
@@ -62,7 +62,7 @@ c
 c     
 c     --- Electro Static
 c     
-               ures(k,i,j)=qu(i)*qv(j)/rr*fel ![e**2/Ang --> J/mol]
+               ures(k,i,j)=qu(i)*q2uq(j)/rr*fel ![e**2/Ang --> J/mol]
                
             enddo
          enddo

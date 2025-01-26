@@ -191,7 +191,6 @@ c---------------------------------------------------------
  9991 format (/,3x,"ITR",6x,"RESIDUAL",7x,"#-SUB",1x,"MIN",6x,"DUMP")
  9993 format (/,4x,"RISM CYCLE IS CONVERGED")
  9994 format (/,4x,"========== V-V 1DRISM ==========")
- 9995 format (/,4x,"========== U-V 1DRISM ==========")
  9997 format (/,4x,"RISM CYCLE IS NOT CONVERGED.",
      &        /,4x,"----- E N D -----")
  9999 format (/,4x,"Temperature      :",f10.5,"[K]",

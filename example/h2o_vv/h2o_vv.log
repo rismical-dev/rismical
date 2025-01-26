@@ -250,25 +250,25 @@
 
     ======= Physical Property of V-V System =======
 
-    Excess Chemical Potential: -24920.38751503[J/mol]
+    Excess Chemical Potential: -0.24920388E+05[J/mol]
 
-    GF Form Ex.Chem.Pot.     : -40764.76748677[J/mol]
+    GF Form Ex.Chem.Pot.     : -0.40764767E+05[J/mol]
 
-    V-V Binding Energy       :-110785.64913935[J/mol]
+    V-V Binding Energy       : -0.11078565E+06[J/mol]
      Site Contribution (On Solvent Site)
-                   ----->O   : -98561.15822790[J/mol]
-                   ----->H   :  -6112.24545573[J/mol]
-                   ----->H   :  -6112.24545573[J/mol]
+                   ----->O   : -0.98561158E+05[J/mol]
+                   ----->H   : -0.61122455E+04[J/mol]
+                   ----->H   : -0.61122455E+04[J/mol]
 
     Coordination Number 
-     NAME     O   [Radius ]    H   [Radius ]    H   [Radius ]
-     O     7.89003[  3.900] 0.47413[  2.000] 0.47413[  2.000]
-     H     0.47413[  2.000] 1.51901[  2.650] 1.51901[  2.650]
-     H     0.47413[  2.000] 1.51901[  2.650] 1.51901[  2.650]
+     NAME       O   [Radius ]      H   [Radius ]      H   [Radius ]
+     O       7.89003[  3.900]   0.47413[  2.000]   0.47413[  2.000]
+     H       0.47413[  2.000]   1.51901[  2.650]   1.51901[  2.650]
+     H       0.47413[  2.000]   1.51901[  2.650]   1.51901[  2.650]
 
-    Density Fluctuation        :      0.06713494
-    Isothermal Compressibility :      0.48997398[/GPa]
-                               :      0.00004965[/atm]
+    Density Fluctuation        :  0.67134939E-01
+    Isothermal Compressibility :  0.48997398E+00[/GPa]
+                               :  0.49646627E-04[/atm]
 
     Pressure (A route)         :  0.58736710E+09[Pa]
                                :  0.57968610E+04[atm]
@@ -280,6 +280,7 @@
   Users must cite the following papers for any publications,
   which include the results obtained with RISMiCal code.    
   References:                                               
+ Y. Maruyama N. Yoshida, J. Comput. Chem. 45 (2024) 1470 (DOI:10.1002/jcc.27340)  
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
@@ -288,9 +289,9 @@
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 
-  Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
+   Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi  (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
   Fast Fourier Transform: 
-  Copyright Takuya OOURA, 1996-2001
-  Mathmatical Libra: SLATEC Common Mathmatical Library
-  Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko; Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+   Copyright Takuya OOURA, 1996-2001
+   Mathmatical Libra: SLATEC Common Mathmatical Library
+   Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;  Walton, Lee (July 1993). Guide to the SLATEC  Common Mathematical Library
  -----------------------------------------------------------

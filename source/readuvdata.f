@@ -182,7 +182,7 @@ c
       write(*,*) "            Solvent parameters"
       write(*,*) "-----------------------------------------------"
       write(*,8001) nv
- 8001 format ("Number of solvnt site:",i4)
+ 8001 format ("Number of solvent site:",i4)
 c
       write(*,9802)
       do i=1,nv
@@ -205,7 +205,8 @@ c--------------------------------------------------------------
  9800 format (A4,1x,6f12.5)
  9801 format ("ATOM"," sig[Angs]  "," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   ")
- 9802 format ("ATOM"," SPC"," sig[Angs]  "," eps[J/mol] "," charge[e]  "
+ 9802 format ("ATOM"," SPC"," SYM"," sig[Angs]  "
+     &     ," eps[J/mol] "," charge[e]  "
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
  9803 format (A4,1x,i3,1x,i3,7f12.5)
  9804 format ("Temperature :",f12.5,"[K]")

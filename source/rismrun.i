@@ -11,7 +11,7 @@ c     --------------------------------------------
 
       real*8 chgstep,chgratio,chgconv
 
-      common /rismrun_i/icl,iguess
+      common /rismrun_i/iguess
      &               ,ngrid,ngrid3d
      &               ,itrmax
       common /rismrun_r/rdelta,rdelta3d,conv,rcore
@@ -22,4 +22,6 @@ c
 c
       common /rismchgup/chgstep,chgratio,chgconv
       common /rismgrid/grid
+c
+      common /rismclosure/clparams(10),icl
 c

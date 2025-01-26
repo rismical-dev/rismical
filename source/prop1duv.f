@@ -1,10 +1,11 @@
 c------------------------------------------------------------
 c     Physical Property of U-V System for 1D
 c------------------------------------------------------------
-      subroutine prop1duv(icl,ngrid,rdelta,n1,n2,
+      subroutine prop1duv(icl,ngrid,rdelta,n1,n2uq,
      &                    cr,tr,ures,urlj)
 c
 c     icl           ... closure type 0...HNC, 1...MSA, 2...KH 3...RBC
+c                                    4...KGK
 c     ngrid         ... number of grid of RDF
 c     rdelta        ... grid width of r-space
 c     rcore         ... ratio of core diameter (less than 1)
@@ -27,15 +28,15 @@ c
       include "solvent.i"
       include "solute.i"
 
-      dimension cr(ngrid,n1,n2),tr(ngrid,n1,n2)
-      dimension esolv(n1),cn(n1,n2),cnd(n1,n2),ebind(n1),egf(n1)
+      dimension cr(ngrid,n1,n2uq),tr(ngrid,n1,n2uq)
+      dimension esolv(n1),cn(n1,n2uq),cnd(n1,n2uq),ebind(n1),egf(n1)
       dimension elec(n1)
-      dimension ures(ngrid,n1,n2),urlj(ngrid,n1,n2)
-      dimension esoluv(n1,n2)
+      dimension ures(ngrid,n1,n2uq),urlj(ngrid,n1,n2uq)
+      dimension esoluv(n1,n2uq)
 
 c----------------------------------------------------------------
-      do i=1,n1
-         do j=1,n2
+      do i=1,nu
+         do j=1,nvuq
             esoluv(i,j)=0.d0
          enddo
       enddo
@@ -47,15 +48,15 @@ c     --- HNC
 c
       if (icl.eq.0) then
          esolvtot=0.d0
-         do i=1,n1
+         do i=1,nu
             esolv(i)=0.d0
             sum=0.d0
             do k=1,ngrid
                rr=(rdelta*dble(k))**2*rdelta
-               do j=1,n2
+               do j=1,nvuq
                   hr=tr(k,i,j)+cr(k,i,j)
                   sum=sum+rr*(-cr(k,i,j)+0.5d0*hr*tr(k,i,j))
-     &                 *dens(nspc(j))
+     &                 *densuq(j)
                   esoluv(i,j)=esoluv(i,j)
      &                 +rr*(-cr(k,i,j)+0.5d0*hr*tr(k,i,j))
      &                 *densuq(j)*4.d0*pi/beta
@@ -70,15 +71,15 @@ c     --- MSA
 c
       if (icl.eq.1) then
          esolvtot=0.d0
-         do i=1,n1
+         do i=1,nu
             esolv(i)=0.d0
             sum=0.d0
             do k=1,ngrid
                rr=(rdelta*dble(k))**2*rdelta
-               do j=1,n2
+               do j=1,nvuq
                   hr=tr(k,i,j)+cr(k,i,j)
                   sum=sum+rr*(-cr(k,i,j)-0.5d0*hr*cr(k,i,j))
-     &                 *dens(nspc(j))
+     &                 *densuq(j)
                   esoluv(i,j)=esoluv(i,j)
      &                 +rr*(-cr(k,i,j)-0.5d0*hr*cr(k,i,j))
      &                 *densuq(j)*4.d0*pi/beta
@@ -93,10 +94,10 @@ c     --- KH
 c     
       if (icl.eq.2) then
          esolvtot=0.d0
-         do i=1,n1
+         do i=1,nu
             esolv(i)=0.d0
             sum=0.d0
-            do j=1,n2
+            do j=1,nvuq
                do k=1,ngrid
                   rr=(rdelta*dble(k))**2*rdelta
                   hr=tr(k,i,j)+cr(k,i,j)
@@ -121,7 +122,7 @@ c
 c     
 c     --- HNC+RBC (Same as HNC case, this is not correct.)
 c     
-      if (icl.eq.3.or.icl.eq.4) then
+      if (icl.eq.3) then
          
          write(*,*) "RBC is not implemented yet."
          ierr=30
@@ -129,15 +130,21 @@ c
 
       endif
 c     
+c     --- KGK
+c     
+      if (icl.eq.4) then
+         write(*,*) "   KGK closure has no analytical formula for SFE."
+      endif
+c     
 c     --- GF (Gaussian Fluctuation  Same as MSA expression)
 c     
       egftot=0.d0
-      do i=1,n1
+      do i=1,nu
          egf(i)=0.d0
          sum=0.d0
          do k=1,ngrid
             rr=(rdelta*dble(k))**2*rdelta
-            do j=1,n2
+            do j=1,nvuq
                hr=tr(k,i,j)+cr(k,i,j)
                sum=sum+rr*(-cr(k,i,j)-0.5d0*hr*cr(k,i,j))
      &                 *densuq(j)
@@ -146,11 +153,22 @@ c
          egf(i)=sum*4.d0*pi/beta
          egftot=egftot+egf(i)
       enddo
+c     
+c     --- KGK
+c     
+      if (icl.eq.4) then
+         write(*,*) "KGK closure has no analytical formula for SFE."
+         write(*,*) "GF formula is used instead."
+         do i=1,nu
+            esolv(i)=egf(i)
+            esolvtot=egftot
+         enddo
+      endif
 c
 c     --- Coordination Number
 c
-      do i=1,n1
-         do j=1,n2
+      do i=1,nu
+         do j=1,nvuq
             nmin=0
             iflag=0
             do 100 k=2,ngrid
@@ -179,10 +197,10 @@ c
 c     --- Solute-Solvent Binding Energy
 c
       ebindtot=0.d0
-      do i=1,n1
+      do i=1,nu
          ebind(i)=0.d0
          sum=0.d0
-         do j=1,n2
+         do j=1,nvuq
 
             do k=1,ngrid
                rr=(rdelta*dble(k))**2*rdelta
@@ -198,10 +216,10 @@ c
 c     --- Electrostatic interaction between U and V
 c
       electot=0.d0
-      do i=1,n1
+      do i=1,nu
          elec(i)=0.d0
          sum=0.d0
-         do j=1,n2
+         do j=1,nvuq
             do k=1,ngrid
                rr=(rdelta*dble(k))**2*rdelta
                gr=tr(k,i,j)+cr(k,i,j)+1.d0
@@ -216,8 +234,8 @@ c
 c     --- Partial molar volume (PMV)
 c     
       ck0=0.d0
-      do j=1,n2
-         do i=1,n1
+      do j=1,nvuq
+         do i=1,nu
             sum=0.d0
             do k=1,ngrid
                rr=(rdelta*dble(k))**2
@@ -232,9 +250,9 @@ c
 c     
 c     --- Total Solvent Charge
 c     
-      do i=1,n1
+      do i=1,nu
          chgtot=0.d0
-         do j=1,n2
+         do j=1,nvuq
             do k=1,ngrid
                rr=(rdelta*dble(k))**2
                gr=tr(k,i,j)+cr(k,i,j)+1.d0
@@ -252,49 +270,51 @@ c
 c     --- Excess Chemical Potential
 c      
       write(*,9998) esolvtot
-      do i=1,n1
+      do i=1,nu
          write(*,9997) nsiteu(i),esolv(i)
       enddo
 c
 c     --- GF Formula Excess Chemical Potential
 c      
       write(*,9992) egftot
-      do i=1,n1
+      do i=1,nu
          write(*,9997) nsiteu(i),egf(i)
       enddo
 c
 c     --- U-V Binding Energy
 c
       write(*,9994) ebindtot
-      do i=1,n1
+      do i=1,nu
          write(*,9993) nsiteu(i),ebind(i)
       enddo
 c
 c     --- Electrostatic interaction
 c
       write(*,9984) electot
-      do i=1,n1
+      do i=1,nu
          write(*,9983) nsiteu(i),elec(i)*1.d-3
       enddo
 c
 c     --- Coordination Number
 c
-      do i=1,n2,10
-         imax=min(i+9,n2)
+      do i=1,nv,10
+         imax=min(i+9,nv)
          write(*,9996) (nsitev(k),k=i,imax)
-         do j=1,n1
-            write(*,9995) nsiteu(j),(cn(j,k),cnd(j,k),k=i,imax)
+         do j=1,nu
+            write(*,9995) nsiteu(j),
+     &           (cn(j,abs(iuniq(k))),cnd(j,k),k=i,imax)
          enddo
       enddo
 C
 c
 c     --- Excess Chemical Potential Components
 c
-      do i=1,n2,10
-         imax=min(i+9,n2)
+      do i=1,nv,10
+         imax=min(i+9,nv)
          write(*,9986) (nsitev(j),j=i,imax)
-         do j=1,n1
-            write(*,9985) nsiteu(j),(esoluv(j,k),k=i,imax)
+         do j=1,nu
+            write(*,9985) nsiteu(j),
+     &           (esoluv(j,abs(iuniq(k))),k=i,imax)
          enddo
       enddo
 c
@@ -332,20 +352,20 @@ c----------------------------------------------------------------
  9986 format (/,4x,"Excess Chemical Potential Components [J/mol]",
      &     /,4x,"U\V",4x,10A16)
  9989 format (/,4x,"============= Partial Molar Volume ============="
-     &       ,/,4x,"Partial Molar Volume       = ",G16.8," [L/mol]"
-     &       ,/,4x,"Isothermal Compressibility = ",G16.8," [/GPa]")
- 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",f16.8,"[J/mol]",
+     &       ,/,4x,"Partial Molar Volume       = ",e16.8," [L/mol]"
+     &       ,/,4x,"Isothermal Compressibility = ",e16.8," [/GPa]")
+ 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
- 9993 format (  6x,"              ----->",a4,":",f16.8,"[J/mol]")
- 9994 format (/,4x,"U-V Binding Energy        :",f16.8,"[J/mol]",
+ 9993 format (  6x,"              ----->",a4,":",e16.8,"[J/mol]")
+ 9994 format (/,4x,"U-V Binding Energy        :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
      &        /,5x,"U\V ",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"              ----->",a4,":",f16.8,"[J/mol]") 
- 9998 format (/,4x,"Excess Chemical Potential :",f16.8,"[J/mol]",
-     &        /,4x,"                  RBC/TPT :",f16.8,"[J/mol]",
-     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",f16.8,"[J/mol]",
+ 9997 format (  6x,"              ----->",a4,":",e16.8,"[J/mol]") 
+ 9998 format (/,4x,"Excess Chemical Potential :",e16.8,"[J/mol]",
+     &        /,4x,"                  RBC/TPT :",e16.8,"[J/mol]",
+     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",e16.8,"[J/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9999 format (/,4x,"======= Physical Property of U-V System =======")
       end
@@ -666,18 +686,18 @@ c----------------------------------------------------------------
  9989 format (/,4x,"============= Partial Molar Volume ============="
      &       ,/,4x,"Partial Molar Volume       = ",G16.8," [L/mol]"
      &       ,/,4x,"Isothermal Compressibility = ",G16.8," [/GPa]")
- 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",f16.8,"[kJ/mol]",
+ 9992 format (/,4x,"GF Form Ex.Chem.Pot.      :",g16.8,"[kJ/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
- 9993 format (  6x,"              ----->",a4,":",f16.8,"[kJ/mol]")
- 9994 format (/,4x,"U-V Binding Energy        :",f16.8,"[kJ/mol]",
+ 9993 format (  6x,"              ----->",a4,":",g16.8,"[kJ/mol]")
+ 9994 format (/,4x,"U-V Binding Energy        :",g16.8,"[kJ/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9995 format (5x,a4,1x,10(f8.5,"[",f7.3,"]"))
  9996 format (/,4x,"Coordination Number ",
      &        /,5x,"U\V ",1x,10(A8,"[Radius ]"))
- 9997 format (  6x,"              ----->",a4,":",f16.8,"[kJ/mol]") 
- 9998 format (/,4x,"Excess Chemical Potential :",f16.8,"[kJ/mol]",
-     &        /,4x,"                  RBC/TPT :",f16.8,"[kJ/mol]",
-     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",f16.8,"[kJ/mol]",
+ 9997 format (  6x,"              ----->",a4,":",g16.8,"[kJ/mol]") 
+ 9998 format (/,4x,"Excess Chemical Potential :",g16.8,"[kJ/mol]",
+     &        /,4x,"                  RBC/TPT :",g16.8,"[kJ/mol]",
+     &        /,4x,"  Ex.Chem.Pot. +  RBC/TPT :",g16.8,"[kJ/mol]",
      &        /,5x,"Site Contribution (On Solute Site)")
  9999 format (/,4x,"======= Physical Property of U-V System =======")
       end

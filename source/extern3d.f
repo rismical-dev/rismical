@@ -104,6 +104,8 @@ c
          return
       elseif (icl.eq.2) then
          write(ift,'(A4)') "KH"
+      elseif (icl.eq.4) then
+         write(ift,'(A4)') "KGK"
       else
          write(ift,*) "Invalid closure type."
          iflag=999

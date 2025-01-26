@@ -10,7 +10,8 @@ grid="standard"
  $chargeupopt chgstep=0.2 $end
  $rismsolvent
 numspc=3
-solvent(1)="tip3p","na","cl"
+!!solvent(1)="tip3p","na","cl"
+solvent(1)="user"
 TEMP=298.d0,
 DENS(1)=54.d0,0.1d0,0.1d0
  $end
@@ -26,16 +27,16 @@ NSUB=10,DUMPMAX=0.2d0,DUMPMIN=0.001d0
 !!
 !!!!Followings are used when user defined solvents are requested.
 !!!! Like solvent(1)="user"
-!!  $VDATA
-!! 3    tip3p
-!! O   1  3.150d0   636.0d0  -0.8340d0   0.0000000  0.0000000  0.0000000
-!! H   2  0.400d0   192.5d0   0.4170d0   0.0000000  0.7566950  0.5858800
-!! H  -2  0.400d0   192.5d0   0.4170d0   0.0000000 -0.7566950  0.5858800
-!! 1    sodium_ion
-!! Na  1  3.328d0   11.59d0 1.0000d0   0.0000000  0.0000000  0.0000000
-!! 1    chloride_ion
-!! Cl  1  4.401d0   418.4d0    -1.0000d0   0.0000000  0.0000000  0.0000000
-!!  $END
+ $VDATA
+3    tip3p
+O   1  3.150d0   636.0d0  -0.8340d0   0.0000000  0.0000000  0.0000000
+H   2  0.400d0   192.5d0   0.4170d0   0.0000000  0.7566950  0.5858800
+H  -2  0.400d0   192.5d0   0.4170d0   0.0000000 -0.7566950  0.5858800
+1    sodium_ion
+Na  1  3.328d0   11.59d0 1.0000d0   0.0000000  0.0000000  0.0000000
+1    chloride_ion
+Cl  1  4.401d0   418.4d0    -1.0000d0   0.0000000  0.0000000  0.0000000
+ $END
 
 
 

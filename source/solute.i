@@ -4,7 +4,7 @@ c
       character*4 nsiteu
       character*256 solventxvv
 
-      parameter (maxslu=1000)  ! Solute site
+      parameter (maxslu=70000)  ! Solute site
 c
 c     qu     : solute site charge [e]
 c     epslju : solute site LJ parameter [J/mol]

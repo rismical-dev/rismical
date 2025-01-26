@@ -8,6 +8,7 @@ c
 c     ir        ... file number of output (STDOUT)
 c     iw        ... file number of input (STDIN)
 c     icl       ... closure type 0...HNC, 1...MSA, 2...KH 3...RBC
+c                                4...KGK
 c     ngrid     ... number of grid of RDF
 c     rdelta    ... grid width of r-space [Angstrom]
 c     n1        ... number of site of 1 (solute or solvent)
@@ -80,6 +81,23 @@ c
                write(*,*) "Error. RBC is not implemented yet."
                ierr=6
                call abrt(ierr)
+
+c     
+c     --- KGK
+c     
+            elseif (icl.eq.4) then
+
+               do k=1,ngrid
+                  bur=beta*(ures(k,i,j)*chgratio+urlj(k,i,j))
+                  d=-bur+tr(k,i,j)
+
+                  if (d.gt.-1.d0) then
+                     cr(k,i,j)=-bur
+                  else
+                     cr(k,i,j)=-tr(k,i,j)-1.d0
+                  endif
+                  
+               enddo
 
             endif
             
@@ -286,9 +304,9 @@ c--------------------------------------------------------------
       end
 c**************************************************************
 c--------------------------------------------------------------
-c     Closure-OZ for UV
+c     Closure-OZ for UV for reduced solvent site
 c--------------------------------------------------------------
-      subroutine cl_oz1duv(icl,ngrid,rdelta,n1,n2
+      subroutine cl_oz1duv(icl,ngrid,rdelta,n1,n2uq
      &     ,chgratio,ck,xvk,fr,fk,wk1,zrk
      &     ,cr,tr,ures,urlj)
 c     
@@ -296,7 +314,7 @@ c     icl       ... closure type 0...HNC, 1...MSA, 2...KH 3...RBC
 c     ngrid     ... number of grid of RDF
 c     rdelta    ... grid width of r-space [Angstrom]
 c     n1        ... number of site of 1 (solute or solvent)
-c     n2        ... number of site of 2 (solvent)
+c     n2uq      ... reduced number of site of 2 (solvent)
 c     chgratio  ... charge up ratio
 c     cr        ... direct correlation function 
 c     tr        ... tau bond =hr-cr
@@ -309,21 +327,22 @@ c
 
       include "phys_const.i"
       include "solvent.i"
+      include "solute.i"
 
-      dimension ures(ngrid,n1,n2),urlj(ngrid,n1,n2)
-      dimension cr(ngrid,n1,n2),ck(ngrid,n1,n2)
-      dimension tr(ngrid,n1,n2)
-      dimension xvk(ngrid,n2,n2)
-      dimension fr(ngrid,n1,n2),fk(ngrid,n1,n2)
+      dimension ures(ngrid,n1,n2uq),urlj(ngrid,n1,n2uq)
+      dimension cr(ngrid,n1,n2uq),ck(ngrid,n1,n2uq)
+      dimension tr(ngrid,n1,n2uq)
+      dimension xvk(ngrid,n2uq,n2uq)
+      dimension fr(ngrid,n1,n2uq),fk(ngrid,n1,n2uq)
       dimension wk1(ngrid,n1,n1)
-      dimension tk(ngrid,n1,n2),ftfunc(ngrid)
-      dimension dum1(n1,n2),dum2(n1,n2),dum3(n1,n2)
-      dimension wktemp1(n1,n1),wktemp2(n2,n2),dumvv(n2,n2)
-      dimension list(n2)
-      dimension zrk(ngrid,n2,n2)
+      dimension tk(ngrid,n1,n2uq),ftfunc(ngrid)
+      dimension dum1(n1,n2uq),dum2(n1,n2uq),dum3(n1,n2uq)
+      dimension wktemp1(n1,n1),wktemp2(n2uq,n2uq),dumvv(n2uq,n2uq)
+      dimension list(n2uq)
+      dimension zrk(ngrid,n2uq,n2uq)
 c----------------------------------------------------------------
-      do j=1,n2
-         do i=1,n1
+      do j=1,nvuq
+         do i=1,nu
 c     
 c     --- HNC
 c     
@@ -346,7 +365,7 @@ c     --- KH
 c     
             elseif (icl.eq.2) then
                do k=1,ngrid
-                  
+
                   bur=beta*(ures(k,i,j)*chgratio+urlj(k,i,j))
                   d=-bur+tr(k,i,j)
                   
@@ -373,8 +392,8 @@ c
 c
 c     ---------------------------------------
 c
-      do j=1,n2
-         do i=1,n1
+      do j=1,nvuq
+         do i=1,nu
 c
 c     --- Create short range part
 c
@@ -399,37 +418,37 @@ c     --- k-space UV-OZ
 c     
       do k=1,ngrid
 c     
-         do i=1,n1
-            do j=1,n2
+         do i=1,nu
+            do j=1,nvuq
                dum1(i,j)=ck(k,i,j)
             enddo
          enddo
-         do i=1,n1
-            do i2=1,n1
+         do i=1,nu
+            do i2=1,nu
                wktemp1(i,i2)=wk1(k,i,i2)
             enddo
          enddo
 c     
-         call matprd(wktemp1,dum1,dum2,n1,n1,n2,n1,n1,n2,ill)
+         call matprd(wktemp1,dum1,dum2,nu,nu,nvuq,nu,nu,nvuq,ill)
             
-         do j=1,n2
-            do j2=1,n2
+         do j=1,nvuq
+            do j2=1,nvuq
                dumvv(j,j2)=xvk(k,j,j2)
             enddo
          enddo
             
-         call matprd(dum2,dumvv,dum3,n1,n2,n2,n1,n2,n2,ill)
+         call matprd(dum2,dumvv,dum3,nu,nvuq,nvuq,nu,nvuq,nvuq,ill)
          
-         do i=1,n1
-            do j=1,n2
+         do i=1,nu
+            do j=1,nvuq
                tk(k,i,j)=dum3(i,j)-ck(k,i,j)
             enddo
          enddo
 c     
       enddo
 c     
-      do j=1,n2
-         do i=1,n1
+      do j=1,nvuq
+         do i=1,nu
 c     
 c     --- Create short range part
 c     

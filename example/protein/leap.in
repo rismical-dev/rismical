@@ -1,0 +1,5 @@
+source leaprc.protein.ff19SB
+sys = loadpdb 4ow1_mod.pdb
+saveamberparm sys 4ow1.parm7 4ow1.inpcrd
+savepdb sys 4ow1.pdb
+quit

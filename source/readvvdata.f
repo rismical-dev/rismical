@@ -106,6 +106,14 @@ c
             read(ift,*) n,solvent(j)
             do i=1,n
                iv=iv+1
+               
+               if (iv.gt.maxslv) then
+                  write(*,*) "Error. Too large number of solute atom."
+                  write(*,*) "Modify maxslv value in solvent.i. "
+                  ierr=26
+                  call abrt(ierr)
+               endif
+
                read(ift,*) nsitev(iv),isym
      &              ,sigljv(iv),epsljv(iv),qv(iv)
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
@@ -139,6 +147,14 @@ c
             read(ift2,*) n
             do i=1,n
                iv=iv+1
+
+               if (iv.gt.maxslv) then
+                  write(*,*) "Error. Too large number of solute atom."
+                  write(*,*) "Modify maxslv value in solvent.i. "
+                  ierr=26
+                  call abrt(ierr)
+               endif
+
                read(ift2,*) nsitev(iv),isym
      &              ,sigljv(iv),epsljv(iv),qv(iv)
      &              ,xyzv(1,iv),xyzv(2,iv),xyzv(3,iv)
