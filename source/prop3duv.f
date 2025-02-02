@@ -338,7 +338,7 @@ c---------------------------------------------------------
       enddo
 
       write(ift,'(A4,f16.5,2x,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
-      write(ift,'(A9,f16.5,2x,A11)') "Pressure=",pressure,"!(Pa=L/m^3)"
+      write(ift,'(A9,f16.5,2x,A11)') "Pressure=",pressure,"!(Pa=J/m^3)"
       write(ift,'(A16,f16.5,2x,A8)') 
      &     "Correction_term=",pcterm,"!(J/mol)"
 
