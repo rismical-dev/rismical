@@ -11,9 +11,9 @@ int main(int argc, char * argv[]) {
   string set_fname(char[]);
 
   int ch;
-  float xs, ys, zs;
-  string prog; 
-  
+  float xs = 0.0f, ys = 0.0f, zs = 0.0f;
+  string prog;
+
   while ((ch = getopt(argc, argv, "x:y:z:cv")) != -1) {
     switch (ch){
     case 'x':
