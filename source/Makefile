@@ -60,7 +60,7 @@ PROGS =rismical.x
 all: $(PROGS)
 
 $(PROGS) : $(OBJS)
-	$(FCLD) $(FCFLAGS) $(LDFLAGS) $(OBJS) -o $(PROGS) 
+	$(FCLD) $(FCFLAGS) $(OBJS) $(LDFLAGS) -o $(PROGS) 
 
 clean:
 	-rm -f $(OBJS)  $(PROGS)
