@@ -5,7 +5,7 @@ The Reference Interaction-Site Model integrated Calculator
 
 Go to install directory, and
 ```
-wget https://github.com/rismical-dev/rismical.git
+git clone https://github.com/rismical-dev/rismical.git
 ```
 Set enviromental valuable RISMICALHOME to your installation directory
 ```
@@ -33,13 +33,13 @@ cd h2o_vv
 $RISMICALHOME/source/rismical.x vv h2o_vv.inp &> h2o_vv.log
 ```
 1st argument of `rismical.x` specifies the system to be computed.
-You can obtain the solvent susptibility function `h2o_vv.xsv`.
+You can obtain the solvent susptibility function `h2o_vv.xvk`.
 For the system having a solute molecule immersed in solvent at infinite dilution, solute-solvent RISM or 3D-RISM is performed. 
-To run the solute-solvent system, `.xsv` file is needed. 
+To run the solute-solvent system, `.xvk` file is needed. 
 For example, 
 ```
 cd $RISMICALHOME/example/h2o_3d
-cp $RISMICALHOME/example/h2o_vv/h2o_vv.xsv ./
+cp $RISMICALHOME/example/h2o_vv/h2o_vv.xvk ./
 $RISMICALHOME/source/rismical.x 3d h2o_3d.inp &> h2o_3d.log
 ```
 You can find some examples in `$RISMICALHOME/example/`.
@@ -50,7 +50,5 @@ Norio YOSHIDA, Nagoya University
 
 # Contact Information
 Norio YOSHIDA, Prof. of Graduate School of Informatics, Nagoya University
-
 noriwo@nagoya-u.jp
-
 https://sites.google.com/view/yoshida-group/homenoriwo@nagoya-u.jp

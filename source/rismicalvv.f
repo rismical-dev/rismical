@@ -158,8 +158,6 @@ c     Output 1d-rism result
 c---------------------------------------------------------
  9000 continue
 c
-      call calredxvk(ngrid,nv,hvk,xvk,wk2)
-
       if (idrism.eq.1) then
          do iv2=1,nv
          do iv1=1,nv
@@ -170,6 +168,8 @@ c
          enddo
         enddo
       endif
+
+      call calredxvk(ngrid,nv,hvk,xvk,wk2)
 
       call prop1dvv(icl,ngrid,rdelta,rcore,nv
      &     ,wk2,ck,cr,tr,ures,urlj)
@@ -191,7 +191,6 @@ c---------------------------------------------------------
  9991 format (/,3x,"ITR",6x,"RESIDUAL",7x,"#-SUB",1x,"MIN",6x,"DUMP")
  9993 format (/,4x,"RISM CYCLE IS CONVERGED")
  9994 format (/,4x,"========== V-V 1DRISM ==========")
- 9995 format (/,4x,"========== U-V 1DRISM ==========")
  9997 format (/,4x,"RISM CYCLE IS NOT CONVERGED.",
      &        /,4x,"----- E N D -----")
  9999 format (/,4x,"Temperature      :",f10.5,"[K]",

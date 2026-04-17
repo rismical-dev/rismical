@@ -2,7 +2,7 @@
 CLOSURE="KH",
 ITRMAX=300,
 CONV=1.d-8,
-CHARGEUP="off",
+CHARGEUP="on",
 IGUESS=0,
 iolist="gutc"
  $END
@@ -17,3 +17,6 @@ soluteepc="h2co.epc"
 solutelj="h2co.lj"
 solvent="naclaq_vv.xvk"
  $end
+
+
+

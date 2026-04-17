@@ -453,7 +453,7 @@ c----------------------------------------------------------------
          ift=45
          open (ift,file=namef)
          write(ift,9991) char80
-         write(ift,9990) nvuq,ngrid3d,ngrid3d,ngrid3d
+         write(ift,9990) nvuq,ngrid3d,ngrid3d,ngrid3d,
      &        rn,rn,rn,0.d0,0.d0,0.d0
 
          do iv=1,nvuq
@@ -501,7 +501,7 @@ c----------------------------------------------------------------
 
 c----------------------------------------------------------------
       return
- 9990 format(4i8,4f16.8)
+ 9990 format(4i8,6f16.8)
  9991 format("##  ",a80)
  9992 format(e16.8e3,2x,e16.8e3)
       end

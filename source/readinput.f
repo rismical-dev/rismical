@@ -6,6 +6,7 @@ c**************************************************************
       subroutine readinput
 c
 c     icl        ... closure type 0...HNC, 1...MSA, 2...KH, 3...HNC+RBC
+c                                 4...KGK
 c     iguess     ... guess type of tr 0..f-bond 1..read file
 c     ngrid      ... number of grid of RDF
 c     nsub       ... number of mdiis sub-space
@@ -25,7 +26,7 @@ c
       include "solvent.i"
       include "rismrun.i"
 
-      namelist /RISM/CLOSURE
+      namelist /RISM/CLOSURE,CLPARAMS
      &              ,ITRMAX,CONV,CHARGEUP,IGUESS
      &              ,ALP1D,ALP3D,iolist,guessfile,grid,outtype
       namelist /MDIIS/nsub,dumpmax,dumpmin,dumpnume
@@ -42,6 +43,7 @@ c---------------------------------------------------------------
       dumpmin=0.1d0
       dumpnume=0.1d0
       CLOSURE="KH"
+      clparams=0.d0
       CHARGEUP="ON"
       IGUESS=0
       itrmax=1000
@@ -79,6 +81,8 @@ c
             readerror=.true.
             goto 8000
          endif
+      elseif (CLOSURE.eq."KGK") then
+         icl=4
       else
          write (*,*) "Error. Wrong CLOSURE was required"
          readerror=.true.

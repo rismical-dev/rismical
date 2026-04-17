@@ -160,8 +160,6 @@ c---------------------------------------------------------
 c
       call prop1duv(icl,ngrid,rdelta,nu,nvuq
      &     ,cr,tr,ures,urlj)
-c$$$      call prop1duv_old(icl,ngrid,rdelta,nu,nvuq
-c$$$     &     ,cr,tr,ures,urlj)
 
       call output1d(ngrid,rdelta,nu,nvuq
      &     ,cr,tr,ures,urlj,fr,ck,fk)

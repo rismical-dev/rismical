@@ -47,8 +47,8 @@ O2        2.95990   878.64000    -0.74499     0.19800     2.54900     0.00000
  -----------------------------------------------
              Solvent parameters
  -----------------------------------------------
-Number of solvnt site:   3
-ATOM SPC sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---    density[M] 
+Number of solvent site:   3
+ATOM SPC SYM sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---    density[M] 
 O      1   1     3.15000   636.00000    -0.83400     0.00000     0.00000     0.00000    55.30000
 H      1   2     0.40000   192.50000     0.41700     0.00000     0.75670     0.58588    55.30000
 H      1  -2     0.40000   192.50000     0.41700     0.00000    -0.75670     0.58588    55.30000
@@ -143,33 +143,33 @@ ESP map contains non-numeric value ******************** at       0.000000000000 
 
     ======= Physical Property of U-V System =======
 
-    Solvation Free Energy         :  -172.84566    [kJ/mol]
+    Solvation Free Energy         : -0.17284566E+06[J/mol]
 
-    Solvation Free Energy(GF)     :  -195.23830    [kJ/mol]
+    Solvation Free Energy(GF)     : -0.19523830E+06[J/mol]
 
-    Solute-Solvent Binding Energy :  -484.97217    [kJ/mol]
+    Solute-Solvent Binding Energy : -0.48497217E+06[J/mol]
 
-    UV Binding Energy Component LJ:  0.62862220    [kJ/mol]
+    UV Binding Energy Component LJ:  0.62862220E+03[J/mol]
 
-    UV Binding Energy Component ES:  -485.60079    [kJ/mol]
+    UV Binding Energy Component ES: -0.48560079E+06[J/mol]
 
-    Solvation Free Energy(UC)     :  -78.461044    [kJ/mol]    UC term :  -37.149940    [kJ/mol]    UC param: A=  -4.5799999    [kJ/mol], B=  0.34000000    [kJ/mol]
-    Solvation Free Energy(GF-UC)  :  -71.635495    [kJ/mol]    UC term :  -24.972423    [kJ/mol]    UC param: A=  -3.1600001    [kJ/mol], B=  0.89399999    [kJ/mol]
+    Solvation Free Energy(UC)     : -0.78461044E+05[J/mol]    UC term : -0.37149940E+05[J/mol]    UC param: A= -0.45799999E+01[J/mol], B=  0.34000000E+00[J/mol]
+    Solvation Free Energy(GF-UC)  : -0.71635495E+05[J/mol]    UC term : -0.24972423E+02[J/mol]    UC param: A= -0.31600001E+01[J/mol], B=  0.89399999E+00[J/mol]
 
-    Solvation Free Energy(PC)     :  -233.33645    [kJ/mol]    PC term :  -60.490788    [kJ/mol]
+    Solvation Free Energy(PC)     : -0.23333645E+06[J/mol]    PC term : -0.60490788E+05[J/mol]
 
     ======= Solvation Free Energy Component  =======
-       1:  -265.38532    [kJ/mol]
-       2:   92.539660    [kJ/mol]
+       1: -0.26538532E+06[J/mol]
+       2:  0.92539660E+05[J/mol]
 
     ======= GF Solvation Free Energy Component =====
-       1:  -274.31220    [kJ/mol]
-       2:   79.073907    [kJ/mol]
+       1: -0.27431220E+06[J/mol]
+       2:  0.79073907E+05[J/mol]
 
     ============= Partial Molar Volume =============
-    Partial Molar Volume       =   0.4934E-01 [L/mol]
-    Isothermal Compressibility =   0.4900     [/GPa]
-    Pressure                   =    1.226     [GPa]
+    Partial Molar Volume       =   0.49340425E-01 [L/mol]
+    Isothermal Compressibility =   0.48997398E+00 [/GPa]
+    Pressure                   =   0.12259884E+01 [GPa]
 
  -----------------------------------------------------------
          RISMiCal computation is completed normally.        
@@ -178,15 +178,18 @@ ESP map contains non-numeric value ******************** at       0.000000000000 
   Users must cite the following papers for any publications,
   which include the results obtained with RISMiCal code.    
   References:                                               
+ Y. Maruyama N. Yoshida, J. Comput. Chem. 45 (2024) 1470 (DOI:10.1002/jcc.27340)  
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
+ Y. Maruyama, N. Yoshida, H. Tadano, D. Takahashi, M. Sato, F. Hirata, J. Comput. Chem. 35 (2014) 1347.
+ Y. Maruyama, F. Hirata, J. Chem. Theory Comput. 8 (2012) 3015. (DOI: 10.1063/1.4879795)  
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 
-  Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
+   Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi  (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
   Fast Fourier Transform: 
-  Copyright Takuya OOURA, 1996-2001
-  Mathmatical Libra: SLATEC Common Mathmatical Library
- Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+   Copyright Takuya OOURA, 1996-2001
+   Mathmatical Libra: SLATEC Common Mathmatical Library
+   Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;  Walton, Lee (July 1993). Guide to the SLATEC  Common Mathematical Library
  -----------------------------------------------------------

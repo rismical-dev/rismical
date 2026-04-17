@@ -6,6 +6,7 @@ c--------------------------------------------------------------
      &      ,ck,tr,vres,urlj, fr,fk)
 c     
 c     icl       ... closure type 0...hnc, 1...msa, 2...kh 3..hnc+rbc
+c                                4...KGK
 c     ngrid3d   ... number of grid of 3d-rdf
 c     rdelta3d  ... grid width of r-space [angstrom]
 c     n2uq      ... number of symmetry uniq site of solvent
@@ -105,6 +106,19 @@ c
                   write(*,*) "RBC is not implemented yet."
                   ierr=44
                   call abrt(ierr)
+c     
+c     --- KGK
+c     
+               elseif (icl.eq.4) then
+                  
+                  bur=beta*(vres(k)*q2uq(j)*chgratio+urlj(k,j))
+                  d=-bur+tr(k,j)
+                  
+                  if (d.gt.-1.d0) then
+                     tr(k,j)=-bur
+                  else
+                     tr(k,j)=-tr(k,j)-1.d0
+                  endif
 c
 c     --- ---
 c

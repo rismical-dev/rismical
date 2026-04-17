@@ -25,7 +25,7 @@
     Use CHARGEUP Procedure : ON 
     Guess of tau-bond      : F-BOND   
     --------------------------------------
-    Grid preset       :STANDARD                
+    Grid preset       :USER                    
     Number of 1D-Grid :        4096
      Grid width       :      0.0500  [A]
     --------------------------------------
@@ -34,12 +34,12 @@
     -----------------------------------------------
     Solvent species:   1    Total number of solvent site:   3
       Density[M]  : Solvent
-        55.30000    TIP3P                                                                           
+        55.30000    tip3p                                                                           
     Temperature :   298.00000 [K]
     ATOM SPC SYM sig[Angs]   eps[J/mol]  charge[e]    ---X---     ---Y---     ---Z---    density[M] 
     O      1   1     3.15000   636.00000    -0.83400     0.00000     0.00000     0.00000    55.30000
-    H      1   2     0.40000   192.50000     0.41700     0.00000     0.75670     0.58588    55.30000
-    H      1  -2     0.40000   192.50000     0.41700     0.00000    -0.75670     0.58588    55.30000
+    H      1   2     0.40000   192.50000     0.41700     0.75670     0.58588     0.00000    55.30000
+    H      1  -2     0.40000   192.50000     0.41700    -0.75670     0.58588     0.00000    55.30000
 
     Dielectric consistent rism option activated.
     Dielectric constant =   78.5000
@@ -274,25 +274,25 @@
 
     ======= Physical Property of V-V System =======
 
-    Excess Chemical Potential: -13023.17709706[J/mol]
+    Excess Chemical Potential: -0.24068631E+05[J/mol]
 
-    GF Form Ex.Chem.Pot.     : -28872.60107165[J/mol]
+    GF Form Ex.Chem.Pot.     : -0.39918055E+05[J/mol]
 
-    V-V Binding Energy       :-109845.96931370[J/mol]
+    V-V Binding Energy       : -0.10984597E+06[J/mol]
      Site Contribution (On Solvent Site)
-                   ----->O   : -98641.84317946[J/mol]
-                   ----->H   :  -5602.06306712[J/mol]
-                   ----->H   :  -5602.06306712[J/mol]
+                   ----->O   : -0.98641843E+05[J/mol]
+                   ----->H   : -0.56020631E+04[J/mol]
+                   ----->H   : -0.56020631E+04[J/mol]
 
     Coordination Number 
-     NAME     O   [Radius ]    H   [Radius ]    H   [Radius ]
-     O     7.91515[  3.900] 0.47585[  2.000] 0.47585[  2.000]
-     H     0.47585[  2.000] 1.36290[  2.600] 1.36290[  2.600]
-     H     0.47585[  2.000] 1.36290[  2.600] 1.36290[  2.600]
+     NAME       O   [Radius ]      H   [Radius ]      H   [Radius ]
+     O       7.91515[  3.900]   0.47585[  2.000]   0.47585[  2.000]
+     H       0.47585[  2.000]   1.36290[  2.600]   1.36290[  2.600]
+     H       0.47585[  2.000]   1.36290[  2.600]   1.36290[  2.600]
 
-    Density Fluctuation        :      0.06556437
-    Isothermal Compressibility :      0.47851145[/GPa]
-                               :      0.00004849[/atm]
+    Density Fluctuation        :  0.65564374E-01
+    Isothermal Compressibility :  0.47851145E+00[/GPa]
+                               :  0.48485186E-04[/atm]
 
     Pressure (A route)         :  0.47829128E+09[Pa]
                                :  0.47203667E+04[atm]
@@ -304,6 +304,7 @@
   Users must cite the following papers for any publications,
   which include the results obtained with RISMiCal code.    
   References:                                               
+ Y. Maruyama N. Yoshida, J. Comput. Chem. 45 (2024) 1470 (DOI:10.1002/jcc.27340)  
  N. Yoshida, IOP Conf. Series: Mat. Sci. Eng.773 (2020) 012062 (DOI:10.1088/1757-899X/773/1/012062)  
  N. Yoshida, J. Chem. Info. Model 57 (2017) 2646-2656 (DOI:10.1021/acs.jcim.7b00389)  
  N. Yoshida, J. Chem. Phys. 140 (2014) 214118 (DOI: 10.1063/1.4879795)  
@@ -312,9 +313,9 @@
  -----------------------------------------------------------
   Implimented Math Libraries
   3D Fast Fourier Transform: 
-  Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
+   Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi  (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)
   Fast Fourier Transform: 
-  Copyright Takuya OOURA, 1996-2001
-  Mathmatical Libra: SLATEC Common Mathmatical Library
- Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;Walton, Lee (July 1993). Guide to the SLATEC Common Mathematical Library
+   Copyright Takuya OOURA, 1996-2001
+   Mathmatical Libra: SLATEC Common Mathmatical Library
+   Fong, Kirby W.; Jefferson, Thomas H.; Suyehiro, Tokihiko;  Walton, Lee (July 1993). Guide to the SLATEC  Common Mathematical Library
  -----------------------------------------------------------

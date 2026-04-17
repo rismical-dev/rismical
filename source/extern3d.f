@@ -104,6 +104,8 @@ c
          return
       elseif (icl.eq.2) then
          write(ift,'(A4)') "KH"
+      elseif (icl.eq.4) then
+         write(ift,'(A4)') "KGK"
       else
          write(ift,*) "Invalid closure type."
          iflag=999
@@ -153,9 +155,11 @@ c
       include "solute.i"
 c     
       dimension sfec_sc(0:maxslv-1), sfec_gf(0:maxslv-1)
+     &         ,sfec_sc_hnc(0:maxslv-1),sec(0:maxslv-1)
 c
       namelist /result/sfe_sc,sfec_sc,sfe_gf,sfec_gf
      &     ,pmv,pressure,correction_term
+     &     ,sfe_sc_hnc,sfec_sc_hnc,se,sec
 
 c---------------------------------------------------------
 c
