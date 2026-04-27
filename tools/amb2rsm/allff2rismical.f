@@ -24,6 +24,8 @@ c
       character*2 ,allocatable :: ntype(:)
       character*4 ,allocatable :: natm(:)
 c
+      real*8 kcal2j
+c
       dimension nty(maxtype)
       dimension sig(maxtype)
       dimension eps(maxtype)

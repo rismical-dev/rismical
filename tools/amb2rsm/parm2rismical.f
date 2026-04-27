@@ -29,6 +29,8 @@ c
       real*8, allocatable::sigma(:),epsilon(:),charge(:)
       real*8, allocatable::xyz(:,:)
 
+      real*8 kcal2j
+
       kcal2j=4184.d0
 c-----------------
 c

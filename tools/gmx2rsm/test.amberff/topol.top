@@ -18,7 +18,8 @@
 ;
 
 ; Include forcefield parameters
-#include "amber99sb-ildn.ff/forcefield.itp"
+#include "/opt/homebrew/share/gromacs/top/amber99sb-ildn.ff/forcefield.itp"
+
 
 [ moleculetype ]
 ; Name            nrexcl
