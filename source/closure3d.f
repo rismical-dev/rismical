@@ -22,7 +22,7 @@ c     listcore  ... list of core region 0..core 1..not core
 c     
       implicit real*8 (a-h,o-z)
       complex*16 ck,fk,fkk
-      complex*16 ,allocatable :: dumfft(:)
+      complex*16 ,allocatable, save :: dumfft(:)
 
       include "phys_const.i"
       include "rismrun.i"
@@ -33,9 +33,11 @@ c
       dimension urlj(ng3d,n2uq)
       dimension listcore(ng3d)
       dimension fr(ng3d),fk(ng3d)
-c
-      allocate (dumfft(ng3d))
-c
+
+      if (.not. allocated(dumfft)) then
+         allocate (dumfft(ng3d))
+      end if
+
       ngrid3d2=ngrid3d**2
       dk3d=2.d0*pi/(rdelta3d*dble(ngrid3d))
       ngshift=ngrid3d/2+1
@@ -150,7 +152,6 @@ c
       enddo                     ! of j to nvuq
 
 c----------------------------------------------------------------
-      deallocate (dumfft)
 c
       return
       end
