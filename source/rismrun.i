@@ -4,6 +4,7 @@ c     --------------------------------------------
 
       integer icl,iguess,ngrid,ngrid3d
       real*8 rdelta,rdelta3d,conv,rcore,alp1d,alp3d
+      real*8 qvcutoff
       character*24 grid
      
       integer nsub
@@ -25,3 +26,4 @@ c
 c
       common /rismclosure/clparams(10),icl
 c
+

@@ -30,6 +30,10 @@ c
 c     
 c     --- make 3d-phi bond
 c     
+!$omp parallel do default(none)
+!$omp&private(kz,ky,kx,k,rx,ry,rz,rkx,rky,rkz,rk, 
+!$omp&           i,rix,riy,riz,rri,rrik) 
+!$omp&   shared(ngrid3d,rdelta3d,dk3d,nu,xyzu,qu,fr,fk)
       do kz=1,ngrid3d
       do ky=1,ngrid3d
       do kx=1,ngrid3d
@@ -56,17 +60,28 @@ c
             riz=xyzu(3,i)
             
             rri=dsqrt((rx-rix)**2+(ry-riy)**2+(rz-riz)**2)
+c$$$c    --- erf version ---
+c$$$            if (rri.lt.1.d-5) then
+c$$$               fr(k)=fr(k)+qu(i)*alp3d*2.d0/dsqrt(pi)
+c$$$            else
+c$$$               fr(k)=fr(k)+qu(i)/rri*erf(alp3d*rri)
+c$$$            endif
+c     --- exp version ---
             if (rri.lt.1.d-5) then
-               fr(k)=fr(k)+qu(i)*alp3d*2.d0/dsqrt(pi)
+               fr(k)=fr(k)+qu(i)
             else
-               fr(k)=fr(k)+qu(i)/rri*erf(alp3d*rri)
+               fr(k)=fr(k)+qu(i)/rri*(1.d0-dexp(-rri))
             endif
             
             rrik=rix*rkx+riy*rky+riz*rkz
 
-            fk(k)=fk(k)+4.d0*pi*qu(i)/rk**2
-     &                 *dexp(-(rk/2.d0/alp3d)**2)
-     &                 *cdexp(dcmplx(0.d0,rrik))
+c$$$c     --- erf version ---
+c$$$            fk(k)=fk(k)+4.d0*pi*qu(i)/rk**2
+c$$$     &                 *dexp(-(rk/2.d0/alp3d)**2)
+c$$$     &                 *cdexp(dcmplx(0.d0,rrik))
+c     --- exp version ---
+            fk(k)=fk(k)+4.d0*pi*qu(i)/(rk**2*(rk**2+1))
+     &           *cdexp(dcmplx(0.d0,rrik))
             
          enddo
          
@@ -76,6 +91,7 @@ c
       enddo
       enddo
       enddo
+!$omp end parallel do
 c
 c----------------------------------------------------------------
       return

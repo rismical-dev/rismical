@@ -73,7 +73,7 @@ c
      &     " 3D Fast Fourier Transform: "
          write(*,*) 
      &     "  Copyright(C) 2000-2004,2008-2014,2020 Daisuke Takahashi"
-     &    ,"  (e-mail: daisuke[at]cs.tsukuba.ac.jp or ffte[at]ffte.jp)"
+     &    ,"  (e-mail: ffte[at]ffte.jp)"
          write(*,*) 
      &     " Fast Fourier Transform: "
          write(*,*) 

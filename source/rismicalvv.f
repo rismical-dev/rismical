@@ -32,7 +32,7 @@ c
       allocate (hvk(ngrid,nv,nv),fr(ngrid,nv,nv),fk(ngrid,nv,nv))
       allocate (xvk(ngrid,nv,nv))
       allocate (ures(ngrid,nv,nv),urlj(ngrid,nv,nv))
-      allocate (wk1(ngrid,nv,nv),wk2(ngrid,nv,nv),ck(ngrid,nv,nv))
+      allocate (wk2(ngrid,nv,nv),ck(ngrid,nv,nv))
       allocate (zrk(ngrid,nv,nv))
 c     
 c     --- Initialize
@@ -121,7 +121,7 @@ c
 c     --- Closure - SSOZ [INPUT tr(r) -> OUTPUT tr(r)]
 c     
          call cl_oz1dvv(icl,idrism,ngrid,rdelta,nv,nv
-     &               ,chgratio,ck,hvk,fr,fk,wk2,wk2,zrk
+     &               ,chgratio,ck,hvk,fr,fk,wk2,zrk
      &               ,cr,tr,ures,urlj)
 c     
 c     --- Check Convergence and Make Guess For Next Loop
@@ -181,7 +181,7 @@ c---------------------------------------------------------
       deallocate (cr,tr)
       deallocate (hvk,fr,fk)
       deallocate (ures,urlj)
-      deallocate (wk1,wk2,ck)
+      deallocate (wk2,ck)
       deallocate (zrk)
 c---------------------------------------------------------
       return

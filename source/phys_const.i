@@ -6,7 +6,7 @@ c
       parameter (ii = (0.0d0, 1.0d0))
 
       real*8 angtobohr
-      parameter (ANGTOBOHR= 1.889726342114D+00) ![bohr/Ang]
+      parameter (ANGTOBOHR= 1.88972634D+00) ![bohr/Ang]
 
       real*8 ekcal,boltz,hart2j,avognum,hart2jmol
       parameter (ekcal=4.184d0)                ![J/cal]

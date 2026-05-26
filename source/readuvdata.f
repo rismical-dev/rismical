@@ -192,7 +192,7 @@ c
      &        ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
       enddo
       write(*,9804) temp
-      write(*,*) "Solvent xvv file:",trim(solventxvv)
+      write(*,9805) "Solvent xvv file : ",adjustl(solventxvv)
 c--------------------------------------------------------------
       return
  9998 write(*,*) "Error. Solute data missmatch"
@@ -210,6 +210,7 @@ c--------------------------------------------------------------
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
  9803 format (A4,1x,i3,1x,i3,7f12.5)
  9804 format ("Temperature :",f12.5,"[K]")
+ 9805 format (1X,A20,A80)
       end
 c--------------------------------------------------------------
 c     Read built in LJ parameter file

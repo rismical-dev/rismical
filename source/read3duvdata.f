@@ -93,6 +93,11 @@ c
       ljparam="mm2.prm"
       esptype="PC"
       ipot3d=0
+      solutexyz=""
+      soluteesp=""
+      solutelj=""
+      soluteepc=""
+      solvent=""
 c
 c     Read namelist rismsolvent
 c
@@ -104,7 +109,12 @@ c
       call upcasex(esptype)
       if (esptype.eq."MAP") then
          ipot3d=1
-         if (len_trim(soluteesp).eq.0) soluteesp=trim(solute)//".esp"
+         if (len_trim(soluteesp).eq.0) soluteesp=trim(basename)//".esp"
+         espfile=soluteesp
+      endif
+      if (esptype.eq."CUBE") then
+         ipot3d=2
+         if (len_trim(soluteesp).eq.0) soluteesp=trim(basename)//".cub"
          espfile=soluteesp
       endif
 c
@@ -171,7 +181,7 @@ c
 c
 c     Read EPC file to get RESP point charge
 c
-         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(basename)//".epc"
          call readrepc(soluteepc,qu,maxslu)
 c     
 c     Read solute parameter from external files
@@ -180,9 +190,9 @@ c
 c
 c     Set default if not given
 c
-         if (len_trim(soluteepc).eq.0) soluteepc=trim(solute)//".epc"
-         if (len_trim(solutexyz).eq.0) solutexyz=trim(solute)//".xyz"
-         if (len_trim(solutelj ).eq.0) solutelj =trim(solute)//".lj"
+         if (len_trim(soluteepc).eq.0) soluteepc=trim(basename)//".epc"
+         if (len_trim(solutexyz).eq.0) solutexyz=trim(basename)//".xyz"
+         if (len_trim(solutelj ).eq.0) solutelj =trim(basename)//".lj"
 c
 c     Read xyz file to get coordinate
 c
@@ -258,7 +268,7 @@ c
       enddo
 c
 c     Set inverse temperature
-c      
+c
       beta=1.d0/(gasconst*temp)  ![mol/J]
 c
 c     Print Solvent parameters
@@ -277,7 +287,7 @@ c
      &           ,xyzv(1,i),xyzv(2,i),xyzv(3,i),densv
       enddo
       write(*,9804) temp
-      write(*,*) "Solvent xvv file:",trim(solventxvv)
+      write(*,9805) "Solvent xvv file : ",adjustl(solventxvv)
 c--------------------------------------------------------------
       return
  9998 write(*,*) "Error. Solute data missmatch"
@@ -295,4 +305,5 @@ c--------------------------------------------------------------
      &     ,"  ---X---   ","  ---Y---   ","  ---Z---   "," density[M] ")
  9803 format (A4,1x,i3,1x,i3,7f12.5)
  9804 format ("Temperature :",f12.5,"[K]")
+ 9805 format (A20,A80)
       end

@@ -10,7 +10,7 @@
 ##  LINKDIR      Linked Copies of RISMiCal Executables
 ##
 
-RISMICALDIR = ~/software/RISMiCal
+RISMICALDIR = ~/software/RISMiCal-local/rismical/
 BINDIR = $(RISMICALDIR)/bin
 OBJDIR = $(RISMICALDIR)/object
 
@@ -28,13 +28,13 @@ OBJDIR = $(RISMICALDIR)/object
 
 # GNU Compiler
 FC =  gfortran
-FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -Wno-argument-mismatch -std=legacy
+FCFLAGS = -O3 -fomit-frame-pointer -ffixed-form -Wno-argument-mismatch -std=legacy -ffast-math -ffpe-summary=none -fopenmp
 LDFLAGS = -lblas -llapack
 
 # # Intel Compiler
 # FC =  ifort
-# FCFLAGS = -O3 -shared-intel -mcmodel=medium -fixed -assume byterecl
-# FCFLAGS = -O3 -shared-intel -qopenmp -fixed  -assume byterecl
+# FCFLAGS = -O3 -shared-intel -mcmodel=medium -fixed -assume byterecl -ftz
+# FCFLAGS = -O3 -shared-intel -qopenmp -fixed  -assume byterecl -ftz
 # LDFLAGS = -lblas -llapack
 
 
@@ -60,7 +60,7 @@ PROGS =rismical.x
 all: $(PROGS)
 
 $(PROGS) : $(OBJS)
-	$(FCLD) $(FCFLAGS) $(OBJS) $(LDFLAGS) -o $(PROGS) 
+	$(FCLD) $(FCFLAGS) $(LDFLAGS) $(OBJS) -o $(PROGS) 
 
 clean:
 	-rm -f $(OBJS)  $(PROGS)

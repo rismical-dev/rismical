@@ -10,6 +10,7 @@ c     ngrid3d       ... number of grid of 3D-RDF
 c     nv            ... number of site of solvent
 c     cr            ... direct correlation function 
 c     tr            ... tau bond =hr-cr
+c     fr            ... f-bond
 c     
       implicit real*8 (a-h,o-z)
       complex*16 cr
@@ -24,7 +25,7 @@ c
       dimension vres(ng3d)
       dimension urlj(ng3d,n2uq)
       dimension listcore(ng3d)
-      dimension esolvi(n2uq),egfi(n2uq)
+      dimension esolvi(n2uq),egfi(n2uq),ehnci(n2uq)
 c
       namelist /RISMUC/ahnc,akh,agf,bhnc,bkh,bgf
 c
@@ -33,6 +34,7 @@ c
       ! Ref JPCB, 2015, 119, 5588
 
       rd33=rdelta3d**3
+
 c---------------------------------------------------------
       call vclr(esolvi,1,nvuq)
       call vclr(egfi,1,nvuq)
@@ -42,11 +44,9 @@ c
 c
 c     --- HNC
 c
-      if (icl.eq.0.or.icl.eq.3) then
+      sum=0.d0
 
-         sum=0.d0
-
-         do j=1,nvuq
+      do j=1,nvuq
 
          sumi=0.d0
          
@@ -68,12 +68,12 @@ c
 
          sum=sum+sumi
          esolvi(j)=sumi/beta*rd33         
+         ehnci(j)=esolvi(j)
 
-         enddo
+      enddo
 
-         esolvtot=sum/beta*rd33
-         
-      endif
+      esolvtot=sum/beta*rd33
+      ehnctot=esolvtot
 c
 c     --- MSA
 c
@@ -276,8 +276,17 @@ c
 c
 c     --- Pressure correction for excess chemical potential
 c
-      pressure=0.5d0/beta*(beta/xt+totaldens/avognum) 
+c     Common expression for HNC and KH
+c
+      if (icl.eq.0.or.icl.eq.2.or.icl.eq.3) then
+         pressure=0.5d0/beta*(beta/xt+totaldens/avognum) 
                                                  ![Pa]=[J/m^3]
+      else
+         pressure=0.d0
+         write(*,*) "Warning."
+         write(*,*) "No pressure expression implemented",
+     &        " for your closure."
+      endif
       pcterm=-pressure*pmv ![J/mol]
 c
 c     --- Total Solvent Charge
@@ -328,18 +337,30 @@ c---------------------------------------------------------
       ift=45
       open (ift,file=trim(basename)//".xmu")
       write(ift,'(1X,A7)') "$RESULT"
-      write(ift,'(A7,F16.5,2x,A8)') "SFE_SC=",esolvtot,"!(J/mol)"
+      write(ift,'(A7,F18.5,2x,A8)') "SFE_SC=",esolvtot,"!(J/mol)"
       do i=1,nvuq
-         write(ift,'(A8,i3,A2,f16.5)') "SFEC_SC(",i-1,")=",esolvi(i)
+         write(ift,'(2x,A8,i3,A2,f18.5)') "SFEC_SC(",i-1,")=",esolvi(i)
       enddo
-      write(ift,'(A7,F16.5,2x,A8)') "SFE_GF=",egftot,"!(J/mol)"
+      write(ift,*)
+      write(ift,'(A8,F18.5,2x,A8)') "SFE_HNC=",ehnctot,"!(J/mol)"
       do i=1,nvuq
-         write(ift,'(A8,i3,A2,f16.5)') "SFEC_GF(",i-1,")=",egfi(i)
+         write(ift,'(2x,A9,i3,A2,f18.5)') "SFEC_HNC(",i-1,")=",ehnci(i)
       enddo
-
-      write(ift,'(A4,f16.5,2x,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
-      write(ift,'(A9,f16.5,2x,A11)') "Pressure=",pressure,"!(Pa=J/m^3)"
-      write(ift,'(A16,f16.5,2x,A8)') 
+      write(ift,*)
+      write(ift,'(A7,F18.5,2x,A8)') "SFE_GF=",egftot,"!(J/mol)"
+      do i=1,nvuq
+         write(ift,'(2x,A8,i3,A2,f18.5)') "SFEC_GF(",i-1,")=",egfi(i)
+      enddo
+      write(ift,*)
+      write(ift,'(A6,F18.5,2x,A8)') "SE   =",ebindtot,"!(J/mol)"
+      write(ift,'(2x,A6,F18.5,2x,A8)') 
+     &     "SE_ES=",ebindtot-ebindlj,"!(J/mol)"
+      write(ift,'(2x,A6,F18.5,2x,A8)') 
+     &     "SE_LJ=",ebindlj,"!(J/mol)"
+      write(ift,*)
+      write(ift,'(A4,f18.5,2x,A8)') "PMV=",pmv*1.d+3,"!(L/mol)"
+      write(ift,'(A9,f18.5,2x,A11)') "Pressure=",pressure,"!(Pa=J/m^3)"
+      write(ift,'(A16,f18.5,2x,A8)') 
      &     "Correction_term=",pcterm,"!(J/mol)"
 
       write(ift,'(1X,A4)') "$END"

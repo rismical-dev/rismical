@@ -21,6 +21,9 @@ c
       character*256 scrjob
       character*80 char80,char802
       real*8 ,allocatable :: gbuff(:,:,:)
+      real*8 :: dind, t, tl
+      integer :: indx(0:10)
+      integer :: ig
 
       include "phys_const.i"
       include "rismio.i"
@@ -30,6 +33,8 @@ c
       dimension hvk(ngrid,n2,n2),ures(ngrid,n2,n2),urlj(ngrid,n2,n2)
       dimension xvk(ngrid,n2,n2)
       dimension ck(ngrid,n2,n2),fk(ngrid,n2,n2)
+      dimension c0(ngrid,nvuq,nvuq)
+      dimension rl(n2,n2),tmp(nvuq,nvuq),tmp2(nvuq,nvuq)
 c----------------------------------------------------------------
       char802="REMARKS"
 C
@@ -43,6 +48,7 @@ c
       koutc = index(iolist,'c') + index(iolist,'C')
       koutt = index(iolist,'t') + index(iolist,'T')
       koutx = index(iolist,'x') + index(iolist,'X')
+      koutk = index(iolist,'k') + index(iolist,'K')
 c
 c     write gr
 c         
@@ -101,7 +107,7 @@ c
       endif
 c
 c     write tr
-c         
+c
       if (koutt.ne.0) then
          
          scrjob=trim(basename)//".tvv"
@@ -128,13 +134,84 @@ c
          call writehvvfunc(scrjob,hvk,rdelta,n2,ngrid,char80)
       endif
 c
-c
 c     write xvvk
 c         
       if (koutx.ne.0) then
 
          scrjob=trim(basename)//".xvk"
          call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid)
+      endif
+c
+c     write cvk = ck + wk
+c
+      if (koutk.ne.0) then
+         do j=1,n2
+            do i=1,n2
+               if (nspc(i).ne.nspc(j)) then
+                  rl(i,j)=-1.d0
+               else
+                  rl(i,j)=dsqrt((xyzv(1,i)-xyzv(1,j))**2
+     &                 +(xyzv(2,i)-xyzv(2,j))**2
+     &                 +(xyzv(3,i)-xyzv(3,j))**2)
+               endif
+            enddo
+         enddo
+         do ig=1, ngrid
+            t = pi / (rdelta * ngrid) * ig
+            do j=1,nvuq
+               do i=1,nvuq
+                  if (i == j) then
+                     c0(ig,i,j) = 1.d0 / densuq(i)
+                  else
+                     c0(ig,i,j) = 0.d0
+                  end if
+                  tmp(i, j) = 0.d0
+                  do imu1=1,nmulsite(i)
+                     if (imu1 == 1) then
+                        tl = t * rl(i,j)
+                     else
+                        tl = t * rl(i + imu1 - 1, j)
+                     endif
+                     if (tl < 0.d0)  then
+                        tmp(i, j) = tmp(i, j) + 0.d0
+                     elseif (tl == 0.d0)  then
+                        tmp(i, j) = tmp(i, j) + densuq(j)
+                     else
+                        tmp(i, j) = tmp(i, j) + sin(tl)/tl * densuq(j)
+                     endif
+                  enddo
+               enddo
+            enddo
+            do j=1,nvuq
+               do i=1,nvuq
+                  if (i == j) then
+                     tmp2(i, j) = 1.0d0
+                  else
+                     tmp2(i, j) = 0.0d0
+                  end if
+               end do
+            end do
+            call ludcmp(tmp, nvuq, nvuq, indx, dind)
+            do j=1,nvuq
+               call lubksb(tmp, nvuq, nvuq, indx, tmp2(1,j))
+            enddo
+            do j=1,nvuq
+               do i=1,nvuq
+                  c0(ig,i,j) = c0(ig,i,j) - tmp2(i, j)
+               end do
+            end do
+         end do
+
+         do j=1,nvuq
+            do i=1,nvuq
+               do ig=1,ngrid
+                  gbuff(ig,i,j)=ck(ig,i,j)+c0(ig,i,j)
+               enddo
+            enddo
+         enddo
+
+         scrjob=trim(basename)//".cvk"
+         call writexvvfunc(scrjob,gbuff,rdelta,n2,ngrid)
       endif
 c
       deallocate (gbuff)
@@ -147,4 +224,95 @@ c----------------------------------------------------------------
      &        "## r[Ang]",10x,"cr(r)",15x,"tr(r)",15x,"gr(r)",15x,
      &        "hv(k)",15x,"ur(r)",15x,"f-bond(r)",11x,"CN(r)",15x,
      &        "xvv(k)",14x,"c(k)",15x,"f(k)",15x,"k[/Ang]")
+      end
+c-----------------------------------------------------------------
+c-----------------------------------------------------------------
+c-----------------------------------------------------------------
+      SUBROUTINE ludcmp(a,n,np,indx,d,*)
+      INTEGER n,np,indx(n),NMAX
+      DOUBLE PRECISION d,a(np,np),TINY
+      PARAMETER (NMAX=500,TINY=1.0d-20)
+      INTEGER i,imax,j,k
+      DOUBLE PRECISION aamax,dum,sum,vv(NMAX)
+      d=1.d0
+      do 12 i=1,n
+        aamax=0.d0
+        do 11 j=1,n
+          if (abs(a(i,j)).gt.aamax) aamax=abs(a(i,j))
+11      continue
+        if (aamax.eq.0.d0)  then
+          print *,'singular matrix in LUDCMP'
+          return 1
+        endif
+        vv(i)=1.d0/aamax
+12    continue
+      do 19 j=1,n
+        do 14 i=1,j-1
+          sum=a(i,j)
+          do 13 k=1,i-1
+            sum=sum-a(i,k)*a(k,j)
+13        continue
+          a(i,j)=sum
+14      continue
+        aamax=0.d0
+        do 16 i=j,n
+          sum=a(i,j)
+          do 15 k=1,j-1
+            sum=sum-a(i,k)*a(k,j)
+15        continue
+          a(i,j)=sum
+          dum=vv(i)*abs(sum)
+          if (dum.ge.aamax) then
+            imax=i
+            aamax=dum
+          endif
+16      continue
+        if (j.ne.imax)then
+          do 17 k=1,n
+            dum=a(imax,k)
+            a(imax,k)=a(j,k)
+            a(j,k)=dum
+17        continue
+          d=-d
+          vv(imax)=vv(j)
+        endif
+        indx(j)=imax
+        if(a(j,j).eq.0.d0)a(j,j)=TINY
+        if(j.ne.n)then
+          dum=1.d0/a(j,j)
+          do 18 i=j+1,n
+            a(i,j)=a(i,j)*dum
+18        continue
+        endif
+19    continue
+      return
+      end
+
+      SUBROUTINE lubksb(a,n,np,indx,b)
+      INTEGER n,np,indx(n)
+      DOUBLE PRECISION a(np,np),b(n)
+      INTEGER i,ii,j,ll
+      DOUBLE PRECISION sum
+      ii=0
+      do i=1,n
+        ll=indx(i)
+        sum=b(ll)
+        b(ll)=b(i)
+        if (ii.ne.0)then
+          do j=ii,i-1
+            sum=sum-a(i,j)*b(j)
+          end do
+        else if (sum.ne.0.d0) then
+          ii=i
+        endif
+        b(i)=sum
+      end do
+      do i=n,1,-1
+        sum=b(i)
+        do j=i+1,n
+          sum=sum-a(i,j)*b(j)
+        end do
+        b(i)=sum/a(i,i)
+      end do
+      return
       end

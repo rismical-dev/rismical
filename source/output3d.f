@@ -176,7 +176,7 @@ c
             sum=0.d0
             do iv=1,nvuq
                sum=sum + densuq(iv)*q2uq(iv)
-     &              *(tr(ig,iv)+dble(cr(ig,iv))+1.d0)
+     &              *(tr(ig,iv)+dble(cr(ig,iv)))
      &              *rdelta3d**3
             enddo
 
@@ -185,8 +185,9 @@ c
          enddo
 
          char80="charge distribution of solvent data"
-         call write3dfuncxyz(scrjob,gbuff,rdelta3d
-     &                      ,1,ngrid3d,char80)
+c$$$         call write3dfuncxyz(scrjob,gbuff,rdelta3d
+c$$$     &                      ,1,ngrid3d,char80)
+         call writeqv(scrjob,gbuff,rdelta3d,ngrid3d)
       endif
 c
 c

@@ -19,8 +19,11 @@ c
       character*3 CHAR3,CLOSURE,CHARGEUP
       character*6 CHAR6
       character*9 CHAR9
+      character*256 qm, qmopt
 
       LOGICAL READERROR
+c
+      dimension qmpart(1000)
 c
       include "rismio.i"
       include "solvent.i"

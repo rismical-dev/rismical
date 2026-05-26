@@ -16,6 +16,7 @@ c
       character*5 char5
       character*6 char6
       character*13 char13
+      character*17 char17
       character*256 char256,filmol2,filallff
 c
       parameter (maxtype=100)
@@ -57,8 +58,9 @@ c
       ift1=45
       open (ift1,file=filmol2,err=900)
  100  continue
+      read(ift1,*) char17
+      if (char17.ne."@<TRIPOS>MOLECULE") goto 100
       read(ift1,*) char3
-      if (char3.ne."MOL") goto 100
       read(ift1,*) natom
       
       allocate (xyz(3,natom))
@@ -123,7 +125,8 @@ c
          do ity=1,nt
             if (nty(ity).eq.ntype(iat)) then
                sigma=sig(ity)*1.781797d0
-               epsilon=eps(ity)*kcal2j
+               epsilon=eps(ity)*kcal2j  ! J/mol
+c$$$               epsilon=eps(ity)     ! kcal/mol
                goto 600
             endif
          enddo

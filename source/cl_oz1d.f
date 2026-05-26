@@ -2,7 +2,7 @@ c--------------------------------------------------------------
 c     Closure-OZ for VV
 c--------------------------------------------------------------
       subroutine cl_oz1dvv(icl,idrism,ngrid,rdelta,n1,n2
-     &     ,chgratio,ck,hvk,fr,fk,wk1,wk2,zrk
+     &     ,chgratio,ck,hvk,fr,fk,wk2,zrk
      &     ,cr,tr,ures,urlj)
 c     
 c     ir        ... file number of output (STDOUT)
@@ -31,7 +31,8 @@ c
       dimension tr(ngrid,n1,n2)
       dimension hvk(ngrid,n2,n2)
       dimension fr(ngrid,n1,n2),fk(ngrid,n1,n2)
-      dimension wk1(ngrid,n1,n1),wk2(ngrid,n2,n2)
+c$$      dimension wk1(ngrid,n1,n1),wk2(ngrid,n2,n2)
+      dimension wk2(ngrid,n2,n2)
       dimension tk(ngrid,n1,n2),ftfunc(ngrid)
       dimension dum1(n1,n2),dum2(n1,n2),dum3(n1,n2)
       dimension wktemp1(n1,n1),wktemp2(n2,n2),dumvv(n2,n2)

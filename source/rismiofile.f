@@ -556,9 +556,48 @@ c----------------------------------------------------------------
  9991 format("##  ",a80)
  9992 format("##  REMARKS ",i4)
  9993 format("##  ",a20,i15)
- 9994 format(e16.8e3)
  9995 format(4x,3f12.4, 2x,e16.8e3,2x,e16.8e3)
  9996 format("##  ",3A12,2x,2A16)
+      end
+c**************************************************************
+c----------------------------------------------------------------
+c     Write solvent charge density
+c----------------------------------------------------------------
+      subroutine writeqv(namef,func3d,rdelta3d,ngrid3d)
+c
+      implicit real*8(a-h,o-z)
+      character*256 namef
+      character*2 char2
+c
+      dimension func3d(ngrid3d**3)
+c
+c----------------------------------------------------------------
+      ift=45
+      nremark=2
+      open (ift,file=namef)
+
+      qvcut=0.d0
+      k0=ngrid3d/2+1
+      do kz=1,ngrid3d
+      do ky=1,ngrid3d
+      do kx=1,ngrid3d
+
+
+         rx=rdelta3d*dble(kx-k0)
+         ry=rdelta3d*dble(ky-k0)
+         rz=rdelta3d*dble(kz-k0)
+         k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
+
+         write (ift,9995) rx,ry,rz,func3d(k)
+
+      enddo
+      enddo
+      enddo
+
+      close(ift)
+c----------------------------------------------------------------
+      return
+ 9995 format(4x,3f12.4, 2x,e16.8e3,2x,e16.8e3)
       end
 c**************************************************************
 c----------------------------------------------------------------
@@ -611,6 +650,79 @@ c
          k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d**2
          vres(k)=val*hart2jmol
  
+      enddo
+c      
+      close(ift)
+c----------------------------------------------------------------
+      return
+ 999  continue
+      write(*,*) "Error during read esp file:",trim(namef)
+      ierr=4728
+      call abrt(ierr)
+      end
+c**************************************************************
+c----------------------------------------------------------------
+c     Read electrostatic potential map in cube file format
+c----------------------------------------------------------------
+      subroutine readespcube(namef,vres,rdelta3d,ngrid3d)
+c
+      implicit real*8(a-h,o-z)
+c
+      include "phys_const.i"
+c
+      character*256 namef
+      character*2 char2
+      character*4 char4
+      character*15 char15
+      character*20 char20
+      character*80 char80
+c
+      dimension vres(ngrid3d**3)
+c
+      dimension dx(3),dy(3),dz(3),val(ngrid3d)
+c----------------------------------------------------------------
+      ift=45
+      open (ift,file=namef,status='old',form='formatted',err=999)
+c
+      write(*,*) "Reading ESP map from :",namef
+c
+c     Read ESP map in CUBE binary
+c
+c     Unit: V=[Hartree/e]
+c
+c     Skip title
+      read(ift,*) char80
+      read(ift,*) char80
+c
+c     Read Number of atoms, coordinate of origine
+      read(ift,*) natom_cube, x0, y0, z0
+c
+c     Read Number of grids, and step vector
+      read(ift,*) nx, dx(1), dx(2), dx(3)
+      read(ift,*) ny, dy(1), dy(2), dy(3)
+      read(ift,*) nz, dz(1), dz(2), dz(3)
+c
+c     Check array size
+      if (nx.ne.ngrid3d.or.ny.ne.ngrid3d.or.nz.ne.ngrid3d) then
+         write(*,*) "ERROR. cube file doesn't much rismical input." 
+         ierr=260430
+         call abrt(ierr)
+      endif
+c
+c     Read atom information (But not use.)
+      do iat=1,natom_cube
+         read(ift,*) iatnum, atchg, atx, aty, atz
+      enddo
+c
+c     Read potential in [hartree/e] and convert to [J/mol]
+      do ix=1,ngrid3d
+         do iy=1,ngrid3d
+            read(ift,'(6e13.5)') (val(iz),iz=1,ngrid3d)
+            do iz=1,ngrid3d
+               k=ix+(iy-1)*ngrid3d+(iz-1)*ngrid3d**2
+               vres(k)=val(iz)*hart2jmol
+            enddo
+         enddo
       enddo
 c      
       close(ift)

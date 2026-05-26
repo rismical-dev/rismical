@@ -1,4 +1,4 @@
-# RISMiCal
+# RISMiCal #
 The Reference Interaction-Site Model integrated Calculator
 
 ## INSTALL
@@ -47,6 +47,7 @@ The details of the input format is explained in the manual in `$RISMICALHOME/doc
 
 # Copyright
 Norio YOSHIDA, Nagoya University
+Yutaka MARUYAMA, University of Osaka
 
 # Contact Information
 Norio YOSHIDA, Prof. of Graduate School of Informatics, Nagoya University

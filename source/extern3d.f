@@ -155,11 +155,11 @@ c
       include "solute.i"
 c     
       dimension sfec_sc(0:maxslv-1), sfec_gf(0:maxslv-1)
-     &         ,sfec_sc_hnc(0:maxslv-1),sec(0:maxslv-1)
+      dimension sfec_sc_hnc(0:maxslv-1)
 c
       namelist /result/sfe_sc,sfec_sc,sfe_gf,sfec_gf
+     &     ,se,se_es,se_lj,sfe_sc_hnc,sfec_sc_hnc
      &     ,pmv,pressure,correction_term
-     &     ,sfe_sc_hnc,sfec_sc_hnc,se,sec
 
 c---------------------------------------------------------
 c

@@ -44,6 +44,9 @@ c
          listcore(k)=1
       enddo
 
+!$omp parallel do default(none) 
+!$omp&private(kz,ky,kx,k,i,rx,ry,rz,rr) 
+!$omp&shared(ngrid3d,rdelta3d,xyzu,nu,siglju,listcore)
       do kz=1,ngrid3d
       do ky=1,ngrid3d
       do kx=1,ngrid3d
@@ -60,6 +63,7 @@ c
          enddo
          enddo
       enddo
+!$omp end parallel do
 C
 c     --- Make Potential
 c     
@@ -72,6 +76,10 @@ c
 c     
 c     --- LJ
 c     
+!$omp parallel do default(none) 
+!$omp&private(kz,ky,kx,k,rx,ry,rz,rr2,rrinv2,rrinv6,rrinv12,rr6,rr12) 
+!$omp&shared(ngrid3d,rdelta3d,xyzu,listcore)
+!$omp&shared(epsig6,epsig12,urlj,i,j,jj,k0)
             do kz=1,ngrid3d
             do ky=1,ngrid3d
             do kx=1,ngrid3d
@@ -102,6 +110,7 @@ c
             enddo               ! of kx
             enddo               ! of ky
             enddo               ! of kz
+!$omp end parallel do
 
          enddo                  ! of nu
 
@@ -118,6 +127,10 @@ c
 
       do i=1,nu
 
+!$omp parallel do default(none)
+!$omp&private(ky,kx,k,rx,ry,rz,rr)
+!$omp&shared(ngrid3d,rdelta3d,xyzu,listcore)
+!$omp&shared(vres,qu,i,k0)
          do kz=1,ngrid3d
          do ky=1,ngrid3d
          do kx=1,ngrid3d
@@ -135,9 +148,10 @@ C
 C
  6100       continue
 C
-         enddo                  ! of kx
+         enddo               ! of kx
          enddo               ! of ky
          enddo               ! of kz
+!$omp end parallel do
 C
       enddo                     ! of nu
 c
@@ -146,6 +160,10 @@ c
       elseif (ipot3d.eq.1) then
 
          call readespmap(espfile,vres,rdelta3d,ngrid3d)
+
+      elseif (ipot3d.eq.2) then
+
+         call readespcube(espfile,vres,rdelta3d,ngrid3d)
 
       else
 
