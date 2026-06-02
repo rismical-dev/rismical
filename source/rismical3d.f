@@ -181,8 +181,8 @@ c---------------------------------------------------------
 c
 c     calc cr for final tr
 c
-      call closure3d2(ng3d,nvuq,listcore
-     &               ,cr,tr,vres,urlj)
+c$$$      call closure3d2(ng3d,nvuq,listcore
+c$$$     &               ,cr,tr,vres,urlj)
 c
 c     calc property
 c

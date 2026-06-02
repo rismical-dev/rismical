@@ -26,6 +26,8 @@ c
       dimension rk(0:ngr1d)
       dimension xvv(nx22,n2uq,n2uq),xvk(0:ngr1d,n2uq,n2uq)
       dimension listxvv(ngr3d/2+1,ngr3d/2+1,ngr3d/2+1)
+c     
+      dimension rwork(0:ngr1d)
 c
       dimension ic(2),vc(2),xvkd(0:ngr1d)
       dimension wk(2*ngr1d+2)
@@ -98,11 +100,17 @@ c
       do ig=1,ngrid
          read(ift,*) ((xvk(ig,i1,i2),i1=1,nvuq),i2=1,nvuq)
       enddo
+c
+c     Approximate k=0 value by k=1 value
+c     Since xvk is an even function, 
+c     this is to ensure that the slope is zero at k = 0
+c
       do i2=1,nvuq
       do i1=1,nvuq
          xvk(0,i1,i2)=xvk(1,i1,i2)
       enddo
       enddo
+c
       close(ift)
 c     
 c     --- make 3D-Xvv by interpolating 1D-Xvv
@@ -113,7 +121,10 @@ c
 c
 c           calculate derivative of xvk
 c
-            call dpchsp(ic,vc,ngrid+1,rk,xvk(0,i,j),xvkd,1,wk,nwk,ierr)
+c$$$c           Hermite interpolation     
+c$$$            call dpchsp(ic,vc,ngrid+1,rk,xvk(0,i,j),xvkd,1,wk,nwk,ierr)
+c           Spline interpolation
+            call spline_init(ngrid,rk,xvk(0,i,j),xvkd,rwork)
 c
             sum=0.d0
             
@@ -128,12 +139,15 @@ c
                rkz=dble(kz)-0.5d0
                rk3=dsqrt(rkx*rkx+rky*rky+rkz*rkz)*dk3d
                
-               call dpchfe(ngrid+1,rk,xvk(0,i,j),xvkd
-     &                     ,1,skip,1,rk3,dum,ierr)
+c$$$c           Hermite interpolation     
+c$$$               call dpchfe(ngrid+1,rk,xvk(0,i,j),xvkd
+c$$$     &                     ,1,skip,1,rk3,dum,ierr)
+c           Spline interpolation
+               call spline_eval(ngrid,rk,xvk(0,i,j),xvkd,rk3,dum)
                
                k=listxvv(kx,ky,kz)
                xvv(k,i,j)=dum
-               
+
             enddo
             enddo
             enddo

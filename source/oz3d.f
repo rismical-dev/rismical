@@ -62,7 +62,7 @@ c
          kxvv=listxvv(nkx,nky,nkz)
 
          do j=1,nvuq
-            cdum(j)=ck(k,j)     ! here, c(k) is in "ck"
+            cdum(j)=ck(k,j)     ! here, c(k) is  "ck"
          enddo
          
          do j=1,nvuq
@@ -75,25 +75,7 @@ c
 
             enddo
             
-            cr(k,j)=dsum       ! here, hr(k) is in "cr"
-
-c$$$         do j=1,nv
-c$$$            
-c$$$            jj=iuniq(j)
-c$$$            if (jj.le.0) goto 8000
-c$$$
-c$$$            dsum=(0.d0,0.d0)
-c$$$
-c$$$            do j2=1,nv
-c$$$
-c$$$               jj2=abs(iuniq(j2))
-c$$$               dsum=dsum+cdum(jj2)*dcmplx(xvv(kxvv,j2,j),0.d0)
-c$$$
-c$$$            enddo
-c$$$            
-c$$$            cr(k,jj)=dsum       ! here, hr(k) is in "cr"
-c$$$
-c$$$ 8000       continue
+            cr(k,j)=dsum       ! here, hr(k) is  "cr"
 
          enddo
 
@@ -133,8 +115,8 @@ c
             cr(k,j)=dcmplx(tr(k,j),0.d0)
             tr(k,j)=dble(dumfft(k)*cdexp(dcmplx(0.d0,-dkr)))
      *           -tr(k,j)
-                                ! here, c(r) is in "cr"
-                                !   and t(r) is in "tr"
+                                ! here, c(r) is "cr"
+                                !   and t(r) is "tr"
          enddo
          enddo
          enddo     ! of kz

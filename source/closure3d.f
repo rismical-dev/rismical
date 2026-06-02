@@ -93,7 +93,7 @@ c
                   bur=beta*(vres(k)*q2uq(j)*chgratio+urlj(k,j))
                   d=-bur+tr(k,j)
                   
-                  if (d.gt.0.d0) then
+                  if (d.ge.0.d0) then
                      tr(k,j)=d-tr(k,j)
                   else
                      tr(k,j)=dexp(d)-tr(k,j)-1.d0
@@ -125,9 +125,9 @@ c
                endif
                
             endif
-                                ! here, c(r) is in "tr"
+                                ! here, c(r) is tr
 c     
-c     --- fourier transform ( c(r) --> c(k) )
+c     --- Make short range part ( c(r) --> cs(r) )
 c     
             trs=tr(k,j)+beta*fr(k)*q2uq(j)*chgratio
             dkr=dk3d*0.5d0*(rx+ry+rz)
@@ -139,16 +139,20 @@ c
          enddo                  ! of kz
 !$omp end parallel do
 
+c     
+c     --- fourier transform ( c(r) --> c(k) )
+c     
          call ffte3d(dumfft,ngrid3d,rdelta3d,inv)
-
+c     
+c     --- Recover long range part ( cs(k) --> c(k) )
+c     
 !$omp parallel do
          do k=1,ng3d
-            ck(k,j)=dumfft(k)-beta*fk(k)*q2uq(j)*chgratio ! c(k) is in "ck"
+            ck(k,j)=dumfft(k)-beta*fk(k)*q2uq(j)*chgratio ! c(k) is ck
          enddo
 !$omp end parallel do
 
       enddo                     ! of j to nvuq
-
 c----------------------------------------------------------------
       deallocate (dumfft)
 c

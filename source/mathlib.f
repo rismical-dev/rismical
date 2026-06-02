@@ -689,3 +689,107 @@ c----------------------------------------------------------------
       return
       end
 c----------------------------------------------------------------
+c     Spline interpolation
+c----------------------------------------------------------------
+c=======================================================================
+c  spline_init : 3次自然スプラインの2階微分配列d2f を1回だけ計算する
+c                ngrid+1点 (k=0,1,...,ngrid) のテーブルに対して動作
+c  入力 :
+c    ngrid          - 配列の最大インデックス (要素数は ngrid+1)
+c    rk(0:ngrid)    - 補間点の横座標 (kの値)、昇順であること
+c    func(0:ngrid)  - 補間点の縦座標 (chi(k)の値)
+c  出力 :
+c    d2f(0:ngrid)   - 各点での2階微分 (スプライン係数)
+c  作業配列 :
+c    u(0:ngrid)     - tridiagonal求解の作業用
+c=======================================================================
+      subroutine spline_init(ngrid, rk, func, d2f, u)
+      implicit none
+      integer ngrid
+      double precision rk(0:ngrid), func(0:ngrid)
+      double precision d2f(0:ngrid), u(0:ngrid)
+
+      integer i
+      double precision sig, p, qn, un
+
+c     --- 自然境界条件 (両端で d2f = 0) ---
+      d2f(0) = 0.0d0
+      u(0)   = 0.0d0
+
+c     --- 前進消去 (tridiagonal系の上三角化) ---
+      do i = 1, ngrid-1
+         sig = (rk(i) - rk(i-1)) / (rk(i+1) - rk(i-1))
+         p   = sig * d2f(i-1) + 2.0d0
+         d2f(i) = (sig - 1.0d0) / p
+         u(i) = (6.0d0 *
+     &          ( (func(i+1) - func(i))/(rk(i+1) - rk(i))
+     &          - (func(i)   - func(i-1))/(rk(i)   - rk(i-1)) )
+     &          / (rk(i+1) - rk(i-1))
+     &          - sig * u(i-1) ) / p
+      end do
+
+c     --- 自然境界条件 (右端) ---
+      qn = 0.0d0
+      un = 0.0d0
+      d2f(ngrid) = (un - qn*u(ngrid-1)) / (qn*d2f(ngrid-1) + 1.0d0)
+
+c     --- 後退代入 ---
+      do i = ngrid-1, 0, -1
+         d2f(i) = d2f(i)*d2f(i+1) + u(i)
+      end do
+
+      return
+      end
+
+
+c=======================================================================
+c  spline_eval : 事前計算した d2f を用いて、rk3 における補間値を返す
+c  入力 :
+c    ngrid          - 配列の最大インデックス
+c    rk(0:ngrid)    - 補間点の横座標 (昇順)
+c    func(0:ngrid)  - 補間点の縦座標
+c    d2f(0:ngrid)   - spline_init で求めた2階微分
+c    rk3            - 補間したい横座標
+c  出力 :
+c    f_rk3          - 補間値
+c
+c  注意 : rk が等間隔の場合はO(1)でインデックス特定可能だが、
+c         一般性のため2分探索で実装している。
+c=======================================================================
+      subroutine spline_eval(ngrid, rk, func, d2f, rk3, f_rk3)
+      implicit none
+      integer ngrid
+      double precision rk(0:ngrid), func(0:ngrid), d2f(0:ngrid)
+      double precision rk3, f_rk3
+
+      integer klo, khi, k
+      double precision h, a, b
+
+c     --- 2分探索で rk3 を含む区間 [rk(klo), rk(khi)] を特定 ---
+      klo = 0
+      khi = ngrid
+    1 if (khi - klo .gt. 1) then
+         k = (khi + klo) / 2
+         if (rk(k) .gt. rk3) then
+            khi = k
+         else
+            klo = k
+         end if
+         goto 1
+      end if
+
+      h = rk(khi) - rk(klo)
+      if (h .eq. 0.0d0) then
+         write(6,*) 'spline_eval: bad rk array (duplicate point)'
+         stop
+      end if
+
+c     --- 3次スプライン補間式 ---
+      a = (rk(khi) - rk3) / h
+      b = (rk3 - rk(klo)) / h
+      f_rk3 = a*func(klo) + b*func(khi)
+     &      + ((a**3 - a)*d2f(klo) + (b**3 - b)*d2f(khi))
+     &        * (h*h) / 6.0d0
+
+      return
+      end

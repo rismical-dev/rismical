@@ -80,7 +80,7 @@ c$$$            fk(k)=fk(k)+4.d0*pi*qu(i)/rk**2
 c$$$     &                 *dexp(-(rk/2.d0/alp3d)**2)
 c$$$     &                 *cdexp(dcmplx(0.d0,rrik))
 c     --- exp version ---
-            fk(k)=fk(k)+4.d0*pi*qu(i)/(rk**2*(rk**2+1))
+            fk(k)=fk(k)+4.d0*pi*qu(i)/(rk**2*(rk**2+1.d0))
      &           *cdexp(dcmplx(0.d0,rrik))
             
          enddo

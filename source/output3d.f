@@ -185,8 +185,6 @@ c
          enddo
 
          char80="charge distribution of solvent data"
-c$$$         call write3dfuncxyz(scrjob,gbuff,rdelta3d
-c$$$     &                      ,1,ngrid3d,char80)
          call writeqv(scrjob,gbuff,rdelta3d,ngrid3d)
       endif
 c

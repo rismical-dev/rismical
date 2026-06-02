@@ -7,6 +7,7 @@ c---------------------------------------------------------
       implicit real*8 (a-h,o-z)
       
       include "rismio.i"
+      include "solute.i"
 c      
       logical cuda
       character*256 cupath
@@ -58,7 +59,7 @@ c---------------------------------------------------------
       subroutine extern3d_cuda(cupath,iflag,ma,param1,param2)
 
       implicit real*8 (a-h,o-z)
-      character*256 cupath,iolistcu
+      character*256 cupath,iolistcu,cuoption
       character*10 curisminp,curismxmu
       logical fexist
 
@@ -67,7 +68,12 @@ c---------------------------------------------------------
       include "rismio.i"
       include "solute.i"
       include "solvent.i"
+
+      dimension imovefile(20)
 c---------------------------------------------------------
+      do i=1,20
+         imovefile(i)=0
+      enddo
 c
 c     Check CUDA RISM path
 c
@@ -79,15 +85,23 @@ c
       iolistcu="m"
       if (index(iolist,'g') + index(iolist,'G')>0) then
          iolistcu=trim(iolistcu)//"g"
+         imovefile(1)=1
       endif
       if (index(iolist,'h') + index(iolist,'H')>0) then
          iolistcu=trim(iolistcu)//"h"
+         imovefile(2)=1
       endif
       if (index(iolist,'c') + index(iolist,'C')>0) then
          iolistcu=trim(iolistcu)//"c"
+         imovefile(3)=1
       endif
       if (index(iolist,'u') + index(iolist,'U')>0) then
          iolistcu=trim(iolistcu)//"u"
+         imovefile(4)=1
+      endif
+      if (index(iolist,'q') + index(iolist,'Q')>0) then
+         iolistcu=trim(iolistcu)//"q"
+         imovefile(5)=1
       endif
 c
 c     Generate CUDA RISM Input
@@ -126,14 +140,37 @@ c
 
       close(ift)
 c
+c     Set option
+c
+      cuoption=""
+      if (ipot3d.eq.2) then
+         cuoption=" "//trim(cuoption) // " -e "//trim(espfile)
+      endif
+c
 c     Run CUDA RISM
 c
-      call system(trim(cupath)//" curism.inp")
+      write(*,*) "Running 3D-RISM-CUDA with following command."
+      write(*,*) "  ",trim(cupath)//trim(cuoption)//" curism.inp"
+
+      call system(trim(cupath)//trim(cuoption)//" curism.inp")
 c
 c     Output CUDA RISM results
 c
       call prop3duv_cu
-
+c
+c     Move CUDA files
+c 
+      if (imovefile(1).eq.1) 
+     &     call system("mv curism.guv "//trim(basename)//".guv")
+      if (imovefile(2).eq.1) 
+     &     call system("mv curism.huv "//trim(basename)//".huv")
+      if (imovefile(3).eq.1) 
+     &     call system("mv curism.cuv "//trim(basename)//".cuv")
+      if (imovefile(4).eq.1) 
+     &     call system("mv curism.uuv "//trim(basename)//".uuv")
+      if (imovefile(5).eq.1) 
+     &     call system("mv curism.qv "//trim(basename)//".qv")
+      
 c---------------------------------------------------------
       return
  9000 continue
@@ -171,9 +208,9 @@ c
       read (ift,result)
       close(ift)
 c
-c     Copy curism.xmu to basename.xmu
+c     Move curism.xmu to basename.xmu
 c
-      call system("cp curism.xmu "//trim(basename)//".xmu")
+      call system("mv curism.xmu "//trim(basename)//".xmu")
 c
 c     Print Property of U-V System for 3D
 c
