@@ -10,7 +10,7 @@
 ##  LINKDIR      Linked Copies of RISMiCal Executables
 ##
 
-RISMICALDIR = ~/software/RISMiCal-local/rismical/
+RISMICALDIR = /home/PROG/RISMiCal-dev/rismical/
 BINDIR = $(RISMICALDIR)/bin
 OBJDIR = $(RISMICALDIR)/object
 

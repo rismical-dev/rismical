@@ -23,7 +23,7 @@ c
       real*8 ,allocatable :: gbuff(:,:,:)
       real*8 :: dind, t, tl
       integer :: indx(0:10)
-      integer :: ig
+      integer :: ig, info
 
       include "phys_const.i"
       include "rismio.i"
@@ -142,7 +142,7 @@ c
          call writexvvfunc(scrjob,xvk,rdelta,n2,ngrid)
       endif
 c
-c     write cvk = ck + wk
+c     write ck
 c
       if (koutk.ne.0) then
          do j=1,n2
@@ -151,8 +151,8 @@ c
                   rl(i,j)=-1.d0
                else
                   rl(i,j)=dsqrt((xyzv(1,i)-xyzv(1,j))**2
-     &                 +(xyzv(2,i)-xyzv(2,j))**2
-     &                 +(xyzv(3,i)-xyzv(3,j))**2)
+     &                         +(xyzv(2,i)-xyzv(2,j))**2
+     &                         +(xyzv(3,i)-xyzv(3,j))**2)
                endif
             enddo
          enddo
@@ -191,10 +191,11 @@ c
                   end if
                end do
             end do
-            call ludcmp(tmp, nvuq, nvuq, indx, dind)
-            do j=1,nvuq
-               call lubksb(tmp, nvuq, nvuq, indx, tmp2(1,j))
-            enddo
+            call dgesv(nvuq, nvuq, tmp, nvuq, indx, tmp2, nvuq, info)
+            if (info .ne. 0) then
+               print *, 'Error in LAPACK DGESV: info =', info
+               stop
+            endif
             do j=1,nvuq
                do i=1,nvuq
                   c0(ig,i,j) = c0(ig,i,j) - tmp2(i, j)
@@ -224,95 +225,4 @@ c----------------------------------------------------------------
      &        "## r[Ang]",10x,"cr(r)",15x,"tr(r)",15x,"gr(r)",15x,
      &        "hv(k)",15x,"ur(r)",15x,"f-bond(r)",11x,"CN(r)",15x,
      &        "xvv(k)",14x,"c(k)",15x,"f(k)",15x,"k[/Ang]")
-      end
-c-----------------------------------------------------------------
-c-----------------------------------------------------------------
-c-----------------------------------------------------------------
-      SUBROUTINE ludcmp(a,n,np,indx,d,*)
-      INTEGER n,np,indx(n),NMAX
-      DOUBLE PRECISION d,a(np,np),TINY
-      PARAMETER (NMAX=500,TINY=1.0d-20)
-      INTEGER i,imax,j,k
-      DOUBLE PRECISION aamax,dum,sum,vv(NMAX)
-      d=1.d0
-      do 12 i=1,n
-        aamax=0.d0
-        do 11 j=1,n
-          if (abs(a(i,j)).gt.aamax) aamax=abs(a(i,j))
-11      continue
-        if (aamax.eq.0.d0)  then
-          print *,'singular matrix in LUDCMP'
-          return 1
-        endif
-        vv(i)=1.d0/aamax
-12    continue
-      do 19 j=1,n
-        do 14 i=1,j-1
-          sum=a(i,j)
-          do 13 k=1,i-1
-            sum=sum-a(i,k)*a(k,j)
-13        continue
-          a(i,j)=sum
-14      continue
-        aamax=0.d0
-        do 16 i=j,n
-          sum=a(i,j)
-          do 15 k=1,j-1
-            sum=sum-a(i,k)*a(k,j)
-15        continue
-          a(i,j)=sum
-          dum=vv(i)*abs(sum)
-          if (dum.ge.aamax) then
-            imax=i
-            aamax=dum
-          endif
-16      continue
-        if (j.ne.imax)then
-          do 17 k=1,n
-            dum=a(imax,k)
-            a(imax,k)=a(j,k)
-            a(j,k)=dum
-17        continue
-          d=-d
-          vv(imax)=vv(j)
-        endif
-        indx(j)=imax
-        if(a(j,j).eq.0.d0)a(j,j)=TINY
-        if(j.ne.n)then
-          dum=1.d0/a(j,j)
-          do 18 i=j+1,n
-            a(i,j)=a(i,j)*dum
-18        continue
-        endif
-19    continue
-      return
-      end
-
-      SUBROUTINE lubksb(a,n,np,indx,b)
-      INTEGER n,np,indx(n)
-      DOUBLE PRECISION a(np,np),b(n)
-      INTEGER i,ii,j,ll
-      DOUBLE PRECISION sum
-      ii=0
-      do i=1,n
-        ll=indx(i)
-        sum=b(ll)
-        b(ll)=b(i)
-        if (ii.ne.0)then
-          do j=ii,i-1
-            sum=sum-a(i,j)*b(j)
-          end do
-        else if (sum.ne.0.d0) then
-          ii=i
-        endif
-        b(i)=sum
-      end do
-      do i=n,1,-1
-        sum=b(i)
-        do j=i+1,n
-          sum=sum-a(i,j)*b(j)
-        end do
-        b(i)=sum/a(i,i)
-      end do
-      return
       end
