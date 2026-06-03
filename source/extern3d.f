@@ -103,6 +103,14 @@ c
          iolistcu=trim(iolistcu)//"q"
          imovefile(5)=1
       endif
+      if (index(iolist,'d') + index(iolist,'D')>0) then
+         iolistcu=trim(iolistcu)//"d"
+         imovefile(6)=1
+      endif
+      if (index(iolist,'e') + index(iolist,'E')>0) then
+         iolistcu=trim(iolistcu)//"e"
+         imovefile(7)=1
+      endif
 c
 c     Generate CUDA RISM Input
 c
@@ -170,6 +178,10 @@ c
      &     call system("mv curism.uuv "//trim(basename)//".uuv")
       if (imovefile(5).eq.1) 
      &     call system("mv curism.qv "//trim(basename)//".qv")
+      if (imovefile(6).eq.1) 
+     &     call system("mv curism.qv "//trim(basename)//".euv")
+      if (imovefile(7).eq.1) 
+     &     call system("mv curism.qv "//trim(basename)//".gra")
       
 c---------------------------------------------------------
       return
