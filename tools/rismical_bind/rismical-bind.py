@@ -13,11 +13,13 @@ Workflow summary:
 4. Iterate over trajectory frames:
    a. Perform RMSD fitting and/or centering if requested.
    b. If newtraj=.true., write the aligned coordinates to a new trajectory file.
-   c. Calculate direct MM interaction energy (separated into Electrostatic and vdW terms) between host and guest.
+   c. Calculate direct MM interaction energy (E_MM) between host and guest.
    d. Generate $UDATA blocks and input files for Host, Guest, and Complex.
+      *If centereach=.true., dynamically shift the center of mass of EACH specific state 
+       to (0,0,0) only when writing the .inp file to prevent box-edge artifacts.
    e. Execute RISMiCal externally for each state.
-   f. Extract Solvation Free Energy (SFE_SC), Correction_Term, SE_ES, and SE_LJ from .xmu outputs.
-5. Compute the binding free energy (dG_bind) and output statistical summaries, including a CSV export.
+   f. Extract Solvation Free Energy (SFE_SC) and Correction_Term from .xmu outputs.
+5. Compute the binding free energy (dG_bind) and output statistical summaries.
 """
 
 import parmed as pmd
@@ -65,7 +67,8 @@ def parse_rismicalbind(inp_text):
         'traj': [1, 'last', 1],
         'rmsfit': 'none',
         'centering': False,
-        'newtraj': False
+        'newtraj': False,
+        'centereach': False  # New option for independent state centering
     }
     
     match = re.search(r'\$rismicalbind(.*?)\$end', inp_text, re.IGNORECASE | re.DOTALL)
@@ -101,6 +104,8 @@ def parse_rismicalbind(inp_text):
             params['centering'] = val.lower() in ['.true.', 'true', 't', '1']
         elif key == 'newtraj':
             params['newtraj'] = val.lower() in ['.true.', 'true', 't', '1']
+        elif key == 'centereach':
+            params['centereach'] = val.lower() in ['.true.', 'true', 't', '1']
             
     return params
 
@@ -114,30 +119,30 @@ def get_mda_selection(idx_list):
 # =============================================================================
 
 def calc_emm(host_pos, guest_pos, host_sig, guest_sig, host_eps, guest_eps, host_q, guest_q):
-    """
-    Calculates the intermolecular MM interaction energy between Host and Guest.
-    Returns the Electrostatic (ES) and van der Waals (vdW) components separately.
-    """
     if len(host_pos) == 0 or len(guest_pos) == 0:
-        return 0.0, 0.0
+        return 0.0
     
     dists = cdist(host_pos, guest_pos)
     dists[dists == 0.0] = np.inf 
     
-    # Lennard-Jones (vdW)
     sig_ij = (host_sig[:, None] + guest_sig[None, :]) / 2.0
     eps_ij = np.sqrt(host_eps[:, None] * guest_eps[None, :])
+    
     sr = sig_ij / dists
     e_lj = np.sum(4.0 * eps_ij * (sr**12 - sr**6))
     
-    # Coulomb (Electrostatic)
     COULOMB_CONST = 1389354.57 
     q_ij = host_q[:, None] * guest_q[None, :]
     e_coulomb = np.sum(COULOMB_CONST * q_ij / dists)
     
-    return e_coulomb, e_lj
+    return e_lj + e_coulomb
 
-def write_rism_inp(filename, base_inp_text, u, indices_0, names, sigmas, epsilons, charges, label):
+def write_rism_inp(filename, base_inp_text, u, indices_0, names, sigmas, epsilons, charges, label, centereach=False):
+    """
+    Generates a RISMiCal input file by appending the $UDATA block to the base input text.
+    If centereach is True, it independently shifts the COM of the requested atoms to (0,0,0)
+    to prevent box-edge errors during the 3D-RISM calculation.
+    """
     with open(filename, 'w') as f:
         f.write(base_inp_text)
         if not base_inp_text.endswith('\n'):
@@ -146,20 +151,27 @@ def write_rism_inp(filename, base_inp_text, u, indices_0, names, sigmas, epsilon
         f.write(' $UDATA\n')
         f.write(f'{len(indices_0)}  {label}\n')
         
-        pos = u.atoms.positions
-        for i in indices_0:
+        # Extract coordinates only for the specific state atoms
+        state_atoms = u.atoms[indices_0]
+        pos = state_atoms.positions.copy()  # Copy to avoid modifying the MDAnalysis universe
+        
+        # Shift COM to origin if requested
+        if centereach and len(indices_0) > 0:
+            com = state_atoms.center_of_mass()
+            pos = pos - com
+            
+        # Write coordinates
+        for idx, i in enumerate(indices_0):
             f.write(f'{names[i]:<7} {sigmas[i]:8.4f} {epsilons[i]:10.4f} {charges[i]:9.4f} '
-                    f'{pos[i][0]:10.7f} {pos[i][1]:10.7f} {pos[i][2]:10.7f}\n')
+                    f'{pos[idx][0]:10.7f} {pos[idx][1]:10.7f} {pos[idx][2]:10.7f}\n')
+
         f.write(' $END\n')
 
 def extract_xmu(filepath):
-    """
-    Extracts free energy terms including SFE_SC, Correction_Term, SE_ES, and SE_LJ from .xmu file.
-    """
-    sfe_sc, corr, se_es, se_lj = 0.0, 0.0, 0.0, 0.0
+    sfe_sc, corr = 0.0, 0.0
     if not os.path.exists(filepath):
         print(f"Warning: Output file {filepath} not found. Returning zeros.")
-        return sfe_sc, corr, se_es, se_lj
+        return sfe_sc, corr
         
     with open(filepath, 'r') as f:
         for line in f:
@@ -167,18 +179,15 @@ def extract_xmu(filepath):
                 sfe_sc = float(line.split('=')[1].split('!')[0].strip())
             elif line.startswith('Correction_Term='):
                 corr = float(line.split('=')[1].split('!')[0].strip())
-            elif line.startswith('SE_ES='):
-                se_es = float(line.split('=')[1].split('!')[0].strip())
-            elif line.startswith('SE_LJ='):
-                se_lj = float(line.split('=')[1].split('!')[0].strip())
                 
-    return sfe_sc, corr, se_es, se_lj
+    return sfe_sc, corr
 
 # =============================================================================
 # Main Workflow
 # =============================================================================
 
 def main(top_file, traj_file, inp_file):
+    # --- Step 1: Parse the RISMiCal input file ---
     print("Reading and parsing RISMiCal base input file...")
     with open(inp_file, 'r') as f:
         base_inp = f.read()
@@ -192,6 +201,7 @@ def main(top_file, traj_file, inp_file):
     else:
         complex_idx_0 = host_idx_0
     
+    # --- Step 2: Load and Extract Parameters via ParmEd ---
     print(f"Loading topology parameters from {top_file} via ParmEd...")
     top = pmd.load_file(top_file)
     
@@ -200,6 +210,7 @@ def main(top_file, traj_file, inp_file):
     epsilons = np.array([a.epsilon for a in top.atoms]) * 4184.0 
     charges = np.array([a.charge for a in top.atoms])
     
+    # --- Step 3: Setup MDAnalysis Trajectory and Slicing ---
     print(f"Loading trajectory {traj_file} via MDAnalysis...")
     
     forced_ncdf = False
@@ -259,6 +270,7 @@ def main(top_file, traj_file, inp_file):
             print(f"Warning: Failed to initialize trajectory writer. Error: {e}")
             writer = None
 
+    # --- Step 4: Iterating over Trajectory Frames ---
     results = []
     
     print("\nStarting trajectory analysis loop...")
@@ -275,64 +287,59 @@ def main(top_file, traj_file, inp_file):
         if writer is not None:
             writer.write(u.atoms)
             
+        # E_MM is calculated using original relative positions BEFORE individual state centering
         if len(guest_idx_0) > 0:
-            E_MM_ES, E_MM_vdW = calc_emm(
+            E_MM = calc_emm(
                 u.atoms[host_idx_0].positions, u.atoms[guest_idx_0].positions,
                 sigmas[host_idx_0], sigmas[guest_idx_0],
                 epsilons[host_idx_0], epsilons[guest_idx_0],
                 charges[host_idx_0], charges[guest_idx_0]
             )
-            E_MM = E_MM_ES + E_MM_vdW
         else:
-            E_MM_ES, E_MM_vdW, E_MM = 0.0, 0.0, 0.0
+            E_MM = 0.0
             
-        components = {
-            'Frame': current_frame, 
-            'E_MM': E_MM,
-            'E_MM_ES': E_MM_ES,
-            'E_MM_vdW': E_MM_vdW
-        }
+        components = {'Frame': current_frame, 'E_MM': E_MM}
+        
+        c_flag = params['centereach']
         
         # --- Process Host State ---
         h_inp = f"host_{current_frame}.inp"
         h_out = f"host_{current_frame}.out"
         h_xmu = f"host_{current_frame}.xmu"
+        
         print("  Running RISMiCal for Host...")
-        write_rism_inp(h_inp, base_inp, u, host_idx_0, names, sigmas, epsilons, charges, f"host_{current_frame}")
+        write_rism_inp(h_inp, base_inp, u, host_idx_0, names, sigmas, epsilons, charges, f"host_{current_frame}", centereach=c_flag)
         subprocess.run(f"rismical.x 3d {h_inp} > {h_out}", shell=True, check=True)
-        components['sfe_h'], components['corr_h'], components['se_es_h'], components['se_lj_h'] = extract_xmu(h_xmu)
+        components['sfe_h'], components['corr_h'] = extract_xmu(h_xmu)
         
         # --- Process Guest State ---
         if len(guest_idx_0) > 0:
             g_inp = f"guest_{current_frame}.inp"
             g_out = f"guest_{current_frame}.out"
             g_xmu = f"guest_{current_frame}.xmu"
+            
             print("  Running RISMiCal for Guest...")
-            write_rism_inp(g_inp, base_inp, u, guest_idx_0, names, sigmas, epsilons, charges, f"guest_{current_frame}")
+            write_rism_inp(g_inp, base_inp, u, guest_idx_0, names, sigmas, epsilons, charges, f"guest_{current_frame}", centereach=c_flag)
             subprocess.run(f"rismical.x 3d {g_inp} > {g_out}", shell=True, check=True)
-            components['sfe_g'], components['corr_g'], components['se_es_g'], components['se_lj_g'] = extract_xmu(g_xmu)
+            components['sfe_g'], components['corr_g'] = extract_xmu(g_xmu)
         else:
-            components['sfe_g'], components['corr_g'], components['se_es_g'], components['se_lj_g'] = 0.0, 0.0, 0.0, 0.0
+            components['sfe_g'], components['corr_g'] = 0.0, 0.0
             
         # --- Process Complex State ---
         if len(guest_idx_0) > 0:
             c_inp = f"complex_{current_frame}.inp"
             c_out = f"complex_{current_frame}.out"
             c_xmu = f"complex_{current_frame}.xmu"
+            
             print("  Running RISMiCal for Complex...")
-            write_rism_inp(c_inp, base_inp, u, complex_idx_0, names, sigmas, epsilons, charges, f"complex_{current_frame}")
+            write_rism_inp(c_inp, base_inp, u, complex_idx_0, names, sigmas, epsilons, charges, f"complex_{current_frame}", centereach=c_flag)
             subprocess.run(f"rismical.x 3d {c_inp} > {c_out}", shell=True, check=True)
-            components['sfe_c'], components['corr_c'], components['se_es_c'], components['se_lj_c'] = extract_xmu(c_xmu)
+            components['sfe_c'], components['corr_c'] = extract_xmu(c_xmu)
         else:
             components['sfe_c'], components['corr_c'] = components['sfe_h'], components['corr_h']
-            components['se_es_c'], components['se_lj_c'] = components['se_es_h'], components['se_lj_h']
 
-        # f. Calculate delta terms and binding free energy
         components['dSFE'] = components['sfe_c'] - components['sfe_h'] - components['sfe_g']
         components['dPC'] = components['corr_c'] - components['corr_h'] - components['corr_g']
-        components['dSE_ES'] = components['se_es_c'] - components['se_es_h'] - components['se_es_g']
-        components['dSE_LJ'] = components['se_lj_c'] - components['se_lj_h'] - components['se_lj_g']
-        
         components['dG_bind'] = components['E_MM'] + components['dSFE'] + components['dPC']
         
         results.append(components)
@@ -345,14 +352,12 @@ def main(top_file, traj_file, inp_file):
     if results:
         base_inp_name, _ = os.path.splitext(inp_file)
         csv_filename = f"{base_inp_name}.csv"
-        print(f"\nExporting frame-by-frame data to: {csv_filename}")
+        print(f"Exporting frame-by-frame data to: {csv_filename}")
         
         csv_headers = [
-            'Frame', 'E_MM', 'E_MM_ES', 'E_MM_vdW', 
+            'Frame', 'E_MM', 
             'sfe_c', 'sfe_h', 'sfe_g', 'dSFE', 
             'corr_c', 'corr_h', 'corr_g', 'dPC', 
-            'se_es_c', 'se_es_h', 'se_es_g', 'dSE_ES',
-            'se_lj_c', 'se_lj_h', 'se_lj_g', 'dSE_LJ',
             'dG_bind'
         ]
         
@@ -366,7 +371,7 @@ def main(top_file, traj_file, inp_file):
         print("No frames were processed. Exiting.")
         return
 
-    keys = ['E_MM', 'E_MM_ES', 'E_MM_vdW', 'dSFE', 'dPC', 'dSE_ES', 'dSE_LJ', 'dG_bind']
+    keys = ['E_MM', 'dSFE', 'dPC', 'dG_bind']
     stats = {k: [r[k] for r in results] for k in keys}
     
     print("\n" + "="*50)
