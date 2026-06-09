@@ -1,0 +1,34 @@
+ $RISM
+CLOSURE="KH",
+ITRMAX=300,
+CONV=1.d-5,
+CHARGEUP="off",
+IGUESS=0,
+iolist="gqu"
+grid="user"
+outtype="bin"
+ $END
+ $chargeupopt chgstep=0.2 $end
+ $MDIIS
+NSUB=10,DUMPMAX=0.3d0,DUMPMIN=0.001d0
+ $END
+ $grid3d
+ngrid3d=64 rdelta3d=0.5
+ $end
+ $rismsolution
+solute="udata"
+solvent="h2o_vv.xvk"
+esptype="cube"
+ $end
+ $UDATA
+4   water(QM) and ion(MM)
+O        3.1500  636.0000   -0.909909       0.0000     0.0000     0.0000
+H        0.4000  192.5000    0.454958       0.0000     0.7567     0.5859
+H        0.4000  192.5000    0.454951       0.0000    -0.7567     0.5859
+Na       4.0000  500.0000    1.000000       0.0000     0.0000    -4.0000
+ $END
+ $RISMICALQM
+qm="g16"
+qmopt="%chk=water-ion.chk\%NProcShared=20\%Mem=32GB\#p B3LYP/6-31G(d) Charge NoSymm\\water in water\\0 1"
+scfconv=1.d-5, qvcutoff=1.d-9, mix_alpha=1.0, qvcore=0.1, qmpart=1,-3
+ $END

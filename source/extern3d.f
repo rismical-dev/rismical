@@ -179,9 +179,9 @@ c
       if (imovefile(5).eq.1) 
      &     call system("mv curism.qv "//trim(basename)//".qv")
       if (imovefile(6).eq.1) 
-     &     call system("mv curism.qv "//trim(basename)//".euv")
+     &     call system("mv curism.euv "//trim(basename)//".euv")
       if (imovefile(7).eq.1) 
-     &     call system("mv curism.qv "//trim(basename)//".gra")
+     &     call system("mv curism.gra "//trim(basename)//".gra")
       
 c---------------------------------------------------------
       return

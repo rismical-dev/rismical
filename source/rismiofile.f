@@ -727,14 +727,6 @@ c     Read potential in [hartree/e] and convert to [J/mol]
       enddo
 c      
       close(ift)
-c$$$c------<NOR+
-c$$$c     To check esp value from cube file
-c$$$      write(1192,*) "#grid    V_es(r)[J/mol/e]"
-c$$$      do ig=1,ngrid3d**3
-c$$$         write(1192,'(i10,2x,e20.8)') ig,vres(ig)
-c$$$      enddo
-c$$$      stop
-c$$$c------+NOR>
 c----------------------------------------------------------------
       return
  999  continue

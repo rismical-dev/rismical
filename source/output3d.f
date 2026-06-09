@@ -49,6 +49,8 @@ c
       koutf = index(iolist,'f') + index(iolist,'F')
       koutt = index(iolist,'t') + index(iolist,'T')
       koutq = index(iolist,'q') + index(iolist,'Q')
+      koutd = index(iolist,'d') + index(iolist,'D')
+      koutb = index(iolist,'b') + index(iolist,'B')
 c
 c     write guv
 c         
@@ -186,6 +188,29 @@ c
 
          char80="charge distribution of solvent data"
          call writeqv(scrjob,gbuff,rdelta3d,ngrid3d)
+      endif
+c
+c     write free energy derivative
+c         
+      if (koutd.ne.0) then
+
+         scrjob=trim(basename)//".gra"
+         do iv=1,nvuq
+            do ig=1,ng3d
+               gbuff(ig,iv)=tr(ig,iv)+dble(cr(ig,iv))+1.d0
+            enddo
+         enddo
+         call write3dgrad(scrjob,gbuff,rdelta3d,ngrid3d,nvuq)
+
+      endif
+c
+c     write UV binding energy
+c         
+      if (koutb.ne.0) then
+
+         scrjob=trim(basename)//".uvb"
+         call uvbind3d(scrjob,ng3d,n2uq,cr,tr)
+
       endif
 c
 c
