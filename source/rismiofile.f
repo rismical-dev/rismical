@@ -50,7 +50,7 @@ c----------------------------------------------------------------
 c
       implicit real*8(a-h,o-z)
       character*256 namef
-      character*2 char2
+      character*2 char2,char2a,char2b,char2c
 c
       include "phys_const.i"
 
@@ -61,7 +61,7 @@ c----------------------------------------------------------------
       open (ift,file=namef)
 c
 c     read header
-      read (ift,*) char2,n1x,n2x,ngridx,rdeltax
+      read (ift,*) char2,char2a,char2b,char2c,n1x,n2x,ngridx,rdeltax
       read (ift,*) char2
       read (ift,*) char2,nremark
 c
@@ -91,6 +91,9 @@ c     read function
       close(ift)
 c----------------------------------------------------------------
       return
+ 9990 format("## 1D Function :",3i8,f16.8)
+ 9991 format("##  ",a80)
+ 9992 format("##  ",i4)
       end
 
 c**************************************************************

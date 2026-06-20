@@ -22,7 +22,7 @@ c
 c
       namelist /rismsolution/solute,solutexyz,soluteesp,solutelj
      &     ,soluteepc,solvent,ljparam,esptype
-      namelist /GRID3D/ngrid3d,rdelta3d
+      namelist /GRID3D/ngrid3d,rdelta3d,rcore3d
 c--------------------------------------------------------------
 c     
 c     Read solvent grid data
@@ -34,6 +34,7 @@ c
 
          ngrid3d=128
          rdelta3d=0.5d0
+         rcore3d=0.3d0
 
          ir=45
          open (ir,file=inpfile)

@@ -172,7 +172,7 @@ c
       call calredxvk(ngrid,nv,hvk,xvk,wk2)
 
       call prop1dvv(icl,ngrid,rdelta,rcore,nv
-     &     ,wk2,ck,cr,tr,ures,urlj)
+     &     ,wk2,ck,cr,tr,ures,urlj,xvk)
 
       call outputvv(ngrid,rdelta,nv
      &     ,cr,tr,hvk,xvk,ures,urlj,fr,ck,fk)

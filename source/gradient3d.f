@@ -1,7 +1,8 @@
 c----------------------------------------------------------------
 c     Calculate and Output free energy gradient 
 c----------------------------------------------------------------
-      subroutine write3dgrad(namef,gr3d,rdelta3d,ngrid3d,nvuqx)
+      subroutine write3dgrad(namef,gr3d,rdelta3d
+     &     ,ngrid3d,nvuqx,listcore)
       implicit real*8(a-h,o-z)
       character*256 namef
 
@@ -14,6 +15,7 @@ c
 c      
       dimension gr3d(ngrid3d**3,nvuqx)
       dimension delj(3),dees(3)
+      dimension listcore(ngrid3d**3)
 
       allocate (epsig6(nu,nvuq),epsig12(nu,nvuq))
 c----------------------------------------------------------------
@@ -41,7 +43,7 @@ c
          enddo
             
 !$omp parallel do collapse(3) default(shared)
-!$omp& private(kz,ky,kx,k,rx,ry,rz,rr2,rr3,rr6,rr12)
+!$omp& private(kz,ky,kx,k,rx,ry,rz,rr,rr2,rr3,rr6,rr12)
 !$omp& private(jv,fac,dulj,dues)
 !$omp& reduction(+:delj,dees)
          do kz=1,ngrid3d
@@ -54,11 +56,12 @@ c
             ry=rdelta3d*dble(ky-k0)-xyzu(2,iu)
             rz=rdelta3d*dble(kz-k0)-xyzu(3,iu)
             rr2=rx**2+ry**2+rz**2
-            rr3=rr2*sqrt(rr2)
+            rr=sqrt(rr2)
+            rr3=rr2*rr
             rr6=rr2**3
             rr12=rr6*rr6
 
-            if (rr2.gt.1.d-5) then
+            if (listcore(k).eq.1) then
 
             do jv=1,nvuq
 
@@ -69,7 +72,7 @@ c
                dulj=24.d0*(2.d0*epsig12(iu,jv)/rr12
      &                         -epsig6(iu,jv) /rr6 )/rr2*fac
                
-               delj(1)=delj(1)+dulj*rx   ! J/mol/Angs
+               delj(1)=delj(1)+dulj*rx ! J/mol/Angs
                delj(2)=delj(2)+dulj*ry
                delj(3)=delj(3)+dulj*rz
 c

@@ -35,26 +35,6 @@ c     Read guess t(r)
 c
       call read1dfunc(scrjob,tr,n1,n2,ngrid)
 
-c$$$      ift=45
-c$$$      nremark=0
-c$$$      open (ift,file=scrjob)
-c$$$
-c$$$      read (ift,*) char1
-c$$$      read (ift,*) char1
-c$$$      read (ift,*) char1,nremark
-c$$$      do i=1,nremark
-c$$$         read (ift,*) char1
-c$$$      enddo
-c$$$
-c$$$      do i2=1,n2
-c$$$      do i1=1,n1
-c$$$         do ig=1,ngrid
-c$$$            read (ift,*) tr(ig,i1,i2)
-c$$$         enddo
-c$$$      enddo
-c$$$      enddo
-c$$$
-c$$$      close(ift)
 C----------------------------------------------------------------
       return
  9998 format (e16.8,1x,7e20.12)

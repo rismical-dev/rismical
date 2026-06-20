@@ -1,7 +1,7 @@
 c----------------------------------------------------------------
 c     Output 3D-RISM result
 c----------------------------------------------------------------
-      subroutine output3d(ng3d,n2uq
+      subroutine output3d(ng3d,n2uq,listcore
      &                   ,cr,tr,urlj,vres,fr,fk)
 c
 c     ngr3d=ngrid3d ... number of grid of RDF
@@ -32,6 +32,7 @@ c
       dimension fr(ng3d)
       dimension fk(ng3d)
       dimension vres(ng3d)
+      dimension listcore(ng3d)
 c
       DK3D=2.D0*PI/(RDELTA3D*DBLE(NGRID3D))
       DNSHIFT=DBLE(NGRID3D+1)/2.D0 
@@ -200,7 +201,8 @@ c
                gbuff(ig,iv)=tr(ig,iv)+dble(cr(ig,iv))+1.d0
             enddo
          enddo
-         call write3dgrad(scrjob,gbuff,rdelta3d,ngrid3d,nvuq)
+         call write3dgrad(scrjob,gbuff,rdelta3d
+     &        ,ngrid3d,nvuq,listcore)
 
       endif
 c

@@ -232,6 +232,19 @@ c
                elseif (icl.eq.3) then
                   ierr=44
                   call abrt(ierr)
+c     
+c     --- KGK
+c     
+               elseif (icl.eq.4) then
+                  
+                  bur=beta*(vres(k)*q2uq(j)*chgratio+urlj(k,j))
+                  d=-bur+tr(k,j)
+                  
+                  if (d.gt.-1.d0) then
+                     tr(k,j)=-bur
+                  else
+                     tr(k,j)=-tr(k,j)-1.d0
+                  endif
 c
 c     --- ---
 c

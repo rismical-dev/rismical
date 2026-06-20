@@ -2,7 +2,7 @@ c------------------------------------------------------------
 c     Physical Property of V-V System for 1D
 c------------------------------------------------------------
       subroutine prop1dvv(icl,ngrid,rdelta,rcore,n
-     &                    ,wk,ck,cr,tr,ures,urlj)
+     &                    ,wk,ck,cr,tr,ures,urlj,xvk)
 c
 c     icl           ... closure type 0...HNC, 1...MSA, 2...KH 3...RBC
 c                                    4...KGK
@@ -17,6 +17,7 @@ c     tr            ... tau bond =hr-cr
 c     wk            ... intra-molecular correlation function
 c     ures          ... electro static potential 
 c     urlj          ... LJ potential 
+c     xvk           ... k-space solvent susceptibility
 c     beta          ... inverse of kbT 
 c     siglj         ... sigma of LJ parameter
 c     q             ... partial charge of site
@@ -34,6 +35,8 @@ c
       dimension dum1(n,n),dum2(n,n),dum3(n,n)
       dimension esolvv(n,n)
       dimension esolspc(n)
+      dimension xvk(ngrid,n,n)
+      dimension szz(ngrid),xk(ngrid)
 
       deltak=pi/(dble(ngrid)*rdelta)
 c---------------------------------------------------------
@@ -327,6 +330,20 @@ c
          ebind(i)=sum*4.d0*pi
          ebindtot=ebindtot+ebind(i)
       enddo
+c
+c     --- Calc dielectric constant
+c
+      do k=1,ngrid
+         szz(k)=0.d0
+         xk(k)=deltak*dble(k)
+         do i=1,nvuq
+            do j=1,nvuq
+               szz(k)=szz(k)+q2uq(i)*q2uq(j)*densuq(i)*xvk(k,j,i)
+            enddo
+         enddo
+      enddo
+      npts=nptsk0(ngrid,rdelta,0.3,3)
+      call calcszzk0(ngrid,xk,szz,npts,3,beta*fel,s0,s2,delec,ierr)
 c---------------------------------------------------------
 c     Print Property of V-V System for 1D
 c---------------------------------------------------------
@@ -371,6 +388,10 @@ c
 c
       endif
 c
+c     --- Dielectric constant
+c
+      write(*,9982) delec
+c
 c     --- Excess Chemical Potential Components
 c
       if (numspc.gt.1) then
@@ -395,10 +416,10 @@ c
          enddo
 
       endif
-
 c---------------------------------------------------------
       return
 c---------------------------------------------------------
+ 9982 format (/,4x,"Dielectric constant: ",f16.5)
  9983 format (4x,i8,4x,F20.9)
  9984 format (/,4x,"Excess Chemical Potential on Each Species",
      &        /,4x,"# of Spc",14x,"[J/mol]")

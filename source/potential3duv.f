@@ -46,7 +46,7 @@ c
 
 !$omp parallel do default(none) 
 !$omp&private(kz,ky,kx,k,i,rx,ry,rz,rr) 
-!$omp&shared(ngrid3d,rdelta3d,xyzu,nu,siglju,listcore)
+!$omp&shared(ngrid3d,rdelta3d,xyzu,nu,siglju,listcore,rcore3d)
       do kz=1,ngrid3d
       do ky=1,ngrid3d
       do kx=1,ngrid3d
@@ -56,7 +56,7 @@ c
             ry=rdelta3d*dble(ky-1-ngrid3d/2)-xyzu(2,i)
             rz=rdelta3d*dble(kz-1-ngrid3d/2)-xyzu(3,i)
             rr=dsqrt(rx**2+ry**2+rz**2)
-            if (rr.lt.siglju(i)*0.1d0) then
+            if (rr.lt.siglju(i)*rcore3d) then
                listcore(k)=0
             endif
          enddo

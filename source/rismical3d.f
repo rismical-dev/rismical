@@ -180,9 +180,12 @@ c     output 3d-rism result
 c---------------------------------------------------------
 c
 c     calc cr for final tr
+c                 in      out
+c          "cr"  c(r)     c(r)
+c          "tr"  t(r)     t(r)
 c
-c$$$      call closure3d2(ng3d,nvuq,listcore
-c$$$     &               ,cr,tr,vres,urlj)
+      call closure3d2(ng3d,nvuq,listcore
+     &               ,cr,tr,vres,urlj)
 c
 c     calc property
 c
@@ -191,7 +194,7 @@ c
 c
 c     output 3D-DFs
 c
-      call output3d(ng3d,nvuq
+      call output3d(ng3d,nvuq,listcore
      &             ,cr,tr,urlj,vres,fr,fk)
 c---------------------------------------------------------
 
