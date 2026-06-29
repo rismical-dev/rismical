@@ -142,7 +142,7 @@ c     Converged
 c---------------------------------------------------------
  8000 continue
 
-      call  cl_1d(icl,ngrid,rdelta,nv,nv,chgratio
+      call  cl_1d(icl,idrism,ngrid,rdelta,nv,nv,chgratio
      &     ,cr,tr,ures,urlj)
 
       write(*,9989) itr,residu,0,"X"
@@ -158,7 +158,7 @@ c     Output 1d-rism result
 c---------------------------------------------------------
  9000 continue
 c
-      if (idrism.eq.1) then
+      if (idrism.ge.1) then
          do iv2=1,nv
          do iv1=1,nv
             do k=1,ngrid

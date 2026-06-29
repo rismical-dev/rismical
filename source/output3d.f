@@ -51,7 +51,7 @@ c
       koutt = index(iolist,'t') + index(iolist,'T')
       koutq = index(iolist,'q') + index(iolist,'Q')
       koutd = index(iolist,'d') + index(iolist,'D')
-      koutb = index(iolist,'b') + index(iolist,'B')
+      koute = index(iolist,'e') + index(iolist,'E')
 c
 c     write guv
 c         
@@ -77,7 +77,8 @@ c
 
          do iv=1,nvuq
             do ig=1,ng3d
-               gbuff(ig,iv)=(vres(ig)*q2uq(iv)+urlj(ig,iv))*beta
+c$$$               gbuff(ig,iv)=(vres(ig)*q2uq(iv)+urlj(ig,iv))*beta
+               gbuff(ig,iv)=(vres(ig)*q2uq(iv))*beta
             enddo
          enddo
          char80="uuv data"
@@ -139,7 +140,7 @@ c
          enddo
 
          do iv=1,nvuq
-            call ft3dfunc(hk(1,iv),ngrid3d,rdelta3d,inv)
+            call ft3dfunc(hk(1,iv),ngrid3d,rdelta3d,inv,.not.pbc)
          enddo
 
          scrjob=trim(basename)//".huvk"
@@ -208,9 +209,9 @@ c
 c
 c     write UV binding energy
 c         
-      if (koutb.ne.0) then
+      if (koute.ne.0) then
 
-         scrjob=trim(basename)//".uvb"
+         scrjob=trim(basename)//".euv"
          call uvbind3d(scrjob,ng3d,n2uq,cr,tr)
 
       endif

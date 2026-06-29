@@ -131,8 +131,12 @@ c     --- Make short range part ( c(r) --> cs(r) )
 c     
             trs=tr(k,j)+beta*fr(k)*q2uq(j)*chgratio
             dkr=dk3d*0.5d0*(rx+ry+rz)
-            dumfft(k)=dcmplx(trs,0.d0)
-     &           *cdexp(dcmplx(0.d0,dkr))
+            if (pbc) then
+               dumfft(k)=dcmplx(trs,0.d0)
+            else
+               dumfft(k)=dcmplx(trs,0.d0)
+     &              *cdexp(dcmplx(0.d0,dkr))
+            endif
 
          enddo                  ! of kx
          enddo                  ! of ky

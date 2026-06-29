@@ -76,9 +76,9 @@ c
       endif
 c
       write(*,*) "     --------------------------------------"
-      write(*,'(A19,A24)')   "Grid preset       :",grid
-      write(*,'(A19,i12)')   "Number of 3D-Grid :",ngrid3d
-      write(*,'(A19,f12.4,A5)') "3D-Grid width    :",rdelta3d," [A]"
+      write(*,'(4x,A19,A24)')   "Grid preset       : ",grid
+      write(*,'(4x,A19,i12)')   "Number of 3D-Grid : ",ngrid3d
+      write(*,'(4x,A19,f12.4,A5)') "3D-Grid width    : ",rdelta3d," [A]"
       write(*,*) "     --------------------------------------"
 c
 c     --------------------------------------------------------

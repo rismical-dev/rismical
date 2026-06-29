@@ -40,8 +40,6 @@ c
 c     --- Initialize
 c     
       call vclr(xvk,1,nvuq*nvuq*ngrid)
-c
-      idrism=0
 c     
 c     --- Intramolecular correlation function
 c     

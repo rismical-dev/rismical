@@ -37,7 +37,6 @@ c
       allocate (dumfft(ng3d))
 
       ngrid3d2=ngrid3d*ngrid3d
-      dnshift=dble(ngrid3d+1)/2.d0 
       ngshift=ngrid3d/2+1
       dk3d=2.d0*pi/(rdelta3d*dble(ngrid3d))
 c-----------------------------------------------------------------
@@ -50,13 +49,17 @@ c
 c
 c     --- k-space 3d uv-oz [cr(k) --> hr(k)]
 c            
+      shifta=dble(ngrid3d/2)+0.5d0
+      shiftb=0.5d0
+      if (pbc) shifta=dble(ngrid3d/2+1)
+      if (pbc) shiftb=1.0
 !$omp parallel do private(nkz,nky,nkx,k,kxvv,cdum,jj,dsum,jj2)
       do kz=1,ngrid3d
-      nkz=nint(abs(dble(kz)-dnshift)+0.5d0)
       do ky=1,ngrid3d
-      nky=nint(abs(dble(ky)-dnshift)+0.5d0)
       do kx=1,ngrid3d
-      nkx=nint(abs(dble(kx)-dnshift)+0.5d0)
+      nky=nint(abs(dble(ky)-shifta)+shiftb)
+      nkz=nint(abs(dble(kz)-shifta)+shiftb)
+      nkx=nint(abs(dble(kx)-shifta)+shiftb)
          
          k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d2
          kxvv=listxvv(nkx,nky,nkz)
@@ -111,10 +114,14 @@ c
          rx=rdelta3d*dble(kx-ngshift)
 
             k=kx+(ky-1)*ngrid3d+(kz-1)*ngrid3d2
-            dkr=dk3d/2.d0*(rx+ry+rz) 
             cr(k,j)=dcmplx(tr(k,j),0.d0)
-            tr(k,j)=dble(dumfft(k)*cdexp(dcmplx(0.d0,-dkr)))
-     *           -tr(k,j)
+            if (pbc) then
+               tr(k,j)=dble(dumfft(k))-tr(k,j)
+            else
+               dkr=dk3d/2.d0*(rx+ry+rz) 
+               tr(k,j)=dble(dumfft(k)*cdexp(dcmplx(0.d0,-dkr)))
+     *              -tr(k,j)
+            endif
                                 ! here, c(r) is "cr"
                                 !   and t(r) is "tr"
          enddo

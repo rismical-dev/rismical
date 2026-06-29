@@ -562,7 +562,7 @@ c---------------------------------------------------------
 c     3D-FFT
 c
 c     This is service routine to connect ZFFT3D and 3D-RISM
-c     PREFACTOR, -1, denotes shift of coordinate to a half of box.
+c     PREFACTOR, -1, denotes shift of coordinate to a half of cell.
 c 
 C---------------------------------------------------------
       subroutine ffte3d(a,n,d,inv)
@@ -617,12 +617,15 @@ c      1  r -> k
       return
       end
 c----------------------------------------------------------------
-c     Fourier transform of 3D function with grid shift
+c     Fourier transform of 3D function with/without grid shift
 c----------------------------------------------------------------
-      subroutine ft3dfunc(func,ngrid3d,rdelta3d,inv)
+      subroutine ft3dfunc(func,ngrid3d,rdelta3d,inv,shift)
 c
       implicit real*8(a-h,o-z)
       complex*16 func
+      logical shift
+c
+c     shift : paramter for half-grid shift
 c
       dimension func(ngrid3d**3)
 c
@@ -635,7 +638,8 @@ c
 c     Transform r -> k  (inv=1)
 c      
       if (inv.eq.1) then
-         
+
+      if (shift) then
 !$OMP PARALLEL DO PRIVATE(rz,ry,rx,k,dkr)
       DO KZ=1,NGRID3D
       RZ=RDELTA3D*DBLE(KZ-NGSHIFT)
@@ -652,6 +656,7 @@ c
       ENDDO
       ENDDO
 !$OMP END PARALLEL DO
+      endif
 
       call ffte3d(func,ngrid3d,rdelta3d,inv)
 c
@@ -661,6 +666,7 @@ c
 
       call ffte3d(func,ngrid3d,rdelta3d,inv)
 
+      if (shift) then
 !$OMP PARALLEL DO PRIVATE(rz,ry,rx,k,dkr)
       DO KZ=1,NGRID3D
       RZ=RDELTA3D*DBLE(KZ-NGSHIFT)
@@ -677,6 +683,7 @@ c
       ENDDO
       ENDDO
 !$OMP END PARALLEL DO
+      endif
 
       else
 

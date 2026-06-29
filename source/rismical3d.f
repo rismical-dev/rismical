@@ -7,10 +7,11 @@ c
       implicit real*8 (a-h,o-z)
       real*8 ,allocatable :: tr(:,:),fr(:)
      &                      ,xvv(:,:,:)
-     &                      ,urlj(:,:),vres(:)
+     &                      ,urlj(:,:),vres(:),tpbc(:)
       complex*16 ,allocatable :: cr(:,:),ck(:,:),fk(:)
       integer ,allocatable :: listcore(:),listxvv(:,:,:)
-c
+      real*8 ,allocatable :: delhv0(:)
+c     
       include "phys_const.i"
       include "solute.i"
       include "solvent.i"
@@ -42,21 +43,26 @@ c
       allocate (cr(ng3d,nvuq))
       allocate (tr(ng3d,nvuq))
       allocate (vres(ng3d))
+      allocate (tpbc(ng3d))
       allocate (urlj(ng3d,nvuq))
       allocate (xvv(nxvv,nvuq,nvuq))
       allocate (listxvv(ngrid3d/2+1,ngrid3d/2+1,ngrid3d/2+1))
       allocate (listcore(ng3d))
       allocate (fr(ng3d),fk(ng3d))
+      allocate (delhv0(nvuq))
 c
 c     --- Initialize
 c     
       call vclrz_mp(cr,1,ng3d*nvuq)
       call vclrz_mp(ck,1,ng3d*nvuq)
       call vclr_mp(tr,1,ng3d*nvuq)
+      call vclr_mp(vres,1,ng3d)
+      call vclr_mp(tpbc,1,ng3d)
+      call vclr_mp(urlj,1,ng3d*nvuq)
 c     
 c     --- Setup V-V Total Correlation Function 
 c     
-      call setup1dvx(ngrid,nvuq,nxvv,ngrid3d,listxvv,xvv)
+      call setup1dvx(ngrid,nvuq,nxvv,ngrid3d,listxvv,xvv,delhv0)
 c     
 c     --- Make 3D f-Bond
 c     
@@ -64,7 +70,7 @@ c
 c     
 c     --- Make 3D-Potential 
 c     
-      call potential3duv(ng3d,nvuq,vres,urlj,listcore)
+      call potential3duv(ng3d,nvuq,vres,urlj,tpbc,listcore)
 c     
 c     --- Make initial guess for tr(r)
 c     
@@ -187,6 +193,28 @@ c
       call closure3d2(ng3d,nvuq,listcore
      &               ,cr,tr,vres,urlj)
 c
+c     removing PBC contribution and recover bare asymptoticity
+c
+      if (pbc) then
+
+         qback=0.d0
+         do iu=1,nu
+            qback=qback-qu(iu)
+         enddo
+         vbox=(rdelta3d*dble(ngrid3d))**3
+         do iv=1,nvuq
+            delhv0(iv)=-4.d0*pi*beta*delhv0(iv)
+     &           *qback/vbox*fel
+         enddo
+
+         do iv=1,nvuq
+            do ig=1,ng3d
+               cr(ig,iv)=cr(ig,iv)+beta*tpbc(ig)*q2uq(iv)
+               tr(ig,iv)=tr(ig,iv)-beta*tpbc(ig)*q2uq(iv)-delhv0(iv)
+            enddo
+         enddo
+      endif
+c
 c     calc property
 c
       call prop3duv(ng3d,nvuq
@@ -203,10 +231,12 @@ c---------------------------------------------------------
       deallocate (tr)
       deallocate (xvv)
       deallocate (vres)
+      deallocate (tpbc)
       deallocate (urlj)
       deallocate (listcore)
       deallocate (listxvv)
       deallocate (fr,fk)
+      deallocate (delhv0)
 c---------------------------------------------------------
  9000 continue
       return

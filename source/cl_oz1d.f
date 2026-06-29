@@ -31,7 +31,6 @@ c
       dimension tr(ngrid,n1,n2)
       dimension hvk(ngrid,n2,n2)
       dimension fr(ngrid,n1,n2),fk(ngrid,n1,n2)
-c$$      dimension wk1(ngrid,n1,n1),wk2(ngrid,n2,n2)
       dimension wk2(ngrid,n2,n2)
       dimension tk(ngrid,n1,n2),ftfunc(ngrid)
       dimension dum1(n1,n2),dum2(n1,n2),dum3(n1,n2)
@@ -183,7 +182,7 @@ c
             
       enddo
 c     
-      if (idrism.eq.1) then
+      if (idrism.ge.1) then
          do j=1,n2
             do i=1,n2
                do k=1,ngrid
@@ -222,7 +221,7 @@ c**************************************************************
 c--------------------------------------------------------------
 c     Closure
 c--------------------------------------------------------------
-      subroutine cl_1d(icl,ngrid,rdelta,n1,n2,chgratio
+      subroutine cl_1d(icl,idrism,ngrid,rdelta,n1,n2,chgratio
      &     ,cr,tr,ures,urlj)
 c     
 c     ir        ... file number of output (STDOUT)

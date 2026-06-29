@@ -342,6 +342,7 @@ c
             enddo
          enddo
       enddo
+
       npts=nptsk0(ngrid,rdelta,0.3,3)
       call calcszzk0(ngrid,xk,szz,npts,3,beta*fel,s0,s2,delec,ierr)
 c---------------------------------------------------------

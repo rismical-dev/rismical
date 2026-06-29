@@ -30,7 +30,7 @@ c
       include "rismrun.i"
 
       namelist /RISM/CLOSURE,CLPARAMS
-     &              ,ITRMAX,CONV,CHARGEUP,IGUESS
+     &              ,ITRMAX,CONV,CHARGEUP,IGUESS,pbc
      &              ,ALP1D,ALP3D,iolist,guessfile,grid,outtype
       namelist /MDIIS/nsub,dumpmax,dumpmin,dumpnume
       namelist /CHARGEUPOPT/chgstep,chgconv
@@ -53,6 +53,7 @@ c---------------------------------------------------------------
       conv=1.d-8
       alp1d=1.5d0
       alp3d=1.0d0
+      pbc=.false.
       iolist=""
       guessfile=""
       grid="standard"
@@ -136,6 +137,7 @@ c---------------------------------------------------------------
 c     Output Summary of Input
 c---------------------------------------------------------------
       write (*,9997)
+      write (*,9996) pbc
       write(*,9995) CLOSURE,itrmax,conv
 
       write(*,9992) CHARGEUP
@@ -165,6 +167,7 @@ c---------------------------------------------------------------
  9995 format (  4x,"Closure Equation       :",1x,a3,
      &        /,4x,"Maximum Iteration      :",i10,
      &        /,4x,"Convergence Criterion  :",1pe12.4)
+ 9996 format (/,4x,"PBC box                :",l3)
  9997 format (/,4x,"======= Computational Conditions =======")
  9998 format (i4)
  9999 format (a6)

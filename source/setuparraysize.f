@@ -17,7 +17,8 @@ c---------------------------------------------------------
 c
 c     --- Count Number of Xvv
 c
-      n=ngrid3d/2 
+c$$$      n=ngrid3d/2
+      n=ngrid3d/2+1 
       nxvv=n+n*(n-1)+n*(n-1)*(n-2)/6
 c
 c     --- Make Symmetry Uniq Solvent Point Charge

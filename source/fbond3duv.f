@@ -27,6 +27,8 @@ c
          fr(k)=0.d0
          fk(k)=(0.d0,0.d0)
       enddo
+c
+      if (pbc) return
 c     
 c     --- make 3d-phi bond
 c     

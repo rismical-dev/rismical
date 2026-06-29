@@ -52,13 +52,14 @@ c-----------------------------------------------------------------------
 c     ---- arguments ----
       integer    n, npts, mdeg, ierr
       real*8     xk(n), szz(n), beta, s0, s2, eps
+      real*8 pi
+      parameter (pi=3.1415926535897932d0)
 c     ---- locals ----
       integer    mxc
       parameter (mxc = 4)
       integer    ncoef, i, p, q
       real*8     amat(mxc,mxc), bvec(mxc), cvec(mxc), px(mxc)
-      real*8     u, umax, x, pi, fourpb, denom
-      parameter (pi = 3.14159265358979324d0)
+      real*8     u, umax, x, fourpb, denom
 c
       ierr = 0
       s0   = 0.0d0
