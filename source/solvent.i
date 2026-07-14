@@ -6,10 +6,14 @@ c
       parameter (maxspc=100)  ! Solvent species
       parameter (maxslv=100)  ! Solvent site
 c
+      logical wvvread
+c
 c     dens: solvent density [/Ang^3]
 c     densuq : density of symmetry unique site [/Ang^3]
 c     nspc(i): numbering of solvent species of solvent site i
 c     numspc : number of species in solvent
+c     nsitespc(i) : number of sites in species i
+c     nsiteindex(i,j) : overall index of local index i in species j
 c     qv  : solvent site charge [e]
 c     epsljv :solvent site LJ parameter [J/mol]
 c     sigljv :solvent site LJ parameter [Ang]
@@ -19,13 +23,16 @@ c     xt     : isothermal compressibility [/Pa] = [m^3/J]
 c
       common /rismslv/
      &      nspc(maxslv),temp,beta,xt
-     &     ,dens(maxspc)
+     &     ,dens(maxspc),nsitespc(maxspc)
 
       common /rismslvmol/nv,nsitev(maxslv),numspc,nvsym(maxslv)
      &     ,qv(maxslv),xyzv(3,maxslv),epsljv(maxslv),sigljv(maxslv)
+     &     ,nsiteindex(maxslv,maxspc),wvvread
+     
 c
 c     reduced solvent parameters 
 c
       common /rismslvred/nxvv,nvuq,iuniq(maxslv),q2uq(maxslv)
      &     ,epsljvuq(maxslv),sigljvuq(maxslv),densuq(maxslv)
      &     ,nmulsite(maxslv)
+

@@ -6,7 +6,7 @@ c     --------------------------------------------
       real*8 rdelta,rdelta3d,conv,rcore,alp1d,alp3d
       real*8 qvcutoff
       character*24 grid
-     
+      logical pbc
       integer nsub
       real*8 dumpmax,dumpmin,dumpnume
 
@@ -15,8 +15,9 @@ c     --------------------------------------------
       common /rismrun_i/iguess
      &               ,ngrid,ngrid3d
      &               ,itrmax
-      common /rismrun_r/rdelta,rdelta3d,conv,rcore
+      common /rismrun_r/rdelta,rdelta3d,conv,rcore,rcore3d
      &               ,alp1d,alp3d
+      common /rismrun_l/pbc
 c
       common /rismmdiis_i/nsub
       common /rismmdiis_r/dumpmax,dumpmin,dumpnume
