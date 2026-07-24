@@ -12,7 +12,7 @@ int main(int argc, char * argv[]) {
   string set_fname(char[]);
 
   int ch;
-  float xs, ys, zs;
+  float xs=0.0f, ys=0.0f, zs=0.0f;
   
   while ((ch = getopt(argc, argv, "x:y:z:")) != -1) {
     switch (ch){
