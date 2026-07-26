@@ -20,7 +20,7 @@ c     listxvv   ... list vector of xvv
 c     
       implicit real*8 (a-h,o-z)
       complex*16 cdum,ck,cr,dsum
-      complex*16 ,allocatable :: dumfft(:)
+      complex*16 ,allocatable, save :: dumfft(:)
 
       include "solvent.i"
       include "rismrun.i"
@@ -34,7 +34,9 @@ c
       dimension cdum(n2uq)
 
       ng3d=ngrid3d**3
-      allocate (dumfft(ng3d))
+      if (.not. allocated(dumfft)) then
+         allocate (dumfft(ng3d))
+      end if
 
       ngrid3d2=ngrid3d*ngrid3d
       ngshift=ngrid3d/2+1
@@ -131,7 +133,6 @@ c
 
       enddo                     ! of j for nvuq
 c-------------------------------------------------------------------
-      deallocate (dumfft)
 c
       return
       end
